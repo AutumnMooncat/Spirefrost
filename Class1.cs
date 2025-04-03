@@ -127,7 +127,7 @@ namespace SlayTheFrost
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
-                .Subscribe_WithStatusIcon("Regen Icon")
+                .Subscribe_WithStatusIcon("STS Regen Icon")
             );
             
             assets.Add(new StatusEffectDataBuilder(this)
@@ -146,6 +146,29 @@ namespace SlayTheFrost
                 .WithIsStatus(true)
                 .WithOffensive(true)
                 .Subscribe_WithStatusIcon("STS Weak Icon")
+            );
+            
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectSTSAmplify>("STS Amplify")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
+                .WithIsStatus(true)
+                .Subscribe_WithStatusIcon("STS Amplify Icon")
+            );
+
+            assets.Add(StatusCopy("MultiHit (Temporary, Not Visible)", "STS Double Tap")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
+                .WithIsStatus(true)
+                .Subscribe_WithStatusIcon("STS Double Tap Icon")
+            );
+
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectSTSFlight>("STS Flight")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
+                .WithIsStatus(true)
+                .Subscribe_WithStatusIcon("STS Flight Icon")
             );
 
             // TRAIT EFFECTS
@@ -209,6 +232,36 @@ namespace SlayTheFrost
                 .WithNoteColour(new Color(0.69f, 0.99f, 0.74f))
                 .WithCanStack(true)
             );
+            
+            assets.Add(new KeywordDataBuilder(this)
+                .Create("stsamplify")
+                .WithTitle("Amplify")
+                .WithDescription("Increases target's effects | Clears after triggering")
+                .WithTitleColour(new Color(0.25f, 0.75f, 0.85f))
+                .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
+                .WithNoteColour(new Color(0.24f, 0.74f, 0.84f))
+                .WithCanStack(true)
+            );
+            
+            assets.Add(new KeywordDataBuilder(this)
+                .Create("stsdoubletap")
+                .WithTitle("Double Tap")
+                .WithDescription("Trigger additional times | Clears after triggering")
+                .WithTitleColour(new Color(0.55f, 0.1f, 0.1f))
+                .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
+                .WithNoteColour(new Color(0.54f, 0.09f, 0.09f))
+                .WithCanStack(true)
+            ); 
+            
+            assets.Add(new KeywordDataBuilder(this)
+                .Create("stsflight")
+                .WithTitle("Flight")
+                .WithDescription("Halves damage taken | Counts down after taking damage")
+                .WithTitleColour(new Color(0.7f, 0.8f, 0.9f))
+                .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
+                .WithNoteColour(new Color(0.69f, 0.79f, 0.89f))
+                .WithCanStack(true)
+            );
         }
 
         private void CreateTraits()
@@ -236,6 +289,12 @@ namespace SlayTheFrost
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords("stsvuln")
+                .FreeModify(action =>
+                {
+                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    action.textElement.outlineWidth = 0.2f;
+                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                })
             );
             
             assets.Add(new StatusIconBuilder(this)
@@ -245,6 +304,51 @@ namespace SlayTheFrost
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords("stsweak")
+                .FreeModify(action =>
+                {
+                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    action.textElement.outlineWidth = 0.2f;
+                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                })
+            );
+            
+            assets.Add(new StatusIconBuilder(this)
+                .Create("STS Amplify Icon", "spirefrost.stsamplify", ImagePath("Icons/AmplifyIcon.png"))
+                .WithIconGroupName(StatusIconBuilder.IconGroups.counter)
+                .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
+                .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                .WithTextboxSprite()
+                .WithKeywords("stsamplify")
+                .FreeModify(action =>
+                {
+                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    action.textElement.outlineWidth = 0.2f;
+                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                })
+            );
+            
+            assets.Add(new StatusIconBuilder(this)
+                .Create("STS Double Tap Icon", "spirefrost.stsdoubletap", ImagePath("Icons/DoubleTapIcon.png"))
+                .WithIconGroupName(StatusIconBuilder.IconGroups.counter)
+                .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
+                .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                .WithTextboxSprite()
+                .WithKeywords("stsdoubletap")
+                .FreeModify(action =>
+                {
+                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    action.textElement.outlineWidth = 0.2f;
+                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                })
+            );
+            
+            assets.Add(new StatusIconBuilder(this)
+                .Create("STS Flight Icon", "spirefrost.stsflight", ImagePath("Icons/FlightIcon.png"))
+                .WithIconGroupName(StatusIconBuilder.IconGroups.health)
+                .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
+                .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                .WithTextboxSprite()
+                .WithKeywords("stsflight")
             );
         }
 
@@ -369,7 +473,9 @@ namespace SlayTheFrost
                 .WithImage("TestCharm.png")                        //Sets the image file path to "GlacialCharm.png". See below.
                 .WithTitle("Test Charm")                           //Sets in-game name as Glacial Charm
                 .WithText($"Testing: Start combat with 3 <keyword=autumnmooncat.wildfrost.spirefrost.stsregen> " +
-                $"<keyword=autumnmooncat.wildfrost.spirefrost.stsvuln> <keyword=autumnmooncat.wildfrost.spirefrost.stsweak>") //Get allows me to skip the GUID. The Text class does not.
+                $"<keyword=autumnmooncat.wildfrost.spirefrost.stsvuln> <keyword=autumnmooncat.wildfrost.spirefrost.stsweak> " +
+                $"<keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> <keyword=autumnmooncat.wildfrost.spirefrost.stsdoubletap> " +
+                $"<keyword=autumnmooncat.wildfrost.spirefrost.stsflight>") //Get allows me to skip the GUID. The Text class does not.
                                                                                                //IMPORTANT: if you did not heed the advice from before, the keyword name must be lowercase, so use .ToLower() to fix that.
                                                                                                //If you are having trouble, find your keyword via the Unity Explorer and verify its name. 
                 .WithTier(2)                                          //Affects cost in shops
@@ -380,7 +486,10 @@ namespace SlayTheFrost
                     {
                         SStack("STS Regen", 3),
                         SStack("STS Vuln", 3),
-                        SStack("STS Weak", 3)
+                        SStack("STS Weak", 3),
+                        SStack("STS Amplify", 3),
+                        SStack("STS Double Tap", 3),
+                        SStack("STS Flight", 3)
                     };
                 })
             );
@@ -723,6 +832,117 @@ namespace SlayTheFrost
             if (amount != 0)
             {
                 yield return CountDown(target, amount);
+            }
+        }
+    }
+
+    public class StatusEffectSTSAmplify : StatusEffectData
+    {
+        public bool cardPlayed;
+
+        public int current;
+
+        public int amountToClear;
+
+        public override void Init()
+        {
+            base.OnActionPerformed += ActionPerformed;
+        }
+
+        public override bool RunStackEvent(int stacks)
+        {
+            current += stacks;
+            target.effectBonus += stacks;
+            target.PromptUpdate();
+            return false;
+        }
+
+        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        {
+            if (!cardPlayed && entity == target && count > 0 && targets != null && targets.Length != 0)
+            {
+                cardPlayed = true;
+                amountToClear = current;
+            }
+
+            return false;
+        }
+
+        public override bool RunActionPerformedEvent(PlayAction action)
+        {
+            if (cardPlayed)
+            {
+                return ActionQueue.Empty;
+            }
+
+            return false;
+        }
+
+        public IEnumerator ActionPerformed(PlayAction action)
+        {
+            cardPlayed = false;
+            yield return Clear(amountToClear);
+        }
+
+        public IEnumerator Clear(int amount)
+        {
+            int amount2 = amount;
+            Events.InvokeStatusEffectCountDown(this, ref amount2);
+            if (amount2 != 0)
+            {
+                current -= amount2;
+                target.effectBonus -= amount2;
+                target.PromptUpdate();
+                yield return CountDown(target, amount2);
+            }
+        }
+
+        public override bool RunEndEvent()
+        {
+            target.effectBonus -= current;
+            target.PromptUpdate();
+            return false;
+        }
+    }
+
+    public class StatusEffectSTSFlight : StatusEffectData
+    {
+        public override void Init()
+        {
+            base.OnHit += FlightHit;
+        }
+
+        public override bool RunHitEvent(Hit hit)
+        {
+            if (hit.Offensive && count > 0 && hit.damage > 0)
+            {
+                return hit.target == target;
+            }
+
+            return false;
+        }
+
+        public IEnumerator FlightHit(Hit hit)
+        {
+            hit.damage = Mathf.RoundToInt(hit.damage / 2f);
+            ActionQueue.Stack(new ActionSequence(CountDown())
+            {
+                fixedPosition = true,
+                note = "Count Down Flight"
+            });
+            yield break;
+        }
+
+        public IEnumerator CountDown()
+        {
+            if ((bool)this && (bool)target && target.alive)
+            {
+                int amount = 1;
+                Events.InvokeStatusEffectCountDown(this, ref amount);
+                if (amount != 0)
+                {
+                    yield return CountDown(target, amount);
+                }
             }
         }
     }
