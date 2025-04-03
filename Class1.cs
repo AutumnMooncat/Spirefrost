@@ -23,7 +23,7 @@ namespace SlayTheFrost
         public static List<object> assets = new List<object>();
         private bool preLoaded;
 
-        // TODO: This allows for icons in descriptions
+        // This allows for icons in descriptions
         public override TMP_SpriteAsset SpriteAsset => spriteAsset;
         internal static TMP_SpriteAsset spriteAsset;
 
@@ -127,6 +127,14 @@ namespace SlayTheFrost
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectSTSRegen>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintHasHealth(),
+                        new TargetConstraintIsAlive()
+                    };
+                })
                 .Subscribe_WithStatusIcon("STS Regen Icon")
             );
             
@@ -136,6 +144,13 @@ namespace SlayTheFrost
                 .WithStackable(true)
                 .WithIsStatus(true)
                 .WithOffensive(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectSTSVulnerable>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintCanBeHit()
+                    };
+                })
                 .Subscribe_WithStatusIcon("STS Vuln Icon")
             );
             
@@ -145,6 +160,7 @@ namespace SlayTheFrost
                 .WithStackable(true)
                 .WithIsStatus(true)
                 .WithOffensive(true)
+                //CanAttack constraint?
                 .Subscribe_WithStatusIcon("STS Weak Icon")
             );
             
@@ -153,6 +169,25 @@ namespace SlayTheFrost
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectSTSAmplify>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintCanBeBoosted(),
+                        new TargetConstraintIsUnit(),
+                        new TargetConstraintOr()
+                        {
+                            constraints = new TargetConstraint[]
+                            {
+                                new TargetConstraintHasReaction(),
+                                new TargetConstraintMaxCounterMoreThan()
+                                {
+                                    moreThan = 0
+                                }
+                            }
+                        }
+                    };
+                })
                 .Subscribe_WithStatusIcon("STS Amplify Icon")
             );
 
@@ -168,7 +203,48 @@ namespace SlayTheFrost
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectSTSFlight>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintCanBeHit()
+                    };
+                })
                 .Subscribe_WithStatusIcon("STS Flight Icon")
+            );
+
+            assets.Add(StatusCopy("When Redraw Hit Apply Attack & Health To Self", "STS Ritual")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
+                .WithIsStatus(true)
+                .WithIsKeyword(true)
+                //.WithType("damage up")
+                //.WithKeyword("<keyword=autumnmooncat.wildfrost.spirefrost.stsritual>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenRedrawHit>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintDoesDamage()
+                    };
+                })
+                .Subscribe_WithStatusIcon("STS Ritual Icon")
+            );
+
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectApplyXWhenHitOnce>("STS Roll Up")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
+                .WithIsStatus(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHitOnce>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Shell");
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintCanBeHit()
+                    };
+                })
+                .Subscribe_WithStatusIcon("STS Roll Up Icon")
             );
 
             // TRAIT EFFECTS
@@ -203,6 +279,7 @@ namespace SlayTheFrost
         private void CreateKeywords()
         {
             // KEYWORDS
+            // Keywords without pictures must use .WithShowName(true)
             assets.Add(new KeywordDataBuilder(this)
                 .Create("stsregen")
                 .WithTitle("Regen")
@@ -262,11 +339,42 @@ namespace SlayTheFrost
                 .WithNoteColour(new Color(0.69f, 0.79f, 0.89f))
                 .WithCanStack(true)
             );
+
+            assets.Add(new KeywordDataBuilder(this)
+                .Create("stsritual")
+                .WithTitle("Ritual")
+                .WithDescription("When <Redraw Bell> is hit, gain <keyword=attack>")
+                .WithTitleColour(new Color(0.5f, 0.8f, 1.0f))
+                .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
+                .WithNoteColour(new Color(0.49f, 0.79f, 0.99f))
+                .WithCanStack(true)
+            );
+            
+            assets.Add(new KeywordDataBuilder(this)
+                .Create("stsrollup")
+                .WithTitle("Roll Up")
+                .WithDescription("When hit, gain <keyword=shell> and lose Roll Up")
+                .WithTitleColour(new Color(0.35f, 0.7f, 0.8f))
+                .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
+                .WithNoteColour(new Color(0.34f, 0.69f, 0.79f))
+                .WithCanStack(true)
+            );
         }
 
         private void CreateTraits()
         {
             // TRAITS
+            /*assets.Add(new TraitDataBuilder(this)
+                .Create("Ritual")
+                .SubscribeToAfterAllBuildEvent(trait =>
+                {
+                    trait.keyword = TryGet<KeywordData>("stsritual");
+                    trait.effects = new StatusEffectData[]
+                    {
+                        TryGet<StatusEffectData>("STS Ritual")
+                    };
+                })
+            );*/
         }
 
         private void CreateIconBuilders()
@@ -349,6 +457,36 @@ namespace SlayTheFrost
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords("stsflight")
+            );
+
+            assets.Add(new StatusIconBuilder(this)
+                .Create("STS Ritual Icon", "spirefrost.stsritual", ImagePath("Icons/RitualIcon.png"))
+                .WithIconGroupName(StatusIconBuilder.IconGroups.counter)
+                .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
+                .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                .WithTextboxSprite()
+                .WithKeywords("stsritual")
+                .FreeModify(action =>
+                {
+                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    action.textElement.outlineWidth = 0.2f;
+                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                })
+            );
+
+            assets.Add(new StatusIconBuilder(this)
+                .Create("STS Roll Up Icon", "spirefrost.stsrollup", ImagePath("Icons/RollUpIcon.png"))
+                .WithIconGroupName(StatusIconBuilder.IconGroups.health)
+                .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
+                .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                .WithTextboxSprite()
+                .WithKeywords("stsrollup")
+                .FreeModify(action =>
+                {
+                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    action.textElement.outlineWidth = 0.2f;
+                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                })
             );
         }
 
@@ -472,7 +610,7 @@ namespace SlayTheFrost
                 .WithType(CardUpgradeData.Type.Charm)                 //Sets the upgrade to a charm (other choices are crowns and tokens)
                 .WithImage("TestCharm.png")                        //Sets the image file path to "GlacialCharm.png". See below.
                 .WithTitle("Test Charm")                           //Sets in-game name as Glacial Charm
-                .WithText($"Testing: Start combat with 3 <keyword=autumnmooncat.wildfrost.spirefrost.stsregen> " +
+                .WithText($"Testing: Gain 3 <keyword=autumnmooncat.wildfrost.spirefrost.stsregen> " +
                 $"<keyword=autumnmooncat.wildfrost.spirefrost.stsvuln> <keyword=autumnmooncat.wildfrost.spirefrost.stsweak> " +
                 $"<keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> <keyword=autumnmooncat.wildfrost.spirefrost.stsdoubletap> " +
                 $"<keyword=autumnmooncat.wildfrost.spirefrost.stsflight>") //Get allows me to skip the GUID. The Text class does not.
@@ -493,17 +631,36 @@ namespace SlayTheFrost
                     };
                 })
             );
+            
+            assets.Add(
+                new CardUpgradeDataBuilder(this)
+                .Create("CardUpgradeTest2")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("TestCharm.png")
+                .WithTitle("Test Charm")
+                .WithText($"Testing: Gain 2 <keyword=autumnmooncat.wildfrost.spirefrost.stsritual> <keyword=autumnmooncat.wildfrost.spirefrost.stsrollup>")
+                .WithTier(2)
+                .SetConstraints(new TargetConstraintDoesDamage(), new TargetConstraintCanBeHit())
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.effects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Ritual", 2),
+                        SStack("STS Roll Up", 2)
+                    };
+                })
+            );
         }
 
         public override void Load()
         {
             if (!preLoaded)
             { 
-                // TODO: the spriteAsset has to be defined before any icons are made!
+                // The spriteAsset has to be defined before any icons are made!
                 spriteAsset = HopeUtils.CreateSpriteAsset(Title);
                 CreateModAssets(); 
             }
-            // TODO: Let our sprites automatically show up for icon descriptions
+            // Let our sprites automatically show up for icon descriptions
             SpriteAsset.RegisterSpriteAsset();
             base.Load();
             CreateLocalizedStrings();
@@ -514,7 +671,7 @@ namespace SlayTheFrost
 
         public override void Unload()
         {
-            // TODO: Prevent our icons from accidentally showing up in descriptions when not loaded
+            // Prevent our icons from accidentally showing up in descriptions when not loaded
             SpriteAsset.UnRegisterSpriteAsset();
             base.Unload();
             GameMode gameMode = TryGet<GameMode>("GameModeNormal");
@@ -938,6 +1095,38 @@ namespace SlayTheFrost
             if ((bool)this && (bool)target && target.alive)
             {
                 int amount = 1;
+                Events.InvokeStatusEffectCountDown(this, ref amount);
+                if (amount != 0)
+                {
+                    yield return CountDown(target, amount);
+                }
+            }
+        }
+    }
+
+    public class StatusEffectApplyXWhenHitOnce : StatusEffectApplyXWhenHit
+    {
+        public override void Init()
+        {
+            base.Init();
+            base.PostHit += RemoveMe;
+        }
+
+        public IEnumerator RemoveMe(Hit hit)
+        {
+            ActionQueue.Stack(new ActionSequence(CountDown())
+            {
+                fixedPosition = true,
+                note = "Remove Apply When Hit Once"
+            });
+            yield break;
+        }
+
+        public IEnumerator CountDown()
+        {
+            if ((bool)this && (bool)target && target.alive)
+            {
+                int amount = GetAmount();
                 Events.InvokeStatusEffectCountDown(this, ref amount);
                 if (amount != 0)
                 {
