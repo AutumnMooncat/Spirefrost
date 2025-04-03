@@ -274,6 +274,55 @@ namespace SlayTheFrost
                     data.summonCard = TryGet<CardData>("lightningOrb");
                 })
             );
+
+            assets.Add(StatusCopy("On Turn Apply Shell To Allies", "On Turn Apply Regen To Allies")
+                .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsregen> to all allies")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Regen");
+                })
+            );
+
+            assets.Add(StatusCopy("On Kill Apply Gold To Self", "On Kill Trigger Again")
+                .WithText("On kill, trigger again")
+                .WithIsReaction(true)
+                .WithCanBeBoosted(false)
+                .WithStackable(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnKill>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Trigger (High Prio)");
+                    data.eventPriority = -99;
+                    data.descColorHex = "F99C61";
+                })
+
+            );
+            
+            assets.Add(StatusCopy("Reduce Attack", "Reduce Attack With Text")
+                .WithText("Reduce the attacker's <keyword=attack> by <{a}>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantReduceAttack>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintDoesDamage()
+                    };
+                })
+
+            );
+
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectApplyXToFrontEnemiesWhenHit>("When Hit Apply Vuln To Front Enemies")
+                .WithText("When hit, apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsvuln> to enemies in front")
+                .WithCanBeBoosted(true)
+                .WithOffensive(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXToFrontEnemiesWhenHit>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Vuln");
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintCanBeHit()
+                    };
+                })
+            );
         }
 
         private void CreateKeywords()
@@ -493,8 +542,8 @@ namespace SlayTheFrost
         private void CreateLeaders()
         {
             // LEADERS
-            assets.Add(
-                new CardDataBuilder(this).CreateUnit("ironclad", "Ironclad") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("ironclad", "Ironclad") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
                 .SetSprites("Ironclad.png", "IroncladBG.png")
                 .SetStats(8, 3, 4)
                 .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
@@ -513,11 +562,10 @@ namespace SlayTheFrost
                         SStack("When Card Destroyed, Gain Shell", 2)
                     };
                 })
-                .AddPool("SnowUnitPool") //This puts Shade Serpent in the Shademancer pools. Other choices were "GeneralUnitPool", "SnowUnitPool", "BasicUnitPool", and "ClunkUnitPool".
             );
 
-            assets.Add(
-                new CardDataBuilder(this).CreateUnit("silent", "Silent") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("silent", "Silent") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
                 .SetSprites("Silent.png", "SilentBG.png")
                 .SetStats(6, 2, 3)
                 .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
@@ -529,11 +577,10 @@ namespace SlayTheFrost
                         SStack("When Enemy Is Hit By Item Apply Reduce Their Health", 1)
                     };
                 })
-                .AddPool("SnowUnitPool") //This puts Shade Serpent in the Shademancer pools. Other choices were "GeneralUnitPool", "SnowUnitPool", "BasicUnitPool", and "ClunkUnitPool".
             );
 
-            assets.Add(
-                new CardDataBuilder(this).CreateUnit("defect", "Defect") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("defect", "Defect") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
                 .SetSprites("Defect.png", "DefectBG.png")
                 .SetStats(7, null, 4)
                 .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
@@ -545,32 +592,140 @@ namespace SlayTheFrost
                         SStack("Summon Lightning Orb", 1)
                     };
                 })
-                .AddPool("SnowUnitPool") //This puts Shade Serpent in the Shademancer pools. Other choices were "GeneralUnitPool", "SnowUnitPool", "BasicUnitPool", and "ClunkUnitPool".
             );
 
-            assets.Add(
-                new CardDataBuilder(this).CreateUnit("watcher", "Watcher") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("watcher", "Watcher") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
                 .SetSprites("Watcher.png", "WatcherBG.png")
                 .SetStats(7, 4, 5)
                 .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
                                         //.WithFlavour("I don't have an ability yet :/")
                 .SetStartWithEffect(SStack("On Card Played Add Zoomlin To Random Card In Hand", 1))
-                .AddPool("SnowUnitPool") //This puts Shade Serpent in the Shademancer pools. Other choices were "GeneralUnitPool", "SnowUnitPool", "BasicUnitPool", and "ClunkUnitPool".
             );
         }
 
         private void CreateCompanions()
         {
             // PETS
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("louse", "Lousie")
+                .SetSprites("Units/Louse.png","Units/LouseBG.png")
+                .SetStats(3, 2, 4)
+                .IsPet((ChallengeData)null, true)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Weak", 1)
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Roll Up", 2)
+                    };
+                })
+            );
 
             // UNITS
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("centurion", "Centurion")
+                .SetSprites("Units/Centurion.png", "Units/CenturionBG.png")
+                .SetStats(10, 3, 4)
+                .SetTraits(TStack("Frontline", 1))
+                .SetStartWithEffect(SStack("On Turn Apply Shell To Allies", 1))
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("mystic", "Mystic")
+                .SetSprites("Units/Mystic.png", "Units/MysticBG.png")
+                .SetStats(4, null, 4)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Turn Apply Regen To Allies", 2),
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("looter", "Looter")
+                .SetSprites("Units/Looter.png", "Units/LooterBG.png")
+                .SetStats(5, 4, 3)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Kill Apply Gold To Self", 5),
+                        SStack("On Kill Trigger Again", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("nob", "Nob")
+                .SetSprites("Units/Nob.png", "Units/NobBG.png")
+                .SetStats(12, 3, 5)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Vuln", 2)
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When Hit Increase Attack Effects To Self", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("lagavulin", "Lagavulin")
+                .SetSprites("Units/Lagavulin.png", "Units/LagavulinBG.png")
+                .SetStats(8, 4, 0)
+                .SetTraits(TStack("Smackback", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Shell", 4),
+                        SStack("When Hit Reduce Attack To Attacker", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("cultist", "Cultist")
+                .SetSprites("Units/Cultist.png", "Units/CultistBG.png")
+                .SetStats(6, 2, 5)
+                .WithFlavour("Caw Caw!")
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Ritual", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("fungi", "Fungi Beast")
+                .SetSprites("Units/Fungi.png", "Units/FungiBG.png")
+                .SetStats(4, 1, 3)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When Hit Apply Vuln To Front Enemies", 1)
+                    };
+                })
+            );
         }
 
         private void CreateSummons()
         {
             // SUMMONS
-            assets.Add(
-                new CardDataBuilder(this).CreateUnit("lightningOrb", "Lightning") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("lightningOrb", "Lightning") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
                 .SetSprites("LightningOrb.png", "LightningOrbBG.png")
                 .SetStats(2, 2, 1)
                 .WithCardType("Summoned") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
@@ -582,8 +737,8 @@ namespace SlayTheFrost
         private void CreateItems()
         {
             // ITEMS
-            assets.Add(
-                new CardDataBuilder(this).CreateItem("shovel", "Shovel")
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("shovel", "Shovel")
                 .SetSprites("Shovel.png", "ShovelBG.png")
                 .SetDamage(0)
                 .SetAttackEffect(SStack("Snow", 2))
@@ -591,8 +746,8 @@ namespace SlayTheFrost
                 .WithFlavour("Diggy diggy hole")
             );
 
-            assets.Add(
-                new CardDataBuilder(this).CreateItem("sundial", "Sundial")
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("sundial", "Sundial")
                 .SetSprites("Sundial.png", "SundialBG.png")
                 .SetAttackEffect(SStack("Reduce Counter", 1))
                 //.SetTraits(TStack("Barrage", 1))
@@ -603,8 +758,7 @@ namespace SlayTheFrost
         private void CreateCharms()
         {
             // CHARMS
-            assets.Add(
-                new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(this)
                 .Create("CardUpgradeTest1")                         //Internally named as CardUpgradeGlacial
                 //.AddPool("GeneralCharmPool")                          //Adds the upgrade to the general pool
                 .WithType(CardUpgradeData.Type.Charm)                 //Sets the upgrade to a charm (other choices are crowns and tokens)
@@ -632,8 +786,7 @@ namespace SlayTheFrost
                 })
             );
             
-            assets.Add(
-                new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(this)
                 .Create("CardUpgradeTest2")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("TestCharm.png")
@@ -1135,7 +1288,96 @@ namespace SlayTheFrost
             }
         }
     }
-    
+
+    public class StatusEffectApplyXToFrontEnemies : StatusEffectApplyX
+    {
+        public override void Init()
+        {
+            base.OnCardPlayed += Run;
+        }
+
+        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        {
+            return entity == target;
+        }
+
+        public IEnumerator Run(Entity entity, Entity[] targets)
+        {
+            int a = GetAmount();
+            List<Entity> toAffect = new List<Entity>();
+            foreach (CardContainer row in Battle.instance.GetRows(Battle.GetOpponent(target.owner)))
+            {
+                toAffect.AddIfNotNull(row.GetTop());
+            }
+
+            if (toAffect.Count <= 0)
+            {
+                yield break;
+            }
+
+            target.curveAnimator.Ping();
+            yield return Sequences.Wait(0.13f);
+            Routine.Clump clump = new Routine.Clump();
+            foreach (Entity item in toAffect)
+            {
+                Hit hit = new Hit(target, item, 0);
+                hit.AddStatusEffect(effectToApply, a);
+                clump.Add(hit.Process());
+            }
+
+            yield return clump.WaitForEnd();
+            yield return Sequences.Wait(0.13f);
+        }
+    }
+
+    public class StatusEffectApplyXToFrontEnemiesWhenHit : StatusEffectApplyX
+    {
+        [SerializeField]
+        public TargetConstraint[] attackerConstraints;
+
+        public override void Init()
+        {
+            base.PostHit += CheckHit;
+        }
+
+        public override bool RunPostHitEvent(Hit hit)
+        {
+            if (target.enabled && hit.target == target && hit.canRetaliate && (!targetMustBeAlive || (target.alive && Battle.IsOnBoard(target))) && hit.Offensive && hit.BasicHit)
+            {
+                return CheckAttackerConstraints(hit.attacker);
+            }
+
+            return false;
+        }
+
+        public IEnumerator CheckHit(Hit hit)
+        {
+            List<Entity> toAffect = new List<Entity>();
+            foreach (CardContainer row in Battle.instance.GetRows(Battle.GetOpponent(target.owner)))
+            {
+                toAffect.AddIfNotNull(row.GetTop());
+            }
+            return Run(toAffect);
+        }
+
+        public bool CheckAttackerConstraints(Entity attacker)
+        {
+            if (attackerConstraints != null)
+            {
+                TargetConstraint[] array = attackerConstraints;
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (!array[i].Check(attacker))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(References), nameof(References.Classes), MethodType.Getter)]
     static class FixClassesGetter
     {
