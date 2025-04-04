@@ -306,7 +306,6 @@ namespace SlayTheFrost
                         new TargetConstraintDoesDamage()
                     };
                 })
-
             );
 
             assets.Add(new StatusEffectDataBuilder(this)
@@ -321,6 +320,90 @@ namespace SlayTheFrost
                     {
                         new TargetConstraintCanBeHit()
                     };
+                })
+            );
+
+            assets.Add(StatusCopy("When Healed Apply Attack To Self", "When Healed Reduce Counter")
+                .WithText("When healed, count down <keyword=counter> by <{a}>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHealed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Reduce Counter");
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectInstantIncreaseCounter>("Increase Counter")
+                .WithText("Count up <keyword=counter> by <{a}>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantIncreaseCounter>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintMaxCounterMoreThan()
+                        {
+                            moreThan = 0
+                        },
+                        new TargetConstraintOnBoard(),
+                        new TargetConstraintHasStatus()
+                        {
+                            not = true,
+                            status = TryGet<StatusEffectData>("Snow")
+                        }
+                    };
+                })
+            );
+
+            assets.Add(StatusCopy("On Hit Pull Target", "On Hit Increase Counter")
+                .WithText("Count up target's <keyword=counter> by <{a}>")
+                .WithCanBeBoosted(true)
+                .WithIsKeyword(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnHit>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
+                })
+            );
+            
+            assets.Add(StatusCopy("When Deployed Apply Block To Self", "When Deployed Apply Flight To Self")
+                .WithText("When deployed, gain <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsflight>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDeployed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Flight");
+                })
+            );
+            
+            assets.Add(StatusCopy("While Active Increase Effects To FrontAlly", "While Active Increase Effects To AllyBehind")
+                .WithText("While active, boost the effects of the ally behind by {a}")
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.AllyBehind;
+                })
+            );
+            
+            assets.Add(StatusCopy("Split", "STS Split")
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSplit>(data =>
+                {
+                    data.profiles = new StatusEffectInstantSplit.Profile[] {
+                        new StatusEffectInstantSplit.Profile()
+                        {
+                            cardName = "autumnmooncat.wildfrost.spirefrost.spikeslime",
+                            changeToCardName = "autumnmooncat.wildfrost.spirefrost.spikeslime2"
+                        },
+                        new StatusEffectInstantSplit.Profile()
+                        {
+                            cardName = "autumnmooncat.wildfrost.spirefrost.spikeslime2",
+                            changeToCardName = "autumnmooncat.wildfrost.spirefrost.spikeslime3"
+                        }
+                    };
+                })
+            );
+            
+            assets.Add(StatusCopy("When X Health Lost Split", "When X Health Lost STS Split")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHealthLost>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Split");
                 })
             );
         }
@@ -510,7 +593,7 @@ namespace SlayTheFrost
 
             assets.Add(new StatusIconBuilder(this)
                 .Create("STS Ritual Icon", "spirefrost.stsritual", ImagePath("Icons/RitualIcon.png"))
-                .WithIconGroupName(StatusIconBuilder.IconGroups.counter)
+                .WithIconGroupName(StatusIconBuilder.IconGroups.damage)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
@@ -716,6 +799,172 @@ namespace SlayTheFrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("When Hit Apply Vuln To Front Enemies", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("jawworm", "Jaw Worm")
+                .SetSprites("Units/JawWorm.png", "Units/JawWormBG.png")
+                .SetStats(4, 3, 3)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When Healed Reduce Counter", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("slaver", "Slaver")
+                .SetSprites("Units/Slaver.png", "Units/SlaverBG.png")
+                .SetStats(6, 3, 5)
+                .SetTraits(TStack("Longshot", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Hit Increase Counter", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("byrd", "Byrd")
+                .SetSprites("Units/Byrd.png", "Units/ByrdBG.png")
+                .SetStats(4, 1, 4)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("MultiHit", 2),
+                        SStack("When Deployed Apply Flight To Self", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("chosen", "Chosen")
+                .SetSprites("Units/Chosen.png", "Units/ChosenBG.png")
+                .SetStats(11, 1, 3)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("MultiHit", 1),
+                        SStack("While Active Increase Effects To AllyBehind", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("spikeslime", "Spike Slime")
+                .SetSprites("Units/SpikeSlime.png", "Units/SpikeSlimeBG.png")
+                .SetStats(6, 2, 3)
+                .SetTraits(TStack("Barrage", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When X Health Lost STS Split", 3)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("spikeslime2", "Spike Slime")
+                .SetSprites("Units/SpikeSlime2.png", "Units/SpikeSlimeBG.png")
+                .SetStats(6, 2, 3)
+                .SetTraits(TStack("Barrage", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When X Health Lost STS Split", 3)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("spikeslime3", "Spike Slime")
+                .SetSprites("Units/SpikeSlime3.png", "Units/SpikeSlimeBG.png")
+                .SetStats(6, 2, 3)
+                .SetTraits(TStack("Barrage", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When X Health Lost STS Split", 3)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("fatgremlin", "Fat Gremlin")
+                .SetSprites("Units/FatGremlin.png", "Units/FatGremlinBG.png")
+                .SetStats(3, 4, 0)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Weak", 1)
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Trigger When Ally or Enemy Is Killed", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("madgremlin", "Mad Gremlin")
+                .SetSprites("Units/MadGremlin.png", "Units/MadGremlinBG.png")
+                .SetStats(5, 2, 4)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When Hit Gain Attack To Self (No Ping)", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("shieldgremlin", "Shield Gremlin")
+                .SetSprites("Units/ShieldGremlin.png", "Units/ShieldGremlinBG.png")
+                .SetStats(3, null, 4)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Turn Apply Shell To AllyInFrontOf", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("sneakygremlin", "Sneaky Gremlin")
+                .SetSprites("Units/SneakyGremlin.png", "Units/SneakyGremlinBG.png")
+                .SetStats(2, 2, 0)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Trigger Against When Ally Attacks", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("gremlinwizard", "Gremlin Wizard")
+                .SetSprites("Units/GremlinWizard.png", "Units/GremlinWizardBG.png")
+                .SetStats(5, 6, 6)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When Hit Reduce Counter To Self", 1)
                     };
                 })
             );
@@ -1067,7 +1316,7 @@ namespace SlayTheFrost
         public IEnumerator MultiplyHit(Hit hit)
         {
             amountToClear = GetAmount();
-            hit.damage = Mathf.RoundToInt(hit.damage * (1 + (amountToClear * 0.5f)));
+            hit.damage = Mathf.CeilToInt(hit.damage * (1 + (amountToClear * 0.5f)));
             ActionQueue.Stack(new ActionSequence(Clear(amountToClear))
             {
                 fixedPosition = true,
@@ -1112,7 +1361,7 @@ namespace SlayTheFrost
             if (toClear == 0 && entity == target && count > 0 && targets != null && targets.Length > 0)
             {
                 toClear = 1;
-                amountRemoved = Mathf.RoundToInt(target.tempDamage.Value / 2f);
+                amountRemoved = Mathf.CeilToInt(target.tempDamage.Value / 2f);
                 target.tempDamage -= amountRemoved;
             }
 
@@ -1375,6 +1624,16 @@ namespace SlayTheFrost
             }
 
             return true;
+        }
+    }
+
+    public class StatusEffectInstantIncreaseCounter : StatusEffectInstant
+    {
+        public override IEnumerator Process()
+        {
+            target.counter.current += GetAmount();
+            target.PromptUpdate();
+            yield return base.Process();
         }
     }
 
