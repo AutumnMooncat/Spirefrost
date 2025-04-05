@@ -460,6 +460,14 @@ namespace SlayTheFrost
                     data.effectToApply = TryGet<StatusEffectData>("Shell");
                 })
             );
+
+            assets.Add(StatusCopy("When Redraw Hit Apply Attack & Health To Self", "When Redraw Hit Apply Shell To Self")
+                .WithText("When <Redraw Bell> is hit, gain <{a}><keyword=shell>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenRedrawHit>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Shell");
+                })
+            );
         }
 
         private void CreateKeywords()
@@ -1466,47 +1474,190 @@ namespace SlayTheFrost
         {
             // CHARMS
             assets.Add(new CardUpgradeDataBuilder(this)
-                .Create("CardUpgradeTest1")                         //Internally named as CardUpgradeGlacial
-                //.AddPool("GeneralCharmPool")                          //Adds the upgrade to the general pool
-                .WithType(CardUpgradeData.Type.Charm)                 //Sets the upgrade to a charm (other choices are crowns and tokens)
-                .WithImage("TestCharm.png")                        //Sets the image file path to "GlacialCharm.png". See below.
-                .WithTitle("Test Charm")                           //Sets in-game name as Glacial Charm
-                .WithText($"Testing: Gain 3 <keyword=autumnmooncat.wildfrost.spirefrost.stsregen> " +
-                $"<keyword=autumnmooncat.wildfrost.spirefrost.stsvuln> <keyword=autumnmooncat.wildfrost.spirefrost.stsweak> " +
-                $"<keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> <keyword=autumnmooncat.wildfrost.spirefrost.stsdoubletap> " +
-                $"<keyword=autumnmooncat.wildfrost.spirefrost.stsflight>") //Get allows me to skip the GUID. The Text class does not.
-                                                                                               //IMPORTANT: if you did not heed the advice from before, the keyword name must be lowercase, so use .ToLower() to fix that.
-                                                                                               //If you are having trouble, find your keyword via the Unity Explorer and verify its name. 
-                .WithTier(2)                                          //Affects cost in shops
-                .SetConstraints(new TargetConstraintDoesDamage(), new TargetConstraintCanBeHit())
-                .SubscribeToAfterAllBuildEvent(data =>
-                {
-                    data.effects = new CardData.StatusEffectStacks[]
-                    {
-                        SStack("STS Regen", 3),
-                        SStack("STS Vuln", 3),
-                        SStack("STS Weak", 3),
-                        SStack("STS Amplify", 3),
-                        SStack("STS Double Tap", 3),
-                        SStack("STS Flight", 3)
-                    };
-                })
-            );
-            
-            assets.Add(new CardUpgradeDataBuilder(this)
-                .Create("CardUpgradeTest2")
+                .Create("MooncatTestCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("TestCharm.png")
                 .WithTitle("Test Charm")
-                .WithText($"Testing: Gain 2 <keyword=autumnmooncat.wildfrost.spirefrost.stsritual> <keyword=autumnmooncat.wildfrost.spirefrost.stsrollup>")
-                .WithTier(2)
-                .SetConstraints(new TargetConstraintDoesDamage(), new TargetConstraintCanBeHit())
+                .WithText($"Testing: Gain <3> <keyword=autumnmooncat.wildfrost.spirefrost.stsregen>")
+                .WithTier(2) //Affects cost in shops
+                .SetConstraints(new TargetConstraintHasHealth(), new TargetConstraintCanBeHit())
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("STS Ritual", 2),
-                        SStack("STS Roll Up", 2)
+                        SStack("STS Regen", 3)
+                    };
+                })
+            );
+
+            assets.Add(new CardUpgradeDataBuilder(this)
+                .Create("CultistPotionCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/CultistCharm.png")
+                .WithTitle("Cultist Charm")
+                .WithText($"Start with <1> <keyword=autumnmooncat.wildfrost.spirefrost.stsritual>\nReduce <keyword=attack> by <3>")
+                .WithTier(2)
+                .ChangeDamage(-3)
+                .SetConstraints(new TargetConstraintAttackMoreThan() { value = 2 }, new TargetConstraintIsUnit())
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.effects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Ritual", 1)
+                    };
+                })
+            );
+
+            TargetConstraint[] fearConstraints = new TargetConstraint[] {
+                // Plays On Board
+                new TargetConstraintPlayOnSlot() { board = true },
+                // Does Not Play On Slot
+                new TargetConstraintPlayOnSlot() { slot = true, not = true },
+                // Does Trigger
+                new TargetConstraintOr() {
+                    constraints = new TargetConstraint[] {
+                        new TargetConstraintHasReaction(),
+                        new TargetConstraintIsItem(),
+                        new TargetConstraintMaxCounterMoreThan() { moreThan = 0 }
+                    }
+                }
+            };
+            assets.Add(new CardUpgradeDataBuilder(this)
+                .Create("FearPotionCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/FearCharm.png")
+                .WithTitle("Fear Charm")
+                .WithText($"Apply <2> <keyword=autumnmooncat.wildfrost.spirefrost.stsvuln>")
+                .WithTier(2)
+                .SetConstraints(fearConstraints)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Vuln", 2)
+                    };
+                })
+            );
+
+            TargetConstraint[] strengthConstraints = new TargetConstraint[] {
+                new TargetConstraintIsUnit(),
+                new TargetConstraintDoesDamage(),
+                // Does Trigger
+                new TargetConstraintOr() {
+                    constraints = new TargetConstraint[] {
+                        new TargetConstraintHasReaction(),
+                        new TargetConstraintIsItem(),
+                        new TargetConstraintMaxCounterMoreThan() { moreThan = 0 }
+                    }
+                }
+            };
+            assets.Add(new CardUpgradeDataBuilder(this)
+                .Create("StrengthPotionCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/StrengthCharm.png")
+                .WithTitle("Strength Charm")
+                .WithText($"Gain <+1><keyword=attack>")
+                .WithTier(2)
+                .SetConstraints(strengthConstraints)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.effects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Turn Apply Attack To Self", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardUpgradeDataBuilder(this)
+                .Create("FairyPotionCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/FairyCharm.png")
+                .WithTitle("Fairy Charm")
+                .WithText($"Start with <2> <keyword=autumnmooncat.wildfrost.spirefrost.stsflight>")
+                .WithTier(1)
+                .SetConstraints(new TargetConstraintCanBeHit())
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.effects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Flight", 2)
+                    };
+                })
+            );
+
+            TargetConstraint[] weakConstraints = new TargetConstraint[] {
+                // Plays On Board
+                new TargetConstraintPlayOnSlot() { board = true },
+                // Does Not Play On Slot
+                new TargetConstraintPlayOnSlot() { slot = true, not = true },
+                // Does Trigger
+                new TargetConstraintOr() {
+                    constraints = new TargetConstraint[] {
+                        new TargetConstraintHasReaction(),
+                        new TargetConstraintIsItem(),
+                        new TargetConstraintMaxCounterMoreThan() { moreThan = 0 }
+                    }
+                }
+            };
+            assets.Add(new CardUpgradeDataBuilder(this)
+                .Create("WeakPotionCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/WeakCharm.png")
+                .WithTitle("Weakness Charm")
+                .WithText($"Apply <1> <keyword=autumnmooncat.wildfrost.spirefrost.stsweak>")
+                .WithTier(2)
+                .SetConstraints(weakConstraints)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Vuln", 1)
+                    };
+                })
+            );
+
+            TargetConstraint[] miracleConstraints = new TargetConstraint[] {
+                new TargetConstraintIsUnit(),
+                new TargetConstraintMaxCounterMoreThan() { moreThan = 0 },
+                new TargetConstraintHasReaction()
+            };
+            assets.Add(new CardUpgradeDataBuilder(this)
+                .Create("MiraclePotionCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/MiracleCharm.png")
+                .WithTitle("Miracle Charm")
+                .WithText($"Count down all allies' <sprite name=counter> by <1>\nIncrease <keyword=counter> by <2>")
+                .WithTier(3)
+                .ChangeCounter(2)
+                .SetConstraints(miracleConstraints)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.effects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Card Played Reduce Counter To Allies", 1)
+                    };
+                })
+            );
+
+            TargetConstraint[] ironConstraints = new TargetConstraint[] {
+                new TargetConstraintIsUnit(),
+                new TargetConstraintMaxCounterMoreThan() { moreThan = 0 },
+                new TargetConstraintHasReaction()
+            };
+            assets.Add(new CardUpgradeDataBuilder(this)
+                .Create("IronPotionCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/HeartOfIronCharm.png")
+                .WithTitle("Iron Heart Charm")
+                .WithText($"When <Redraw Bell> is hit, gain <1><keyword=shell>")
+                .WithTier(3)
+                .ChangeCounter(2)
+                .SetConstraints(miracleConstraints)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.effects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("When Redraw Hit Apply Shell To Self", 1)
                     };
                 })
             );
