@@ -98,10 +98,9 @@ namespace SlayTheFrost
 
                         //Dont forget Scrap Charm
                         RewardPool charmPool = CreateRewardPool("SpireCharmPool", "Charms", DataList<CardUpgradeData>(
-                            "CardUpgradeTrash",
-                            "CardUpgradeInk", "CardUpgradeOverload",
-                            "CardUpgradeMime", "CardUpgradeShellBecomesSpice",
-                            "CardUpgradeAimless"));
+                            "CultistPotionCharm", "FearPotionCharm", "StrengthPotionCharm",
+                            "FairyPotionCharm", "WeakPotionCharm", "MiraclePotionCharm",
+                            "IronPotionCharm", "CardUpgradeScrap"));
 
                         data.rewardPools = new RewardPool[]
                         {
