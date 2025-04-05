@@ -1650,7 +1650,7 @@ namespace SlayTheFrost
                 .WithImage("Charms/HeartOfIronCharm.png")
                 .WithTitle("Iron Heart Charm")
                 .WithText($"When <Redraw Bell> is hit, gain <1><keyword=shell>")
-                .WithTier(3)
+                .WithTier(1)
                 .ChangeCounter(2)
                 .SetConstraints(ironConstraints)
                 .SubscribeToAfterAllBuildEvent(data =>
