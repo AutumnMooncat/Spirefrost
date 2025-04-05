@@ -688,11 +688,11 @@ namespace SlayTheFrost
         {
             // LEADERS
             assets.Add(new CardDataBuilder(this)
-                .CreateUnit("ironclad", "Ironclad") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+                .CreateUnit("ironclad", "Ironclad")
                 .SetSprites("Ironclad.png", "IroncladBG.png")
                 .SetStats(8, 3, 4)
-                .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
-                                        //.WithFlavour("I don't have an ability yet :/")
+                .WithValue(25)
+                .WithCardType("Leader")
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.createScripts = new CardScript[]  //These scripts run when right before Events.OnCardDataCreated
@@ -710,11 +710,11 @@ namespace SlayTheFrost
             );
 
             assets.Add(new CardDataBuilder(this)
-                .CreateUnit("silent", "Silent") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+                .CreateUnit("silent", "Silent")
                 .SetSprites("Silent.png", "SilentBG.png")
                 .SetStats(6, 2, 3)
-                .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
-                                        //.WithFlavour("I don't have an ability yet :/")
+                .WithValue(25)
+                .WithCardType("Leader")
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -725,11 +725,11 @@ namespace SlayTheFrost
             );
 
             assets.Add(new CardDataBuilder(this)
-                .CreateUnit("defect", "Defect") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+                .CreateUnit("defect", "Defect")
                 .SetSprites("Defect.png", "DefectBG.png")
                 .SetStats(7, null, 4)
-                .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
-                                        //.WithFlavour("I don't have an ability yet :/")
+                .WithValue(25)
+                .WithCardType("Leader")
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -740,11 +740,11 @@ namespace SlayTheFrost
             );
 
             assets.Add(new CardDataBuilder(this)
-                .CreateUnit("watcher", "Watcher") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
+                .CreateUnit("watcher", "Watcher")
                 .SetSprites("Watcher.png", "WatcherBG.png")
                 .SetStats(7, 4, 5)
-                .WithCardType("Leader") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
-                                        //.WithFlavour("I don't have an ability yet :/")
+                .WithValue(25)
+                .WithCardType("Leader")
                 .SetStartWithEffect(SStack("On Card Played Add Zoomlin To Random Card In Hand", 1))
             );
         }
@@ -756,6 +756,7 @@ namespace SlayTheFrost
                 .CreateUnit("louse", "Lousie")
                 .SetSprites("Units/Louse.png","Units/LouseBG.png")
                 .SetStats(3, 2, 4)
+                .WithValue(25)
                 .IsPet((ChallengeData)null, true)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -775,6 +776,7 @@ namespace SlayTheFrost
                 .CreateUnit("centurion", "Centurion")
                 .SetSprites("Units/Centurion.png", "Units/CenturionBG.png")
                 .SetStats(10, 3, 4)
+                .WithValue(50)
                 .SetTraits(TStack("Frontline", 1))
                 .SetStartWithEffect(SStack("On Turn Apply Shell To Allies", 1))
             );
@@ -783,6 +785,7 @@ namespace SlayTheFrost
                 .CreateUnit("mystic", "Mystic")
                 .SetSprites("Units/Mystic.png", "Units/MysticBG.png")
                 .SetStats(4, null, 4)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -796,6 +799,7 @@ namespace SlayTheFrost
                 .CreateUnit("looter", "Looter")
                 .SetSprites("Units/Looter.png", "Units/LooterBG.png")
                 .SetStats(5, 4, 3)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -810,6 +814,7 @@ namespace SlayTheFrost
                 .CreateUnit("nob", "Nob")
                 .SetSprites("Units/Nob.png", "Units/NobBG.png")
                 .SetStats(12, 3, 5)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
@@ -827,6 +832,7 @@ namespace SlayTheFrost
                 .CreateUnit("lagavulin", "Lagavulin")
                 .SetSprites("Units/Lagavulin.png", "Units/LagavulinBG.png")
                 .SetStats(8, 4, 0)
+                .WithValue(50)
                 .SetTraits(TStack("Smackback", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -842,6 +848,7 @@ namespace SlayTheFrost
                 .CreateUnit("cultist", "Cultist")
                 .SetSprites("Units/Cultist.png", "Units/CultistBG.png")
                 .SetStats(6, 2, 5)
+                .WithValue(50)
                 .WithFlavour("Caw Caw!")
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -856,6 +863,7 @@ namespace SlayTheFrost
                 .CreateUnit("fungi", "Fungi Beast")
                 .SetSprites("Units/Fungi.png", "Units/FungiBG.png")
                 .SetStats(4, 1, 3)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -869,6 +877,7 @@ namespace SlayTheFrost
                 .CreateUnit("jawworm", "Jaw Worm")
                 .SetSprites("Units/JawWorm.png", "Units/JawWormBG.png")
                 .SetStats(4, 3, 3)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -882,6 +891,7 @@ namespace SlayTheFrost
                 .CreateUnit("slaver", "Slaver")
                 .SetSprites("Units/Slaver.png", "Units/SlaverBG.png")
                 .SetStats(6, 3, 5)
+                .WithValue(50)
                 .SetTraits(TStack("Longshot", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -896,6 +906,7 @@ namespace SlayTheFrost
                 .CreateUnit("byrd", "Byrd")
                 .SetSprites("Units/Byrd.png", "Units/ByrdBG.png")
                 .SetStats(4, 1, 4)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -910,6 +921,7 @@ namespace SlayTheFrost
                 .CreateUnit("chosen", "Chosen")
                 .SetSprites("Units/Chosen.png", "Units/ChosenBG.png")
                 .SetStats(11, 1, 3)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -924,6 +936,7 @@ namespace SlayTheFrost
                 .CreateUnit("spikeslime", "Spike Slime")
                 .SetSprites("Units/SpikeSlime.png", "Units/SpikeSlimeBG.png")
                 .SetStats(6, 2, 3)
+                .WithValue(50)
                 .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -938,6 +951,7 @@ namespace SlayTheFrost
                 .CreateUnit("spikeslime2", "Spike Slime")
                 .SetSprites("Units/SpikeSlime2.png", "Units/SpikeSlimeBG.png")
                 .SetStats(6, 2, 3)
+                .WithValue(50)
                 .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -952,6 +966,7 @@ namespace SlayTheFrost
                 .CreateUnit("spikeslime3", "Spike Slime")
                 .SetSprites("Units/SpikeSlime3.png", "Units/SpikeSlimeBG.png")
                 .SetStats(6, 2, 3)
+                .WithValue(50)
                 .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -966,6 +981,7 @@ namespace SlayTheFrost
                 .CreateUnit("fatgremlin", "Fat Gremlin")
                 .SetSprites("Units/FatGremlin.png", "Units/FatGremlinBG.png")
                 .SetStats(3, 4, 0)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
@@ -983,6 +999,7 @@ namespace SlayTheFrost
                 .CreateUnit("madgremlin", "Mad Gremlin")
                 .SetSprites("Units/MadGremlin.png", "Units/MadGremlinBG.png")
                 .SetStats(5, 2, 4)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -996,6 +1013,7 @@ namespace SlayTheFrost
                 .CreateUnit("shieldgremlin", "Shield Gremlin")
                 .SetSprites("Units/ShieldGremlin.png", "Units/ShieldGremlinBG.png")
                 .SetStats(3, null, 4)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -1009,6 +1027,7 @@ namespace SlayTheFrost
                 .CreateUnit("sneakygremlin", "Sneaky Gremlin")
                 .SetSprites("Units/SneakyGremlin.png", "Units/SneakyGremlinBG.png")
                 .SetStats(2, 2, 0)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -1022,6 +1041,7 @@ namespace SlayTheFrost
                 .CreateUnit("gremlinwizard", "Gremlin Wizard")
                 .SetSprites("Units/GremlinWizard.png", "Units/GremlinWizardBG.png")
                 .SetStats(5, 6, 6)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
