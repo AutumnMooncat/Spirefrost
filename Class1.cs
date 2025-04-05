@@ -1611,7 +1611,7 @@ namespace SlayTheFrost
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("STS Vuln", 1)
+                        SStack("STS Weak", 1)
                     };
                 })
             );
