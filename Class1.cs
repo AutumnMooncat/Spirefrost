@@ -80,23 +80,25 @@ namespace SlayTheFrost
                         data.leaders = DataList<CardData>("ironclad", "silent", "defect", "watcher");
 
                         Inventory inventory = ScriptableObject.CreateInstance<Inventory>();
-                        inventory.deck.list = DataList<CardData>("SnowGlobe", "Sword", "Gearhammer", "Dart", "EnergyDart", "SunlightDrum", "Junkhead", "IceDice").ToList();
+                        inventory.deck.list = DataList<CardData>("kunai", "kunai", "kunai", "kunai", "shovel", "sundial", "medkit", "bronzeorb").ToList();
+                        //Test Charms
                         //inventory.upgrades.Add(TryGet<CardUpgradeData>("CardUpgradeCritical"));
                         data.startingInventory = inventory;
 
-                        RewardPool unitPool = CreateRewardPool("DrawUnitPool", "Units", DataList<CardData>(
-                            "NakedGnome", "GuardianGnome", "Havok",
-                            "Gearhead", "Bear", "TheBaker",
-                            "Pimento", "Pootie", "Tusk",
-                            "Ditto", "Flash", "TinyTyko"));
+                        RewardPool unitPool = CreateRewardPool("SpireUnitPool", "Units", DataList<CardData>(
+                            "centurion", "mystic", "looter", "nob", "cultist", "fungi",
+                            "jawworm", "slaver", "byrd", "chosen", "spikeslime", "fatgremlin",
+                            "madgremlin", "shieldgremlin", "sneakygremlin","gremlinwizard"));
 
-                        RewardPool itemPool = CreateRewardPool("DrawItemPool", "Items", DataList<CardData>(
-                            "ShellShield", "StormbearSpirit", "PepperFlag", "SporePack", "Woodhead",
-                            "BeepopMask", "Dittostone", "Putty", "Dart", "SharkTooth",
-                            "Bumblebee", "Badoo", "Juicepot", "PomDispenser", "LuminShard",
-                            "Wrenchy", "Vimifier", "OhNo", "Madness", "Joob"));
+                        RewardPool itemPool = CreateRewardPool("SpireItemPool", "Items", DataList<CardData>(
+                            "handdrill", "markofpain", "wristblade", "wingboots", "bluecandle",
+                            "battery", "chemx", "pocketwatch", "fusionhammer", "lantern",
+                            "icecream", "bandages", "anchor", "whetstone", "callingbell",
+                            "gremlinhorn", "exploder", "repulser", "spiker", "orbwalker", 
+                            "sphericguardian", "sentry", "bookofstabbing", "spirespear", "spireshield"));
 
-                        RewardPool charmPool = CreateRewardPool("DrawCharmPool", "Charms", DataList<CardUpgradeData>(
+                        //Dont forget Scrap Charm
+                        RewardPool charmPool = CreateRewardPool("SpireCharmPool", "Charms", DataList<CardUpgradeData>(
                             "CardUpgradeTrash",
                             "CardUpgradeInk", "CardUpgradeOverload",
                             "CardUpgradeMime", "CardUpgradeShellBecomesSpice",
@@ -404,6 +406,58 @@ namespace SlayTheFrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHealthLost>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Split");
+                })
+            );
+            
+            assets.Add(StatusCopy("On Card Played Boost To RandomEnemy", "On Card Played Increase Counter To RandomEnemy")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
+                })
+            );
+
+            assets.Add(StatusCopy("On Hit Equal Heal To FrontAlly", "On Hit Equal Shell To FrontAlly")
+                .WithText("Apply <keyword=shell> to front ally equal to damage dealt")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnHit>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Shell");
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Add Zoomlin To Cards In Hand", "On Card Played Add Attack To Cards In Hand")
+                .WithCanBeBoosted(true)
+                .WithStackable(true)
+                .WithText("Add <+{a}><keyword=attack> to all cards in your hand")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
+                })
+            );
+
+            assets.Add(StatusCopy("Reduce Attack", "Reduce Attack (With Text)")
+                .WithText("Reduce <keyword=attack> by <{a}>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantReduceAttack>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintDoesDamage()
+                    };
+                })
+            );
+
+            assets.Add(StatusCopy("While Active Frenzy To AlliesInRow", "While Active STS Ritual To AlliesInRow")
+                .WithText("While active, add <x{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsritual> to allies in the row")
+                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Ritual");
+                })
+            );
+
+            assets.Add(StatusCopy("When Ally Is Healed Apply Equal Spice", "When Ally Is Healed Apply Equal Shell")
+                .WithText("When an ally is healed, apply equal <keyword=shell>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Shell");
                 })
             );
         }
@@ -968,6 +1022,173 @@ namespace SlayTheFrost
                     };
                 })
             );
+
+            // CLUNKERS
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("bronzeorb", "Bronze Orb")
+                .SetSprites("Units/BronzeOrb.png", "Units/BronzeOrbBG.png")
+                .SetStats(null, null, 0)
+                .WithCardType("Clunker")
+                .WithValue(25)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("When Hit Apply Shell To AlliesInRow", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("exploder", "Exploder")
+                .SetSprites("Units/Exploder.png", "Units/Exploder.png")
+                .SetStats(null, null, 3)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SetTraits(TStack("Explode", 8))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("Destroy Self After Turn", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("repulser", "Repulser")
+                .SetSprites("Units/Repulser.png", "Units/RepulserBG.png")
+                .SetStats(null, null, 0)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("When Hit Reduce Effect To Attacker", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("spiker", "Spiker")
+                .SetSprites("Units/Spiker.png", "Units/SpikerBG.png")
+                .SetStats(null, null, 3)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("Teeth", 2),
+                        SStack("On Turn Apply Teeth To Self", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("orbwalker", "Orb Walker")
+                .SetSprites("Units/OrbWalker.png", "Units/OrbWalkerBG.png")
+                .SetStats(null, null, 0)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("While Active STS Ritual To AlliesInRow", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("sphericguardian", "Spheric Guardian")
+                .SetSprites("Units/SphericGuardian.png", "Units/SphericGuardianBG.png")
+                .SetStats(null, null, 0)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("Shell", 4),
+                        SStack("When Ally Is Healed Apply Equal Shell", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("sentry", "Sentry")
+                .SetSprites("Units/Sentry.png", "Units/SentryBG.png")
+                .SetStats(null, null, 0)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("While Active Reduce Attack To Enemies (No Ping, No Desc)", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("bookofstabbing", "Book Of Stabbing")
+                .SetSprites("Units/BookOfStabbing.png", "Units/BookOfStabbingBG.png")
+                .SetStats(null, null, 0)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 1),
+                        SStack("While Active Frenzy To AlliesInRow", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("spirespear", "Spire Spear")
+                .SetSprites("Units/SpireSpear.png", "Units/SpireSpearBG.png")
+                .SetStats(null, 2, 3)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 3),
+                        SStack("Pre Trigger Gain Temp MultiHit Equal To Scrap - 1", 1),
+                        SStack("On Card Played Lose Scrap To Self", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("spireshield", "Spire Shield")
+                .SetSprites("Units/SpireShield.png", "Units/SpireShieldBG.png")
+                .SetStats(null, 1, 0)
+                .WithCardType("Clunker")
+                .WithValue(50)
+                .SetTraits(TStack("Smackback", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Scrap", 3),
+                        SStack("Bonus Damage Equal To Scrap On Board", 1),
+                        SStack("On Card Played Lose Scrap To Self", 1)
+                    };
+                })
+            );
         }
 
         private void CreateSummons()
@@ -987,8 +1208,17 @@ namespace SlayTheFrost
         {
             // ITEMS
             assets.Add(new CardDataBuilder(this)
+                .CreateItem("kunai", "Kunai")
+                .SetSprites("Items/Kunai.png", "Items/KunaiBG.png")
+                .WithValue(10)
+                .SetDamage(2)
+                .SetStartWithEffect(SStack("On Hit Damage Damaged Target", 1))
+            );
+            
+            assets.Add(new CardDataBuilder(this)
                 .CreateItem("shovel", "Shovel")
-                .SetSprites("Shovel.png", "ShovelBG.png")
+                .SetSprites("Items/Shovel.png", "Items/ShovelBG.png")
+                .WithValue(30)
                 .SetDamage(0)
                 .SetAttackEffect(SStack("Snow", 2))
                 .SetTraits(TStack("Draw", 1))
@@ -997,10 +1227,238 @@ namespace SlayTheFrost
 
             assets.Add(new CardDataBuilder(this)
                 .CreateItem("sundial", "Sundial")
-                .SetSprites("Sundial.png", "SundialBG.png")
-                .SetAttackEffect(SStack("Reduce Counter", 1))
-                //.SetTraits(TStack("Barrage", 1))
-                .WithFlavour("Autumn hasnt coded this yet")
+                .SetSprites("Items/Sundial.png", "Items/SundialBG.png")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Reduce Counter", 1), 
+                        SStack("On Card Played Increase Counter To RandomEnemy", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("medkit", "Medical Kit")
+                .SetSprites("Items/MedicalKit.png", "Items/MedicalKitBG.png")
+                .WithValue(25)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Regen", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("handdrill", "Hand Drill")
+                .SetSprites("Items/HandDrill.png", "Items/HandDrillBG.png")
+                .WithValue(45)
+                .SetDamage(2)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Vuln", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("markofpain", "Mark Of Pain")
+                .SetSprites("Items/MarkOfPain.png", "Items/MarkOfPainBG.png")
+                .WithValue(50)
+                .SetTraits(TStack("Barrage", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Vuln", 2)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("wristblade", "Wrist Blade")
+                .SetSprites("Items/WristBlade.png", "Items/WristBladeBG.png")
+                .WithValue(55)
+                .SetDamage(1)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Weak", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("wingboots", "Wing Boots")
+                .SetSprites("Items/WingBoots.png", "Items/WingBootsBG.png")
+                .WithValue(55)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Flight", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("bluecandle", "Blue Candle")
+                .SetSprites("Items/BlueCandle.png", "Items/BlueCandleBG.png")
+                .WithValue(60)
+                .SetTraits(TStack("Consume", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Ritual", 1),
+                        SStack("Reduce Max Health", 3)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("battery", "Nuclear Battery")
+                .SetSprites("Items/Battery.png", "Items/BatteryBG.png")
+                .WithValue(50)
+                .SetAttackEffect(SStack("Boost Effects", 1))
+                .SetTraits(TStack("Consume", 1))
+                .CanPlayOnHand(true)
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("chemx", "Chemical X")
+                .SetSprites("Items/ChemX.png", "Items/ChemXBG.png")
+                .WithValue(50)
+                .SetTraits(TStack("Consume", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Double Tap", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("pocketwatch", "Pocketwatch")
+                .SetSprites("Items/Pocketwatch.png", "Items/PocketwatchBG.png")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Double Tap", 1),
+                        SStack("Increase Counter", 1)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("fusionhammer", "Fusion Hammer")
+                .SetSprites("Items/FusionHammer.png", "Items/FusionHammerBG.png")
+                .WithValue(50)
+                .SetDamage(2)
+                .SetTraits(TStack("Barrage", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Amplify", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("lantern", "Eerie Lantern")
+                .SetSprites("Items/Lantern.png", "Items/LanternBG.png")
+                .WithValue(50)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Amplify", 2),
+                        SStack("Increase Counter", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("icecream", "Ice Cream")
+                .SetSprites("Items/IceCream.png", "Items/IceCreamBG.png")
+                .WithValue(50)
+                .SetAttackEffect(SStack("Reduce Counter", 4), SStack("Snow", 2))
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("bandages", "Tough Bandages")
+                .SetSprites("Items/Bandages.png", "Items/BandagesBG.png")
+                .WithValue(50)
+                .SetAttackEffect(SStack("Increase Max Health", 1), SStack("Shell", 3))
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("anchor", "Anchor")
+                .SetSprites("Items/Anchor.png", "Items/AnchorBG.png")
+                .WithValue(50)
+                .SetDamage(3)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Hit Equal Shell To FrontAlly", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("whetstone", "Whetstone")
+                .SetSprites("Items/Whetstone.png", "Items/WhetstoneBG.png")
+                .WithValue(50)
+                .CanPlayOnHand(true)
+                .NeedsTarget(false)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Card Played Add Attack To Cards In Hand", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("callingbell", "Calling Bell")
+                .SetSprites("Items/CallingBell.png", "Items/CallingBellBG.png")
+                .WithValue(50)
+                .CanPlayOnHand(true)
+                .SetTraits(TStack("Consume", 1))
+                .WithFlavour("Bing Bong")
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Reduce Attack (With Text)", 2)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("gremlinhorn", "Gremlin Horn")
+                .SetSprites("Items/GremlinHorn.png", "Items/GremlinHornBG.png")
+                .WithValue(50)
+                .SetDamage(5)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Kill Draw", 2)
+                    };
+                })
             );
         }
 
