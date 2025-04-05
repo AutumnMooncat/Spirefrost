@@ -499,7 +499,7 @@ namespace SlayTheFrost
 
             assets.Add(StatusCopy("When Ally Is Healed Apply Equal Spice", "When Ally Is Healed Apply Equal Shell")
                 .WithText("When an ally is healed, apply equal <keyword=shell>")
-                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAllyHealed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Shell");
                 })
