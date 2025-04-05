@@ -12,7 +12,6 @@ using WildfrostHopeMod.Utils; // Creates TMP_SpriteAsset
 using WildfrostHopeMod.VFX;   // Declares StatusIconBuilder
 using Extensions = Deadpan.Enums.Engine.Components.Modding.Extensions;
 using System.Collections;
-using System.Net.NetworkInformation;
 
 
 namespace SlayTheFrost
@@ -214,6 +213,20 @@ namespace SlayTheFrost
                 })
                 .Subscribe_WithStatusIcon("STS Flight Icon")
             );
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectSTSMark>("STS Mark")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
+                .WithIsStatus(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectSTSMark>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintCanBeHit()
+                    };
+                })
+                .Subscribe_WithStatusIcon("STS Mark Icon")
+            );
 
             assets.Add(StatusCopy("When Redraw Hit Apply Attack & Health To Self", "STS Ritual")
                 .WithCanBeBoosted(false)
@@ -270,10 +283,37 @@ namespace SlayTheFrost
 
             assets.Add(StatusCopy("Summon Beepop", "Summon Lightning Orb")
                 .WithText("Summon {0}")
-                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.lightningOrb>")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.lightningorb>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
                 {
-                    data.summonCard = TryGet<CardData>("lightningOrb");
+                    data.summonCard = TryGet<CardData>("lightningorb");
+                })
+            );
+
+            assets.Add(StatusCopy("Summon Beepop", "Summon Dark Orb")
+                .WithText("Summon {0}")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.darkorb>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
+                {
+                    data.summonCard = TryGet<CardData>("darkorb");
+                })
+            );
+
+            assets.Add(StatusCopy("Summon Beepop", "Summon Frost Orb")
+                .WithText("Summon {0}")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.frostorb>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
+                {
+                    data.summonCard = TryGet<CardData>("frostorb");
+                })
+            );
+
+            assets.Add(StatusCopy("Summon Beepop", "Summon Plasma Orb")
+                .WithText("Summon {0}")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.plasmaorb>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
+                {
+                    data.summonCard = TryGet<CardData>("plasmaorb");
                 })
             );
 
@@ -468,6 +508,142 @@ namespace SlayTheFrost
                     data.effectToApply = TryGet<StatusEffectData>("Shell");
                 })
             );
+
+            assets.Add(StatusCopy("When Card Destroyed, Gain Attack", "When Card Destroyed, Draw")
+                .WithText("When a card is destroyed, draw <{a}>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenCardDestroyed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Draw");
+                })
+            );
+
+            assets.Add(StatusCopy("On Kill Increase Health To Self & Allies", "On Kill Increase Health To Self")
+                .WithText("On kill, add <+{a}><keyword=health> to self")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnKill>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                })
+            );
+
+            assets.Add(StatusCopy("When Enemy Is Hit By Item Apply Demonize To Them", "When Enemy Is Hit By Item Apply Shroom To Them")
+                .WithText("When an enemy is hit with an <Item>, apply <{a}><keyword=shroom> to them")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenUnitIsHit>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Shroom");
+                })
+            );
+
+            assets.Add(StatusCopy("On Hit Damage Damaged Target", "On Hit Damage If Draw Pile Empty")
+                .WithText("Deal <{a}> additional damage if your draw pile is empty")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnHit>(data =>
+                {
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintEmptyPile()
+                        {
+                            pile = TargetConstraintEmptyPile.PileType.Draw
+                        }
+                    };
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectApplyXWhenAnyCardIsPlayed>("When Item Played, Increase Its Attack")
+                .WithText("When an item is played, add <+{a}><keyword=attack> to it")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAnyCardIsPlayed>(data =>
+                {
+                    data.targetPlayedCard = true;
+                    data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintIsItem(),
+                        new TargetConstraintDoesDamage()
+                    };
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectInstantGainTrait>("Gain Explode")
+                .WithText("Apply <{a}><keyword=explode>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantGainTrait>(data =>
+                {
+                    data.traitToGain = TryGet<TraitData>("Explode");
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintIsUnit(),
+                        new TargetConstraintCanBeHit()
+                    };
+                })
+            );
+
+            assets.Add(StatusCopy("On Turn Apply Teeth To Self", "On Turn Apply Explode To Self")
+                .WithText("Gain <{a}><keyword=explode>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Gain Explode");
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Reduce Counter To Allies", "On Card Played Reduce Counter To Random Ally")
+                .WithText("Count down a random ally's <sprite name=counter> by <{a}>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.RandomAlly;
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Add Gearhammer To Hand", "On Card Played Add Holy Water To Hand")
+                .WithText("Add <{a}> {0} to your hand")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.holywater>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Summon Holy Water In Hand");
+                })
+            );
+
+            assets.Add(StatusCopy("Instant Summon Gearhammer In Hand", "Instant Summon Holy Water In Hand")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
+                {
+                    data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Holy Water");
+                })
+            );
+
+            assets.Add(StatusCopy("Summon Gearhammer", "Summon Holy Water")
+                .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
+                {
+                    data.summonCard = TryGet<CardData>("holywater");
+                })
+            );
+
+            assets.Add(StatusCopy("On Turn Heal & Cleanse Allies", "On Turn Cleanse Self")
+                .WithText("<keyword=cleanse> self")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>("Cleanse");
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(this)
+                .Create<StatusEffectApplyXWhenAnyCardIsPlayed>("When Attack Item Played, Reduce Counter")
+                .WithText("When an item with <keyword=attack> is played, count down <keyword=counter> by <{a}>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAnyCardIsPlayed>(data =>
+                {
+                    data.targetPlayedCard = false;
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>("Reduce Counter");
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        new TargetConstraintIsItem(),
+                        new TargetConstraintDoesDamage()
+                    };
+                })
+            );
         }
 
         private void CreateKeywords()
@@ -551,6 +727,16 @@ namespace SlayTheFrost
                 .WithTitleColour(new Color(0.35f, 0.7f, 0.8f))
                 .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
                 .WithNoteColour(new Color(0.34f, 0.69f, 0.79f))
+                .WithCanStack(true)
+            );
+
+            assets.Add(new KeywordDataBuilder(this)
+                .Create("stsmark")
+                .WithTitle("Mark")
+                .WithDescription("When applied, all enemies take damage equal to their Mark | Does not count down!")
+                .WithTitleColour(new Color(0.4f, 0.7f, 0.7f))
+                .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
+                .WithNoteColour(new Color(0.39f, 0.69f, 0.69f))
                 .WithCanStack(true)
             );
         }
@@ -682,6 +868,21 @@ namespace SlayTheFrost
                     action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
                 })
             );
+            
+            assets.Add(new StatusIconBuilder(this)
+                .Create("STS Mark Icon", "spirefrost.stsmark", ImagePath("Icons/MarkIcon.png"))
+                .WithIconGroupName(StatusIconBuilder.IconGroups.health)
+                .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
+                .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                .WithTextboxSprite()
+                .WithKeywords("stsmark")
+                .FreeModify(action =>
+                {
+                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    action.textElement.outlineWidth = 0.2f;
+                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                })
+            );
         }
 
         private void CreateLeaders()
@@ -689,63 +890,261 @@ namespace SlayTheFrost
             // LEADERS
             assets.Add(new CardDataBuilder(this)
                 .CreateUnit("ironclad", "Ironclad")
-                .SetSprites("Ironclad.png", "IroncladBG.png")
+                .SetSprites("Leaders/Ironclad.png", "Leaders/IroncladBG.png")
                 .SetStats(8, 3, 4)
                 .WithValue(25)
                 .WithCardType("Leader")
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.createScripts = new CardScript[]  //These scripts run when right before Events.OnCardDataCreated
+                    data.createScripts = new CardScript[]
                     {
-                        GiveUpgrade(),                     //By our definition, no argument will give a crown
-                        AddRandomHealth(-2,2),
-                        AddRandomDamage(-1,1),
-                        AddRandomCounter(-1,1)
-                    };
-                    data.startWithEffects = new CardData.StatusEffectStacks[]
-                    {
-                        SStack("When Card Destroyed, Gain Shell", 2)
+                        new CardScriptRunnable()
+                        {
+                            runnable = card => {
+                                card.GiveUpgrade();
+                                int ability = new Vector2Int(0, 4).Random();
+                                switch (ability)
+                                {
+                                    // Feel No Pain
+                                    case 0:
+                                        card.SetRandomHealth(8,12);
+                                        card.SetRandomDamage(4, 6);
+                                        card.SetRandomCounter(4, 5);
+                                        card.SetRandomPassive("When Card Destroyed, Gain Shell", 1, 2);
+                                        break;
+
+                                    // Demon Form
+                                    case 1:
+                                        card.SetRandomHealth(6,8);
+                                        card.SetRandomDamage(2,3);
+                                        card.SetRandomCounter(4,4);
+                                        card.SetRandomPassive("On Turn Apply Attack To Self", 1, 1);
+                                        break;
+
+                                    // Bash
+                                    case 2:
+                                        card.SetRandomHealth(8,11);
+                                        card.SetRandomDamage(4,6);
+                                        card.SetRandomCounter(4,5);
+                                        card.SetRandomActive("STS Vuln", 2, 3);
+                                        break;
+
+                                    // Dark Embrace
+                                    case 3:
+                                        card.SetRandomHealth(8,10);
+                                        card.SetRandomDamage(4,5);
+                                        card.SetRandomCounter(4,4);
+                                        card.SetRandomPassive("When Card Destroyed, Draw", 1, 1);
+                                        break;
+
+                                    // Feed
+                                    case 4:
+                                        card.SetRandomHealth(8,10);
+                                        card.SetRandomDamage(4,6);
+                                        card.SetRandomCounter(4,5);
+                                        card.SetRandomPassive("On Kill Increase Health To Self", 2, 3);
+                                        break;
+                                }
+                            }
+                        }
                     };
                 })
             );
 
             assets.Add(new CardDataBuilder(this)
                 .CreateUnit("silent", "Silent")
-                .SetSprites("Silent.png", "SilentBG.png")
+                .SetSprites("Leaders/Silent.png", "Leaders/SilentBG.png")
                 .SetStats(6, 2, 3)
                 .WithValue(25)
                 .WithCardType("Leader")
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    data.createScripts = new CardScript[]
                     {
-                        SStack("When Enemy Is Hit By Item Apply Reduce Their Health", 1)
+                        new CardScriptRunnable()
+                        {
+                            runnable = card =>
+                            {
+                                card.GiveUpgrade();
+                                int ability = new Vector2Int(0, 4).Random();
+                                switch (ability)
+                                {
+                                    // Accuracy
+                                    case 0:
+                                        card.SetRandomHealth(7, 9);
+                                        card.SetRandomDamage(3, 4);
+                                        card.SetRandomCounter(4, 4);
+                                        card.SetRandomPassive("While Active Increase Attack To Items In Hand", 1, 1);
+                                        break;
+
+                                    // Envenom
+                                    case 1:
+                                        card.SetRandomHealth(8, 10);
+                                        card.SetRandomDamage(2, 2);
+                                        card.SetRandomCounter(4, 4);
+                                        card.SetRandomPassive("When Enemy Is Hit By Item Apply Shroom To Them", 1, 1);
+                                        break;
+
+                                    // Grand Finale
+                                    case 2:
+                                        card.SetRandomHealth(8, 11);
+                                        card.SetRandomDamage(4, 6);
+                                        card.SetRandomCounter(4, 5);
+                                        card.SetRandomPassive("On Hit Damage If Draw Pile Empty", 4, 4);
+                                        break;
+
+                                    // Malaise
+                                    case 3:
+                                        card.SetRandomHealth(6, 9);
+                                        card.SetRandomDamage(3, 5);
+                                        card.SetRandomCounter(5, 6);
+                                        card.SetRandomActive("STS Weak", 1, 1);
+                                        break;
+
+                                    // Caltrops
+                                    case 4:
+                                        card.SetRandomHealth(8, 10);
+                                        card.SetRandomDamage(2, 3);
+                                        card.SetRandomCounter(3, 4);
+                                        card.SetRandomPassive("Teeth", 2, 3);
+                                        break;
+                                }
+                            }
+                        }
                     };
                 })
             );
 
             assets.Add(new CardDataBuilder(this)
                 .CreateUnit("defect", "Defect")
-                .SetSprites("Defect.png", "DefectBG.png")
-                .SetStats(7, null, 4)
+                .SetSprites("Leaders/Defect.png", "Leaders/DefectBG.png")
+                .SetStats(7, 3, 4)
                 .WithValue(25)
                 .WithCardType("Leader")
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    data.createScripts = new CardScript[]
                     {
-                        SStack("Summon Lightning Orb", 1)
+                        new CardScriptRunnable()
+                        {
+                            runnable = card =>
+                            {
+                                card.GiveUpgrade();
+                                int ability = new Vector2Int(0, 4).Random();
+                                switch (ability)
+                                {
+                                    // Lightning
+                                    case 0:
+                                        card.damage = 0;
+                                        card.hasAttack = false;
+                                        card.SetRandomHealth(7, 9);
+                                        card.SetRandomCounter(4, 5);
+                                        card.SetRandomPassive("Summon Lightning Orb", 1, 1);
+                                        break;
+
+                                    // Dark
+                                    case 1:
+                                        card.damage = 0;
+                                        card.hasAttack = false;
+                                        card.SetRandomHealth(5,7);
+                                        card.SetRandomCounter(4,5);
+                                        card.SetRandomPassive("Summon Dark Orb", 1, 1); 
+                                        break;
+
+                                    // Plasma
+                                    case 2:
+                                        card.SetRandomHealth(8, 10);
+                                        card.SetRandomDamage(5, 7);
+                                        card.SetRandomCounter(6, 7);
+                                        card.SetRandomPassive("Summon Plasma Orb", 1, 1);
+                                        break;
+
+                                    // Frost
+                                    case 3:
+                                        card.SetRandomHealth(6, 8);
+                                        card.SetRandomDamage(3, 5);
+                                        card.SetRandomCounter(4, 5);
+                                        card.SetRandomPassive("Summon Frost Orb", 1, 1);
+                                        break;
+
+                                    // Claw
+                                    case 4:
+                                        card.SetRandomHealth(7, 9);
+                                        card.SetRandomDamage(3, 4);
+                                        card.SetRandomCounter(4, 4);
+                                        card.SetRandomPassive("When Item Played, Increase Its Attack", 1, 1);
+                                        break;
+                                }
+                            }
+                        }
                     };
                 })
             );
 
             assets.Add(new CardDataBuilder(this)
                 .CreateUnit("watcher", "Watcher")
-                .SetSprites("Watcher.png", "WatcherBG.png")
+                .SetSprites("Leaders/Watcher.png", "Leaders/WatcherBG.png")
                 .SetStats(7, 4, 5)
                 .WithValue(25)
                 .WithCardType("Leader")
-                .SetStartWithEffect(SStack("On Card Played Add Zoomlin To Random Card In Hand", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.createScripts = new CardScript[]
+                    {
+                        new CardScriptRunnable()
+                        {
+                            runnable = card =>
+                            {
+                                card.GiveUpgrade();
+                                int ability = new Vector2Int(0, 4).Random();
+                                switch (ability)
+                                {
+                                    // Calm
+                                    case 0:
+                                        card.SetRandomHealth(8, 10);
+                                        card.SetRandomDamage(4, 6);
+                                        card.SetRandomCounter(5, 5);
+                                        card.SetRandomPassive("On Card Played Add Zoomlin To Random Card In Hand", 1, 1);
+                                        break;
+
+                                    // Pressure Points
+                                    case 1:
+                                        card.damage = 0;
+                                        card.hasAttack = false;
+                                        card.SetRandomHealth(5, 7);
+                                        card.SetRandomCounter(4, 5);
+                                        card.SetRandomActive("STS Mark", 3, 3);
+                                        break;
+
+                                    // Miracle
+                                    case 2:
+                                        card.SetRandomHealth(6, 8);
+                                        card.SetRandomDamage(4, 6);
+                                        card.SetRandomCounter(6, 7);
+                                        card.SetRandomPassive("On Card Played Add Holy Water To Hand", 1, 1);
+                                        break;
+
+                                    // Empty Mind
+                                    case 3:
+                                        card.traits = new List<CardData.TraitStacks> { TStack("Draw", 1) };
+                                        card.SetRandomHealth(8, 10);
+                                        card.SetRandomDamage(4, 5);
+                                        card.SetRandomCounter(4, 5);
+                                        card.SetRandomPassive("On Turn Cleanse Self", 1, 1);
+                                        break;
+
+                                    // Follow Up
+                                    case 4:
+                                        card.SetRandomHealth(7, 9);
+                                        card.SetRandomDamage(3, 3);
+                                        card.SetRandomCounter(5, 6);
+                                        card.SetRandomPassive("When Attack Item Played, Reduce Counter", 1, 1);
+                                        break;
+                                }
+                            }
+                        }
+                    };
+                })
             );
         }
 
@@ -1223,18 +1622,41 @@ namespace SlayTheFrost
         {
             // SUMMONS
             assets.Add(new CardDataBuilder(this)
-                .CreateUnit("lightningOrb", "Lightning") //Internally the card's name will be "[GUID].shadeSerpent". In-game, it will be "Shade Serpent".
-                .SetSprites("LightningOrb.png", "LightningOrbBG.png")
-                .SetStats(2, 2, 1)
-                .WithCardType("Summoned") //All companions are "Friendly". Also, this line is not necessary since CreateUnit already sets the cardType to "Friendly".
-                .WithFlavour("Zap")
+                .CreateUnit("lightningorb", "Lightning")
+                .SetSprites("Summons/LightningOrb.png", "Summons/LightningOrbBG.png")
+                .SetStats(2, 3, 1)
+                .WithCardType("Summoned")
                 .SetTraits(TStack("Aimless", 1))
+            );
+
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("darkorb", "Dark")
+                .SetSprites("Summons/DarkOrb.png", "Summons/DarkOrbBG.png")
+                .SetStats(2, null, 1)
+                .WithCardType("Summoned")
+                .SetStartWithEffect(SStack("On Turn Apply Explode To Self", 2))
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("plasmaorb", "PlasmaOrb")
+                .SetSprites("Summons/PlasmaOrb.png", "Summons/PlasmaOrbBG.png")
+                .SetStats(2, null, 1)
+                .WithCardType("Summoned")
+                .SetStartWithEffect(SStack("On Card Played Reduce Counter To Random Ally", 1))
+            );
+            
+            assets.Add(new CardDataBuilder(this)
+                .CreateUnit("frostorb", "Frost")
+                .SetSprites("Summons/FrostOrb.png", "Summons/FrostOrbBG.png")
+                .SetStats(2, null, 1)
+                .WithCardType("Summoned")
+                .SetAttackEffect(SStack("Frost", 1))
             );
         }
 
         private void CreateItems()
         {
-            // ITEMS
+            // STARTERS
             assets.Add(new CardDataBuilder(this)
                 .CreateItem("kunai", "Kunai")
                 .SetSprites("Items/Kunai.png", "Items/KunaiBG.png")
@@ -1280,6 +1702,7 @@ namespace SlayTheFrost
                 })
             );
             
+            // DRAFTABLES
             assets.Add(new CardDataBuilder(this)
                 .CreateItem("handdrill", "Hand Drill")
                 .SetSprites("Items/HandDrill.png", "Items/HandDrillBG.png")
@@ -1487,6 +1910,15 @@ namespace SlayTheFrost
                         SStack("On Kill Draw", 2)
                     };
                 })
+            );
+
+            // TOKENS
+            assets.Add(new CardDataBuilder(this)
+                .CreateItem("holywater", "Holy Water")
+                .SetSprites("Items/HolyWater.png", "Items/HolyWaterBG.png")
+                .WithValue(50)
+                .SetAttackEffect(SStack("Reduce Counter", 3))
+                .SetTraits(TStack("Consume", 1))
             );
         }
 
@@ -1709,38 +2141,6 @@ namespace SlayTheFrost
             gameMode.classes = RemoveNulls(gameMode.classes); //Without this, a non-restarted game would crash on tribe selection
             UnloadFromClasses();
             Events.OnEntityCreated -= FixImage;
-        }
-
-        internal CardScript GiveUpgrade(string name = "Crown") //Give a crown
-        {
-            CardScriptGiveUpgrade script = ScriptableObject.CreateInstance<CardScriptGiveUpgrade>(); //This is the standard way of creating a ScriptableObject
-            script.name = $"Give {name}";                               //Name only appears in the Unity Inspector. It has no other relevance beyond that.
-            script.upgradeData = TryGet<CardUpgradeData>(name);
-            return script;
-        }
-
-        internal CardScript AddRandomHealth(int min, int max) //Boost health by a random amount
-        {
-            CardScriptAddRandomHealth health = ScriptableObject.CreateInstance<CardScriptAddRandomHealth>();
-            health.name = "Random Health";
-            health.healthRange = new Vector2Int(min, max);
-            return health;
-        }
-
-        internal CardScript AddRandomDamage(int min, int max) //Boost damage by a ranom amount
-        {
-            CardScriptAddRandomDamage damage = ScriptableObject.CreateInstance<CardScriptAddRandomDamage>();
-            damage.name = "Give Damage";
-            damage.damageRange = new Vector2Int(min, max);
-            return damage;
-        }
-
-        internal CardScript AddRandomCounter(int min, int max) //Increase counter by a random amount
-        {
-            CardScriptAddRandomCounter counter = ScriptableObject.CreateInstance<CardScriptAddRandomCounter>();
-            counter.name = "Give Counter";
-            counter.counterRange = new Vector2Int(min, max);
-            return counter;
         }
 
         internal T TryGet<T>(string name) where T : DataFile
@@ -2135,6 +2535,41 @@ namespace SlayTheFrost
         }
     }
 
+    public class StatusEffectSTSMark : StatusEffectData
+    {
+        public override void Init()
+        {
+            base.OnStack += DoStuff;
+        }
+
+        private IEnumerator DoStuff(int stacks)
+        {
+            // All enemies with Mark lose hp
+            foreach (Entity entity in Battle.GetAllUnits(Battle.GetOpponent(target.owner)))
+            {
+                foreach (StatusEffectData effect in entity.statusEffects)
+                {
+                    if (effect is StatusEffectSTSMark && effect.count > 0)
+                    {
+                        // Hit em
+                        Hit hit = new Hit(GetDamager(), entity, effect.count)
+                        {
+                            screenShake = 0.25f,
+                            canRetaliate = false,
+                        };
+                        // Add VFX Later?
+                        //var transform = entity.transform;
+                        //VFXMod.instance.VFX.TryPlayEffect("stsmark", transform.position, transform.lossyScale);
+                        // Add SFX Later?
+                        //VFXMod.instance.SFX.TryPlaySound("stsmark");
+                        yield return hit.Process();
+                        yield return Sequences.Wait(0.2f);
+                    }
+                }
+            }
+        }
+    }
+
     public class StatusEffectApplyXWhenHitOnce : StatusEffectApplyXWhenHit
     {
         public override void Init()
@@ -2263,6 +2698,175 @@ namespace SlayTheFrost
             target.counter.current += GetAmount();
             target.PromptUpdate();
             yield return base.Process();
+        }
+    }
+
+    public class StatusEffectApplyXWhenAnyCardIsPlayed : StatusEffectApplyX
+    {
+        public TargetConstraint[] triggerConstraints;
+        public Boolean targetPlayedCard;
+
+        public override void Init()
+        {
+            base.OnCardPlayed += Check;
+        }
+
+        public static CardContainer[] GetWasInRows(Entity entity, IEnumerable<Entity> targets)
+        {
+            if (entity.data.playType == Card.PlayType.Play && entity.NeedsTarget)
+            {
+                HashSet<CardContainer> list = new HashSet<CardContainer>();
+                foreach (Entity target in targets)
+                {
+                    if (target.containers != null && target.containers.Length != 0)
+                    {
+                        list.AddRange(target.containers);
+                    }
+                    else
+                    {
+                        list.AddRange(target.preContainers);
+                    }
+                }
+
+                return list.ToArray();
+            }
+
+            return entity.containers;
+        }
+
+        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        {
+            if (target.enabled)
+            {
+                foreach (TargetConstraint triggerConstraint in triggerConstraints)
+                {
+                    if (!triggerConstraint.Check(entity))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public IEnumerator Check(Entity entity, Entity[] targets)
+        {
+            if (targetPlayedCard)
+            {
+                return Run(new List<Entity>() { entity });
+            }
+            return Run(GetTargets(null, GetWasInRows(entity, targets), null, targets));
+        }
+    }
+
+    public class TargetConstraintEmptyPile : TargetConstraint
+    {
+        public enum PileType
+        {
+            Draw,
+            Hand,
+            Discard
+        }
+
+        public PileType pile;
+
+        public override bool Check(Entity target)
+        {
+            if (pile == PileType.Draw)
+            {
+                CardContainer drawContainer = References.Player.drawContainer;
+                if (drawContainer != null && drawContainer.Count > 0)
+                {
+                    return !not;
+                }
+                return not;
+            }
+
+            if (pile == PileType.Hand)
+            {
+                CardContainer handContainer = References.Player.handContainer;
+                if (handContainer != null && handContainer.Count > 0)
+                {
+                    return !not;
+                }
+                return not;
+            }
+
+            if (pile == PileType.Discard)
+            {
+                CardContainer discardContainer = References.Player.discardContainer;
+                if (discardContainer != null && discardContainer.Count > 0)
+                {
+                    return !not;
+                }
+                return not;
+            }
+
+            return false;
+        }
+
+        public override bool Check(CardData targetData)
+        {
+            return Check((Entity)null);
+        }
+    }
+
+    public class CardScriptRunnable : CardScript
+    {
+        public delegate void ToRun(CardData data);
+
+        public ToRun runnable;
+        public override void Run(CardData target)
+        {
+            runnable(target);
+        }
+    }
+
+    internal static class CardDataExtensions
+    {
+        internal static void GiveUpgrade(this CardData target, string name = "Crown") // Give a crown by default
+        {
+            MainModFile.instance.TryGet<CardUpgradeData>(name).Clone().Assign(target);
+        }
+
+        internal static void SetRandomHealth(this CardData target, int min, int max)
+        {
+            if (target.hasHealth)
+            {
+                target.hp = new Vector2Int(min, max).Random();
+                target.hp = Mathf.Max(1, target.hp);
+            }
+        }
+
+        internal static void SetRandomDamage(this CardData target, int min, int max)
+        {
+            if (target.hasAttack)
+            {
+                target.damage = new Vector2Int(min, max).Random();
+                target.damage = Mathf.Max(0, target.damage);
+            }
+        }
+
+        internal static void SetRandomCounter(this CardData target, int min, int max)
+        {
+            if (target.counter >= 1)
+            {
+                target.counter = new Vector2Int(min, max).Random();
+                target.counter = Mathf.Max(1, target.counter);
+            }
+        }
+
+        internal static void SetRandomPassive(this CardData target, string passiveEffect, int min, int max)
+        {
+            StatusEffectData effect = MainModFile.instance.TryGet<StatusEffectData>(passiveEffect);
+            target.startWithEffects = target.startWithEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
+        }
+
+        internal static void SetRandomActive(this CardData target, string passiveEffect, int min, int max)
+        {
+            StatusEffectData effect = MainModFile.instance.TryGet<StatusEffectData>(passiveEffect);
+            target.attackEffects = target.attackEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
         }
     }
 
