@@ -633,14 +633,14 @@ namespace SlayTheFrost
 
             assets.Add(new StatusEffectDataBuilder(this)
                 .Create<StatusEffectApplyXWhenAnyCardIsPlayed>("When Attack Item Played, Reduce Counter")
-                .WithText("When an item with <keyword=attack> is played, count down <keyword=counter> by <{a}>")
+                .WithText("When an <Item> with <keyword=attack> is played, count down <keyword=counter> by <{a}>")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAnyCardIsPlayed>(data =>
                 {
                     data.targetPlayedCard = false;
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("Reduce Counter");
-                    data.targetConstraints = new TargetConstraint[]
+                    data.triggerConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintIsItem>(),
                         ScriptableObject.CreateInstance<TargetConstraintDoesDamage>()
