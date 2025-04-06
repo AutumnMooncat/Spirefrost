@@ -2255,7 +2255,7 @@ namespace SlayTheFrost
             uiText.SetString(TribeTitleKey, "The Ascenders");                                       //Create the title
             uiText.SetString(TribeDescKey, "Denizens of the spire have formed an unlikely team after finding themselves in an unknown place. " +
                 "\n\n" +
-                "Well versed in defending themselves, they take their enemies down with temporary effects to win the war of attrition.");                                  //Create the description.
+                "Well versed in defending themselves, they whittle their enemies down to win the war of attrition.");                                  //Create the description.
 
         }
     }
