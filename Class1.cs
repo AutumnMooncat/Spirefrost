@@ -1616,8 +1616,7 @@ namespace SlayTheFrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 3),
-                        SStack("Bonus Damage Equal To Scrap On Board", 1),
-                        SStack("On Card Played Lose Scrap To Self", 1)
+                        SStack("Bonus Damage Equal To Scrap On Board", 1)
                     };
                 })
             );
