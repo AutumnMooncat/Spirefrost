@@ -452,7 +452,8 @@ namespace SlayTheFrost
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
                     data.noTargetType = NoTargetType.NoTargetForStatus;
-                    data.type = "max counter up";
+                    data.noTargetTypeArgs = new string[] { "<sprite name=counter>" };
+                    data.type = "counter down";
                 })
             );
 
@@ -2885,6 +2886,15 @@ namespace SlayTheFrost
     static class FixClassesGetter
     {
         static void Postfix(ref ClassData[] __result) => __result = AddressableLoader.GetGroup<ClassData>("ClassData").ToArray();
+    }
+
+    [HarmonyPatch(typeof(PetHutFlagSetter), "SetupFlag")]
+    internal static class PatchInPetFlag
+    {
+        static void Prefix(PetHutFlagSetter __instance)
+        {
+            __instance.flagSprites = __instance.flagSprites.Append(MainModFile.instance.ImagePath("LouseFlag.png").ToSprite()).ToArray();
+        }
     }
 
     [HarmonyPatch(typeof(TribeHutSequence), "SetupFlags")]
