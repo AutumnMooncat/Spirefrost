@@ -2395,7 +2395,7 @@ namespace SlayTheFrost
             base.OnActionPerformed += ActionPerformed;
         }
 
-        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        public override bool RunPreCardPlayedEvent(Entity entity, Entity[] targets)
         {
             if (toClear == 0 && entity == target && count > 0 && targets != null && targets.Length > 0)
             {
@@ -2406,6 +2406,18 @@ namespace SlayTheFrost
 
             return false;
         }
+
+        /*public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        {
+            if (toClear == 0 && entity == target && count > 0 && targets != null && targets.Length > 0)
+            {
+                toClear = 1;
+                amountRemoved = Mathf.CeilToInt(target.tempDamage.Value / 2f);
+                target.tempDamage -= amountRemoved;
+            }
+
+            return false;
+        }*/
 
         public override bool RunActionPerformedEvent(PlayAction action)
         {
@@ -2419,8 +2431,8 @@ namespace SlayTheFrost
 
         public IEnumerator ActionPerformed(PlayAction action)
         {
-            yield return Clear(toClear);
             toClear = 0;
+            yield return Clear(toClear);
             target.tempDamage += amountRemoved;
         }
 
