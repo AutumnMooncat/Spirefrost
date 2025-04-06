@@ -2314,20 +2314,20 @@ namespace SlayTheFrost
                 note = "Decay After Turn"
             });
             yield return Run(GetTargets());
-            }
+        }
 
         public IEnumerator CountDown()
-            {
+        {
             if ((bool)this && (bool)target && target.alive)
             {
-            int amount = 1;
-            Events.InvokeStatusEffectCountDown(this, ref amount);
-            if (amount != 0)
-            {
+                int amount = 1;
+                Events.InvokeStatusEffectCountDown(this, ref amount);
+                if (amount != 0)
+                {
                     yield return CountDown(target, amount);
+                }
             }
         }
-    }
     }
 
     public class StatusEffectSTSVulnerable : StatusEffectData
@@ -2569,7 +2569,7 @@ namespace SlayTheFrost
         private IEnumerator DoStuff(int stacks)
         {
             // All enemies with Mark lose hp
-            foreach (Entity entity in Battle.GetAllUnits(Battle.GetOpponent(target.owner)))
+            foreach (Entity entity in Battle.GetAllUnits(Battle.GetOpponent(GetDamager().owner)))
             {
                 foreach (StatusEffectData effect in entity.statusEffects)
                 {
@@ -2918,7 +2918,7 @@ namespace SlayTheFrost
             string[] petInfo = MetaprogressionSystem.GetUnlockedPets();
 
             if (petIndex < petInfo.Length && petInfo[petIndex].Equals(Extensions.PrefixGUID("louse", MainModFile.instance)))
-        {
+            {
                 __instance.flag.sprite = louseFlag;
             }
         }
