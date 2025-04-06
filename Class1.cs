@@ -575,7 +575,7 @@ namespace SlayTheFrost
 
             assets.Add(new StatusEffectDataBuilder(this)
                 .Create<StatusEffectInstantGainTrait>("Gain Explode")
-                .WithText("Apply <{a}><keyword=explode>")
+                .WithText("Apply <{a}> <keyword=explode>")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstantGainTrait>(data =>
                 {
