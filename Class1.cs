@@ -446,6 +446,7 @@ namespace SlayTheFrost
             );
             
             assets.Add(StatusCopy("On Card Played Boost To RandomEnemy", "On Card Played Increase Counter To RandomEnemy")
+                .WithText("Count up <keyword=counter> of a random enemy by {a}")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
