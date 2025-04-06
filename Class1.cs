@@ -1738,12 +1738,13 @@ namespace SlayTheFrost
                 .CreateItem("markofpain", "Mark Of Pain")
                 .SetSprites("Items/MarkOfPain.png", "Items/MarkOfPainBG.png")
                 .WithValue(50)
+                .SetDamage(0)
                 .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("STS Vuln", 2)
+                        SStack("STS Vuln", 1)
                     };
                 })
             );
