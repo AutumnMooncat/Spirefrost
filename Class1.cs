@@ -2600,12 +2600,12 @@ namespace SlayTheFrost
     {
         public override void Init()
         {
-            base.Init();
             base.PostHit += RemoveMe;
         }
 
         public IEnumerator RemoveMe(Hit hit)
         {
+            yield return Run(GetTargets(hit, GetTargetContainers(), GetTargetActualContainers()), hit.damage + hit.damageBlocked);
             ActionQueue.Stack(new ActionSequence(CountDown())
             {
                 fixedPosition = true,
