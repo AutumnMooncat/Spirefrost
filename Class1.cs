@@ -2311,7 +2311,11 @@ namespace SlayTheFrost
             {
                 target.curveAnimator?.Ping();
             }
-            Hit hit = new Hit(GetDamager(), target, -count);
+            Hit hit = new Hit(GetDamager(), target, -count)
+            {
+                canRetaliate = false,
+                damageType = "heal"
+            };
             yield return hit.Process();
             yield return Sequences.Wait(0.2f);
             int amount = 1;
