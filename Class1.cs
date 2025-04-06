@@ -1474,7 +1474,7 @@ namespace SlayTheFrost
             
             assets.Add(new CardDataBuilder(this)
                 .CreateUnit("exploder", "Exploder")
-                .SetSprites("Units/Exploder.png", "Units/Exploder.png")
+                .SetSprites("Units/Exploder.png", "Units/ExploderBG.png")
                 .SetStats(null, null, 3)
                 .WithCardType("Clunker")
                 .WithValue(50)
