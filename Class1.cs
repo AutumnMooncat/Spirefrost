@@ -2269,8 +2269,6 @@ namespace SlayTheFrost
 
         public bool primed;
 
-        public bool doPing = true;
-
         public override void Init()
         {
             base.OnTurnEnd += PostTurn;
