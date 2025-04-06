@@ -1861,6 +1861,7 @@ namespace SlayTheFrost
                 .CreateItem("icecream", "Ice Cream")
                 .SetSprites("Items/IceCream.png", "Items/IceCreamBG.png")
                 .WithValue(50)
+                .SetDamage(0)
                 .SetAttackEffect(SStack("Reduce Counter", 4), SStack("Snow", 2))
             );
             
