@@ -1943,7 +1943,7 @@ namespace SlayTheFrost
             // CHARMS
             TargetConstraintHasHealth hasHealth = ScriptableObject.CreateInstance<TargetConstraintHasHealth>();
             TargetConstraintCanBeHit canBeHit = ScriptableObject.CreateInstance<TargetConstraintCanBeHit>();
-            assets.Add(new CardUpgradeDataBuilder(this)
+            /*assets.Add(new CardUpgradeDataBuilder(this)
                 .Create("MooncatTestCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("TestCharm.png")
@@ -1958,7 +1958,7 @@ namespace SlayTheFrost
                         SStack("STS Regen", 3)
                     };
                 })
-            );
+            );*/
 
             TargetConstraintAttackMoreThan moreThan2Attack = ScriptableObject.CreateInstance<TargetConstraintAttackMoreThan>();
             moreThan2Attack.value = 2;
