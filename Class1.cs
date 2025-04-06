@@ -2382,9 +2382,7 @@ namespace SlayTheFrost
 
     public class StatusEffectSTSWeakness : StatusEffectData
     {
-        public int toClear;
-
-        public int amountRemoved;
+        private int toClear;
 
         public StatusEffectSTSWeakness()
         {
@@ -2395,6 +2393,22 @@ namespace SlayTheFrost
         public override void Init()
         {
             base.OnActionPerformed += ActionPerformed;
+            base.OnHit += HalveDamage;
+        }
+
+        public override bool RunHitEvent(Hit hit)
+        {
+            if (hit.attacker == target && hit.countsAsHit)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private IEnumerator HalveDamage(Hit hit)
+        {
+            hit.damage -= Mathf.CeilToInt(hit.damage / 2f);
+            yield break;
         }
 
         public override bool RunPreCardPlayedEvent(Entity entity, Entity[] targets)
@@ -2402,24 +2416,10 @@ namespace SlayTheFrost
             if (toClear == 0 && entity == target && count > 0 && targets != null && targets.Length > 0)
             {
                 toClear = 1;
-                amountRemoved = Mathf.CeilToInt(target.tempDamage.Value / 2f);
-                target.tempDamage -= amountRemoved;
             }
 
             return false;
         }
-
-        /*public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
-        {
-            if (toClear == 0 && entity == target && count > 0 && targets != null && targets.Length > 0)
-            {
-                toClear = 1;
-                amountRemoved = Mathf.CeilToInt(target.tempDamage.Value / 2f);
-                target.tempDamage -= amountRemoved;
-            }
-
-            return false;
-        }*/
 
         public override bool RunActionPerformedEvent(PlayAction action)
         {
@@ -2435,7 +2435,6 @@ namespace SlayTheFrost
         {
             toClear = 0;
             yield return Clear(toClear);
-            target.tempDamage += amountRemoved;
         }
 
         public IEnumerator Clear(int amount)
