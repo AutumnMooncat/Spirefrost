@@ -123,12 +123,14 @@ namespace SlayTheFrost
         {
             // CONDITION EFFECTS
             assets.Add(new StatusEffectDataBuilder(this)
-                .Create<StatusEffectSTSRegen>("STS Regen")
+                .Create<StatusEffectApplyXAfterTurnAndDecay>("STS Regen")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
-                .SubscribeToAfterAllBuildEvent<StatusEffectSTSRegen>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXAfterTurnAndDecay>(data =>
                 {
+                    data.effectToApply = TryGet<StatusEffectData>("Heal");
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintHasHealth>(),
@@ -2261,7 +2263,7 @@ namespace SlayTheFrost
         }
     }
 
-    public class StatusEffectSTSRegen : StatusEffectData
+    public class StatusEffectApplyXAfterTurnAndDecay : StatusEffectApplyX
     {
         public bool subbed;
 
@@ -2271,7 +2273,7 @@ namespace SlayTheFrost
 
         public override void Init()
         {
-            base.OnTurnEnd += HealTarget;
+            base.OnTurnEnd += PostTurn;
             Events.OnPostProcessUnits += Prime;
             subbed = true;
         }
@@ -2306,26 +2308,28 @@ namespace SlayTheFrost
             return false;
         }
 
-        public IEnumerator HealTarget(Entity entity)
+        public IEnumerator PostTurn(Entity entity)
         {
-            if (doPing)
+            ActionQueue.Stack(new ActionSequence(CountDown())
             {
-                target.curveAnimator?.Ping();
+                fixedPosition = true,
+                note = "Decay After Turn"
+            });
+            yield return Run(GetTargets());
             }
-            Hit hit = new Hit(GetDamager(), target, -count)
+
+        public IEnumerator CountDown()
             {
-                canRetaliate = false,
-                damageType = "heal"
-            };
-            yield return hit.Process();
-            yield return Sequences.Wait(0.2f);
+            if ((bool)this && (bool)target && target.alive)
+            {
             int amount = 1;
             Events.InvokeStatusEffectCountDown(this, ref amount);
             if (amount != 0)
             {
-                yield return CountDown(entity, amount);
+                    yield return CountDown(target, amount);
             }
         }
+    }
     }
 
     public class StatusEffectSTSVulnerable : StatusEffectData
