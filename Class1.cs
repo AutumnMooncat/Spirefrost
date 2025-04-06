@@ -236,7 +236,7 @@ namespace SlayTheFrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenRedrawHit>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
-                    data.applyConstraints = new TargetConstraint[]
+                    data.targetConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintDoesDamage>()
                     };
@@ -251,8 +251,9 @@ namespace SlayTheFrost
                 .WithIsStatus(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHitOnce>(data =>
                 {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("Shell");
-                    data.applyConstraints = new TargetConstraint[]
+                    data.targetConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintCanBeHit>()
                     };
@@ -450,6 +451,8 @@ namespace SlayTheFrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
+                    data.noTargetType = NoTargetType.NoTargetForStatus;
+                    data.type = "max counter up";
                 })
             );
 
@@ -1704,6 +1707,10 @@ namespace SlayTheFrost
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Reduce Counter", 1), 
+                        
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
                         SStack("On Card Played Increase Counter To RandomEnemy", 1)
                     };
                 })
@@ -2753,8 +2760,10 @@ namespace SlayTheFrost
             if (targetPlayedCard)
             {
                 return Run(new List<Entity>() { entity });
-            }
-            return Run(GetTargets(null, GetWasInRows(entity, targets), null, targets));
+            } else
+            {
+                return Run(GetTargets(null, GetWasInRows(entity, targets), null, targets));
+            }    
         }
     }
 
