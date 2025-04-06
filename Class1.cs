@@ -491,7 +491,7 @@ namespace SlayTheFrost
             );
 
             assets.Add(StatusCopy("While Active Frenzy To AlliesInRow", "While Active STS Ritual To AlliesInRow")
-                .WithText("While active, add <x{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsritual> to allies in the row")
+                .WithText("While active, add <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsritual> to allies in the row")
                 .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Ritual");
