@@ -1576,7 +1576,7 @@ namespace SlayTheFrost
             );
             
             assets.Add(new CardDataBuilder(this)
-                .CreateUnit("bookofstabbing", "Book Of Stabbing")
+                .CreateUnit("bookofstabbing", "Book of Stabbing")
                 .SetSprites("Units/BookOfStabbing.png", "Units/BookOfStabbingBG.png")
                 .SetStats(null, null, 0)
                 .WithCardType("Clunker")
