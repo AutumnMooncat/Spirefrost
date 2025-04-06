@@ -648,6 +648,10 @@ namespace SlayTheFrost
                     };
                 })
             );
+
+            assets.Add(StatusCopy("While Active Reduce Attack To Enemies (No Ping, No Desc)", "While Active Reduce Attack To Enemies (With Desc)")
+                .WithText("While active, reduce <keyword=attack> of all enemies by <{a}>")
+            );
         }
 
         private void CreateKeywords()
@@ -1566,7 +1570,7 @@ namespace SlayTheFrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack("While Active Reduce Attack To Enemies (No Ping, No Desc)", 2)
+                        SStack("While Active Reduce Attack To Enemies (With Desc)", 2)
                     };
                 })
             );
