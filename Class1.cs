@@ -2051,7 +2051,7 @@ namespace SlayTheFrost
             assets.Add(new CardUpgradeDataBuilder(this)
                 .Create("WeakPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
-                .WithImage("Charms/WeakCharm.png")
+                .WithImage("Charms/WeaknessCharm.png")
                 .WithTitle("Weak Potion")
                 .WithText($"Apply <1> <keyword=autumnmooncat.wildfrost.spirefrost.stsweak>")
                 .WithTier(2)
