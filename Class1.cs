@@ -2102,7 +2102,7 @@ namespace SlayTheFrost
                 .WithText($"When <Redraw Bell> is hit, gain <1><keyword=shell>")
                 .WithTier(1)
                 .ChangeCounter(2)
-                .SetConstraints(isUnit, canAct)
+                .SetConstraints(canBeHit)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.effects = new CardData.StatusEffectStacks[]
