@@ -659,6 +659,17 @@ namespace SlayTheFrost
             assets.Add(StatusCopy("While Active Reduce Attack To Enemies (No Ping, No Desc)", "While Active Reduce Attack To Enemies (With Desc)")
                 .WithText("While active, reduce <keyword=attack> of all enemies by <{a}>")
             );
+
+            assets.Add(StatusCopy("Increase Effects", "Increase Effects (With Desc)")
+                .WithText("Boost the target's effects by <{a}>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantIncreaseEffects>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintCanBeBoosted>()
+                    };
+                })
+            );
         }
 
         private void CreateKeywords()
@@ -1809,9 +1820,15 @@ namespace SlayTheFrost
                 .CreateItem("battery", "Nuclear Battery")
                 .SetSprites("Items/Battery.png", "Items/BatteryBG.png")
                 .WithValue(50)
-                .SetAttackEffect(SStack("Boost Effects", 1))
                 .SetTraits(TStack("Consume", 1))
                 .CanPlayOnHand(true)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Increase Effects (With Desc)", 1)
+                    };
+                })
             );
 
             assets.Add(new CardDataBuilder(this)
