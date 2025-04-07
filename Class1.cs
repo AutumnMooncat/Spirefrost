@@ -398,6 +398,7 @@ namespace SlayTheFrost
                 .WithText("Count up target's <keyword=counter> by <{a}>")
                 .WithCanBeBoosted(true)
                 .WithIsKeyword(false)
+                .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnHit>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
