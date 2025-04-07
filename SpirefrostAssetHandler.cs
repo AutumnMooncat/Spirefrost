@@ -1077,18 +1077,16 @@ namespace Spirefrost
                         {
                             // Lightning
                             case 0:
-                                card.damage = 0;
-                                card.hasAttack = false;
                                 card.SetRandomHealth(7, 9);
+                                card.SetRandomDamage(0, 1);
                                 card.SetRandomCounter(4, 5);
                                 card.SetRandomPassive("Summon Lightning Orb", 1, 1);
                                 break;
 
                             // Dark
                             case 1:
-                                card.damage = 0;
-                                card.hasAttack = false;
                                 card.SetRandomHealth(5, 7);
+                                card.SetRandomDamage(0, 1);
                                 card.SetRandomCounter(4, 5);
                                 card.SetRandomPassive("Summon Dark Orb", 1, 1);
                                 break;
@@ -1151,9 +1149,8 @@ namespace Spirefrost
 
                             // Pressure Points
                             case 1:
-                                card.damage = 0;
-                                card.hasAttack = false;
                                 card.SetRandomHealth(5, 7);
+                                card.SetRandomDamage(0, 1);
                                 card.SetRandomCounter(4, 5);
                                 card.SetRandomActive("STS Mark", 3, 3);
                                 break;
