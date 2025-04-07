@@ -2114,6 +2114,11 @@ namespace Spirefrost
                 })
             );
 
+            TargetConstraintOr canAct = ScriptableObject.CreateInstance<TargetConstraintOr>();
+            canAct.constraints = new TargetConstraint[] {
+                hasCounter,
+                hasReaction
+            };
             assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("MiraclePotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
@@ -2122,7 +2127,7 @@ namespace Spirefrost
                 .WithText($"Count down all allies' <sprite name=counter> by <1>\nIncrease <keyword=counter> by <2>")
                 .WithTier(3)
                 .ChangeCounter(2)
-                .SetConstraints(isUnit, hasCounter, hasReaction)
+                .SetConstraints(isUnit, canAct)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.effects = new CardData.StatusEffectStacks[]
@@ -2132,11 +2137,6 @@ namespace Spirefrost
                 })
             );
 
-            TargetConstraintOr canAct = ScriptableObject.CreateInstance<TargetConstraintOr>();
-            canAct.constraints = new TargetConstraint[] {
-                hasCounter,
-                hasReaction
-            };
             assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("IronPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
