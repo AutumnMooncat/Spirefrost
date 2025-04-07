@@ -16,29 +16,22 @@ namespace Spirefrost
 
         internal static void SetRandomHealth(this CardData target, int min, int max)
         {
-            if (target.hasHealth)
-            {
-                target.hp = new Vector2Int(min, max).Random();
-                target.hp = Mathf.Max(1, target.hp);
-            }
+            target.hp = new Vector2Int(min, max).Random();
+            target.hp = Mathf.Max(1, target.hp);
+            target.hasHealth = true;
         }
 
         internal static void SetRandomDamage(this CardData target, int min, int max)
         {
-            if (target.hasAttack)
-            {
-                target.damage = new Vector2Int(min, max).Random();
-                target.damage = Mathf.Max(0, target.damage);
-            }
+            target.damage = new Vector2Int(min, max).Random();
+            target.damage = Mathf.Max(0, target.damage);
+            target.hasAttack = true;
         }
 
         internal static void SetRandomCounter(this CardData target, int min, int max)
         {
-            if (target.counter >= 1)
-            {
-                target.counter = new Vector2Int(min, max).Random();
-                target.counter = Mathf.Max(1, target.counter);
-            }
+            target.counter = new Vector2Int(min, max).Random();
+            target.counter = Mathf.Max(1, target.counter);
         }
 
         internal static void SetRandomPassive(this CardData target, string passiveEffect, int min, int max)
