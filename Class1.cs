@@ -1670,7 +1670,7 @@ namespace SlayTheFrost
             );
             
             assets.Add(new CardDataBuilder(this)
-                .CreateUnit("plasmaorb", "PlasmaOrb")
+                .CreateUnit("plasmaorb", "Plasma Orb")
                 .SetSprites("Summons/PlasmaOrb.png", "Summons/PlasmaOrbBG.png")
                 .SetStats(2, null, 1)
                 .WithCardType("Summoned")
