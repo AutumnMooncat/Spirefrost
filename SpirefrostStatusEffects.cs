@@ -60,7 +60,7 @@ namespace Spirefrost
 
     public class StatusEffectSTSWeakness : StatusEffectData
     {
-        private int toClear;
+        public bool cardPlayed;
 
         public StatusEffectSTSWeakness()
         {
@@ -80,6 +80,7 @@ namespace Spirefrost
             {
                 return true;
             }
+
             return false;
         }
 
@@ -89,11 +90,11 @@ namespace Spirefrost
             yield break;
         }
 
-        public override bool RunPreCardPlayedEvent(Entity entity, Entity[] targets)
+        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
         {
-            if (toClear == 0 && entity == target && count > 0 && targets != null && targets.Length > 0)
+            if (!cardPlayed && entity == target && count > 0 && targets != null && targets.Length != 0)
             {
-                toClear = 1;
+                cardPlayed = true;
             }
 
             return false;
@@ -101,7 +102,7 @@ namespace Spirefrost
 
         public override bool RunActionPerformedEvent(PlayAction action)
         {
-            if (toClear > 0)
+            if (cardPlayed)
             {
                 return ActionQueue.Empty;
             }
@@ -111,8 +112,8 @@ namespace Spirefrost
 
         public IEnumerator ActionPerformed(PlayAction action)
         {
-            toClear = 0;
-            yield return Clear(toClear);
+            cardPlayed = false;
+            yield return Clear(1);
         }
 
         public IEnumerator Clear(int amount)
