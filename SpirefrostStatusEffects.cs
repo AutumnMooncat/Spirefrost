@@ -307,7 +307,7 @@ namespace Spirefrost
 
         public override bool RunTurnEndEvent(Entity entity)
         {
-            if (primed && target.enabled)
+            if (primed && target.enabled && Battle.IsOnBoard(target))
             {
                 return entity == target;
             }
