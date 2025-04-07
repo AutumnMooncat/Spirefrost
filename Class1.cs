@@ -1321,7 +1321,7 @@ namespace SlayTheFrost
                 .SetTraits(TStack("Longshot", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("On Hit Increase Counter", 2)
                     };
