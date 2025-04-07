@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SlayTheFrost
+namespace Spirefrost
 {
     public class StatusEffectApplyXAfterTurnAndDecay : StatusEffectApplyX
     {

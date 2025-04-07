@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using WildfrostHopeMod.VFX;
 
-namespace SlayTheFrost
+namespace Spirefrost
 {
     internal class SpirefrostAssetHandler
     {

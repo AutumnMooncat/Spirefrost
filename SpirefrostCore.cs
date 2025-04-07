@@ -14,7 +14,7 @@ using Extensions = Deadpan.Enums.Engine.Components.Modding.Extensions;
 using System.Collections;
 
 
-namespace SlayTheFrost
+namespace Spirefrost
 {
     public class MainModFile : WildfrostMod
     {
