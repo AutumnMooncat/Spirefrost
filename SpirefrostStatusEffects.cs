@@ -8,73 +8,6 @@ using UnityEngine;
 
 namespace Spirefrost
 {
-    public class StatusEffectApplyXAfterTurnAndDecay : StatusEffectApplyX
-    {
-        public bool subbed;
-
-        public bool primed;
-
-        public override void Init()
-        {
-            base.OnTurnEnd += PostTurn;
-            Events.OnPostProcessUnits += Prime;
-            subbed = true;
-        }
-
-        public void OnDestroy()
-        {
-            Unsub();
-        }
-
-        public void Unsub()
-        {
-            if (subbed)
-            {
-                Events.OnPostProcessUnits -= Prime;
-                subbed = false;
-            }
-        }
-
-        public void Prime(Character character)
-        {
-            primed = true;
-            Unsub();
-        }
-
-        public override bool RunTurnEndEvent(Entity entity)
-        {
-            if (primed && target.enabled)
-            {
-                return entity == target;
-            }
-
-            return false;
-        }
-
-        public IEnumerator PostTurn(Entity entity)
-        {
-            ActionQueue.Stack(new ActionSequence(CountDown())
-            {
-                fixedPosition = true,
-                note = "Decay After Turn"
-            });
-            yield return Run(GetTargets());
-        }
-
-        public IEnumerator CountDown()
-        {
-            if ((bool)this && (bool)target && target.alive)
-            {
-                int amount = 1;
-                Events.InvokeStatusEffectCountDown(this, ref amount);
-                if (amount != 0)
-                {
-                    yield return CountDown(target, amount);
-                }
-            }
-        }
-    }
-
     public class StatusEffectSTSVulnerable : StatusEffectData
     {
         public int amountToClear;
@@ -333,6 +266,73 @@ namespace Spirefrost
                         yield return hit.Process();
                         yield return Sequences.Wait(0.2f);
                     }
+                }
+            }
+        }
+    }
+
+    public class StatusEffectApplyXAfterTurnAndDecay : StatusEffectApplyX
+    {
+        public bool subbed;
+
+        public bool primed;
+
+        public override void Init()
+        {
+            base.OnTurnEnd += PostTurn;
+            Events.OnPostProcessUnits += Prime;
+            subbed = true;
+        }
+
+        public void OnDestroy()
+        {
+            Unsub();
+        }
+
+        public void Unsub()
+        {
+            if (subbed)
+            {
+                Events.OnPostProcessUnits -= Prime;
+                subbed = false;
+            }
+        }
+
+        public void Prime(Character character)
+        {
+            primed = true;
+            Unsub();
+        }
+
+        public override bool RunTurnEndEvent(Entity entity)
+        {
+            if (primed && target.enabled)
+            {
+                return entity == target;
+            }
+
+            return false;
+        }
+
+        public IEnumerator PostTurn(Entity entity)
+        {
+            ActionQueue.Stack(new ActionSequence(CountDown())
+            {
+                fixedPosition = true,
+                note = "Decay After Turn"
+            });
+            yield return Run(GetTargets());
+        }
+
+        public IEnumerator CountDown()
+        {
+            if ((bool)this && (bool)target && target.alive)
+            {
+                int amount = 1;
+                Events.InvokeStatusEffectCountDown(this, ref amount);
+                if (amount != 0)
+                {
+                    yield return CountDown(target, amount);
                 }
             }
         }
