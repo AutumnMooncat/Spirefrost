@@ -1,42 +1,62 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Components;
-using UnityEngine.Localization.Tables;
-using UnityEngine.UI;
-using TMPro;                  // Declares TMP_SpriteAsset
-using WildfrostHopeMod.Utils; // Creates TMP_SpriteAsset
-using WildfrostHopeMod.VFX;   // Declares StatusIconBuilder
-using Extensions = Deadpan.Enums.Engine.Components.Modding.Extensions;
-using System.Collections;
-
+using WildfrostHopeMod.VFX;
 
 namespace SlayTheFrost
 {
-    public class MainModFile : WildfrostMod
+    internal class SpirefrostAssetHandler
     {
-        public static MainModFile instance;
         public static List<object> assets = new List<object>();
-        private bool preLoaded;
 
-        // This allows for icons in descriptions
-        public override TMP_SpriteAsset SpriteAsset => spriteAsset;
-        internal static TMP_SpriteAsset spriteAsset;
-
-        public MainModFile(string modDirectory) : base(modDirectory)
-        { 
-            instance = this;
+        private static T TryGet<T>(string name) where T : DataFile
+        {
+            return MainModFile.instance.TryGet<T>(name);
         }
 
-        public override string GUID => "autumnmooncat.wildfrost.spirefrost";
-        public override string[] Depends => new string[] { "hope.wildfrost.vfx" };
-        public override string Title => "Spirefrost";
-        public override string Description => "Adds Slay the Spire content to Wildfrost.";
+        private static CardData.StatusEffectStacks SStack(string name, int amount) => new CardData.StatusEffectStacks(TryGet<StatusEffectData>(name), amount);
 
-        private void CreateModAssets()
+        private static CardData.TraitStacks TStack(string name, int amount) => new CardData.TraitStacks(TryGet<TraitData>(name), amount);
+
+        //Helper Method
+        private static RewardPool CreateRewardPool(string name, string type, DataFile[] list)
+        {
+            RewardPool pool = ScriptableObject.CreateInstance<RewardPool>();
+            pool.name = name;
+            pool.type = type;            //The usual types are Units, Items, Charms, and Modifiers.
+            pool.list = list.ToList();
+            return pool;
+        }
+
+        //Note: you need to add the reference DeadExtensions.dll in order to use InstantiateKeepName(). 
+        private static StatusEffectDataBuilder StatusCopy(string oldName, string newName)
+        {
+            StatusEffectData data = TryGet<StatusEffectData>(oldName).InstantiateKeepName();
+            data.name = MainModFile.instance.GUID + "." + newName;
+            data.targetConstraints = new TargetConstraint[0];
+            StatusEffectDataBuilder builder = data.Edit<StatusEffectData, StatusEffectDataBuilder>();
+            builder.Mod = MainModFile.instance;
+            return builder;
+        }
+
+        private static CardDataBuilder CardCopy(string oldName, string newName) => DataCopy<CardData, CardDataBuilder>(oldName, newName);
+
+        private static ClassDataBuilder TribeCopy(string oldName, string newName) => DataCopy<ClassData, ClassDataBuilder>(oldName, newName);
+
+        private static T DataCopy<Y, T>(string oldName, string newName) where Y : DataFile where T : DataFileBuilder<Y, T>, new()
+        {
+            Y data = MainModFile.instance.Get<Y>(oldName).InstantiateKeepName();
+            data.name = MainModFile.instance.GUID + "." + newName;
+            T builder = data.Edit<Y, T>();
+            builder.Mod = MainModFile.instance;
+            return builder;
+        }
+
+        private static T[] DataList<T>(params string[] names) where T : DataFile => names.Select((s) => TryGet<T>(s)).ToArray();
+
+        internal static void CreateAssets()
         {
             CreateTribes();
 
@@ -51,17 +71,15 @@ namespace SlayTheFrost
             CreateLeaders();
 
             CreateCompanions();
-            
+
             CreateSummons();
 
             CreateItems();
 
             CreateCharms();
-
-            preLoaded = true;
         }
 
-        private void CreateTribes()
+        private static void CreateTribes()
         {
             // TRIBE
             assets.Add(TribeCopy("Basic", "Spire") //Snowdweller = "Basic", Shademancer = "Magic", Clunkmaster = "Clunk"
@@ -87,13 +105,13 @@ namespace SlayTheFrost
                         RewardPool unitPool = CreateRewardPool("SpireUnitPool", "Units", DataList<CardData>(
                             "centurion", "mystic", "looter", "nob", "cultist", "fungi",
                             "jawworm", "slaver", "byrd", "chosen", "spikeslime", "fatgremlin",
-                            "madgremlin", "shieldgremlin", "sneakygremlin","gremlinwizard"));
+                            "madgremlin", "shieldgremlin", "sneakygremlin", "gremlinwizard"));
 
                         RewardPool itemPool = CreateRewardPool("SpireItemPool", "Items", DataList<CardData>(
                             "handdrill", "markofpain", "wristblade", "wingboots", "bluecandle",
                             "battery", "chemx", "pocketwatch", "fusionhammer", "lantern",
                             "icecream", "bandages", "anchor", "whetstone", "callingbell",
-                            "gremlinhorn", "exploder", "repulser", "spiker", "orbwalker", 
+                            "gremlinhorn", "exploder", "repulser", "spiker", "orbwalker",
                             "sphericguardian", "sentry", "bookofstabbing", "spirespear", "spireshield"));
 
                         //Dont forget Scrap Charm
@@ -119,10 +137,10 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateStatusEffects()
+        private static void CreateStatusEffects()
         {
             // CONDITION EFFECTS
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXAfterTurnAndDecay>("STS Regen")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
@@ -139,8 +157,8 @@ namespace SlayTheFrost
                 })
                 .Subscribe_WithStatusIcon("STS Regen Icon")
             );
-            
-            assets.Add(new StatusEffectDataBuilder(this)
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectSTSVulnerable>("STS Vuln")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
@@ -155,8 +173,8 @@ namespace SlayTheFrost
                 })
                 .Subscribe_WithStatusIcon("STS Vuln Icon")
             );
-            
-            assets.Add(new StatusEffectDataBuilder(this)
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectSTSWeakness>("STS Weak")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
@@ -165,8 +183,8 @@ namespace SlayTheFrost
                 //CanAttack constraint?
                 .Subscribe_WithStatusIcon("STS Weak Icon")
             );
-            
-            assets.Add(new StatusEffectDataBuilder(this)
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectSTSAmplify>("STS Amplify")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
@@ -180,7 +198,7 @@ namespace SlayTheFrost
                     {
                         ScriptableObject.CreateInstance<TargetConstraintHasReaction>(),
                         hasCounter
-                        
+
                     };
                     data.targetConstraints = new TargetConstraint[]
                     {
@@ -199,7 +217,7 @@ namespace SlayTheFrost
                 .Subscribe_WithStatusIcon("STS Double Tap Icon")
             );
 
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectSTSFlight>("STS Flight")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
@@ -213,7 +231,7 @@ namespace SlayTheFrost
                 })
                 .Subscribe_WithStatusIcon("STS Flight Icon")
             );
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectSTSMark>("STS Mark")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
@@ -246,7 +264,7 @@ namespace SlayTheFrost
                 .Subscribe_WithStatusIcon("STS Ritual Icon")
             );
 
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenHitOnce>("STS Roll Up")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
@@ -339,7 +357,7 @@ namespace SlayTheFrost
                 })
 
             );
-            
+
             assets.Add(StatusCopy("Reduce Attack", "Reduce Attack With Text")
                 .WithText("Reduce the attacker's <keyword=attack> by <{a}>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstantReduceAttack>(data =>
@@ -351,7 +369,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXToFrontEnemiesWhenHit>("When Hit Apply Vuln To Front Enemies")
                 .WithText("When hit, apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsvuln> to enemies in front")
                 .WithCanBeBoosted(true)
@@ -374,7 +392,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectInstantIncreaseCounter>("Increase Counter")
                 .WithText("Count up <keyword=counter> by <{a}>")
                 .WithCanBeBoosted(true)
@@ -404,7 +422,7 @@ namespace SlayTheFrost
                     data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
                 })
             );
-            
+
             assets.Add(StatusCopy("When Deployed Apply Block To Self", "When Deployed Apply Flight To Self")
                 .WithText("When deployed, gain <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsflight>")
                 .WithCanBeBoosted(true)
@@ -413,7 +431,7 @@ namespace SlayTheFrost
                     data.effectToApply = TryGet<StatusEffectData>("STS Flight");
                 })
             );
-            
+
             assets.Add(StatusCopy("While Active Increase Effects To FrontAlly", "While Active Increase Effects To AllyBehind")
                 .WithText("While active, boost the effects of the ally behind by {a}")
                 .WithCanBeBoosted(false)
@@ -422,7 +440,7 @@ namespace SlayTheFrost
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.AllyBehind;
                 })
             );
-            
+
             assets.Add(StatusCopy("Split", "STS Split")
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstantSplit>(data =>
@@ -441,14 +459,14 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
+
             assets.Add(StatusCopy("When X Health Lost Split", "When X Health Lost STS Split")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHealthLost>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Split");
                 })
             );
-            
+
             assets.Add(StatusCopy("On Card Played Boost To RandomEnemy", "On Card Played Increase Counter To RandomEnemy")
                 .WithText("Count up <keyword=counter> of a random enemy by {a}")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
@@ -558,7 +576,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenAnyCardIsPlayed>("When Item Played, Increase Its Attack")
                 .WithText("When an item is played, add <+{a}><keyword=attack> to it")
                 .WithCanBeBoosted(true)
@@ -574,7 +592,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectInstantGainTrait>("Gain Explode")
                 .WithText("Apply <{a}> <keyword=explode>")
                 .WithCanBeBoosted(true)
@@ -639,7 +657,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new StatusEffectDataBuilder(this)
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenAnyCardIsPlayed>("When Attack Item Played, Reduce Counter")
                 .WithText("When an <Item> with <keyword=attack> is played, count down <keyword=counter> by <{a}>")
                 .WithCanBeBoosted(true)
@@ -672,11 +690,11 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateKeywords()
+        private static void CreateKeywords()
         {
             // KEYWORDS
             // Keywords without pictures must use .WithShowName(true)
-            assets.Add(new KeywordDataBuilder(this)
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsregen")
                 .WithTitle("Regen")
                 .WithDescription("Heals health every turn | Counts down every turn")
@@ -685,8 +703,8 @@ namespace SlayTheFrost
                 .WithNoteColour(new Color(0.49f, 0.99f, 0.49f))
                 .WithCanStack(true)
             );
-            
-            assets.Add(new KeywordDataBuilder(this)
+
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsvuln")
                 .WithTitle("Vulnerable")
                 .WithDescription("Increases damage taken by 50% for each Vulnerable | Clears after taking damage")
@@ -695,8 +713,8 @@ namespace SlayTheFrost
                 .WithNoteColour(new Color(0.79f, 0.39f, 0.39f))
                 .WithCanStack(true)
             );
-            
-            assets.Add(new KeywordDataBuilder(this)
+
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsweak")
                 .WithTitle("Weakened")
                 .WithDescription("Halves damage dealt | Counts down after triggering")
@@ -705,8 +723,8 @@ namespace SlayTheFrost
                 .WithNoteColour(new Color(0.69f, 0.99f, 0.74f))
                 .WithCanStack(true)
             );
-            
-            assets.Add(new KeywordDataBuilder(this)
+
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsamplify")
                 .WithTitle("Amplify")
                 .WithDescription("Increases target's effects | Clears after triggering")
@@ -715,8 +733,8 @@ namespace SlayTheFrost
                 .WithNoteColour(new Color(0.24f, 0.74f, 0.84f))
                 .WithCanStack(true)
             );
-            
-            assets.Add(new KeywordDataBuilder(this)
+
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsdoubletap")
                 .WithTitle("Double Tap")
                 .WithDescription("Trigger additional times | Clears after triggering")
@@ -724,9 +742,9 @@ namespace SlayTheFrost
                 .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
                 .WithNoteColour(new Color(0.54f, 0.09f, 0.09f))
                 .WithCanStack(true)
-            ); 
-            
-            assets.Add(new KeywordDataBuilder(this)
+            );
+
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsflight")
                 .WithTitle("Flight")
                 .WithDescription("Halves damage taken | Counts down after taking damage")
@@ -736,7 +754,7 @@ namespace SlayTheFrost
                 .WithCanStack(true)
             );
 
-            assets.Add(new KeywordDataBuilder(this)
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsritual")
                 .WithTitle("Ritual")
                 .WithDescription("When <Redraw Bell> is hit, gain <keyword=attack>")
@@ -745,8 +763,8 @@ namespace SlayTheFrost
                 .WithNoteColour(new Color(0.49f, 0.79f, 0.99f))
                 .WithCanStack(true)
             );
-            
-            assets.Add(new KeywordDataBuilder(this)
+
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsrollup")
                 .WithTitle("Roll Up")
                 .WithDescription("When hit, gain <keyword=shell> and lose Roll Up")
@@ -756,7 +774,7 @@ namespace SlayTheFrost
                 .WithCanStack(true)
             );
 
-            assets.Add(new KeywordDataBuilder(this)
+            assets.Add(new KeywordDataBuilder(MainModFile.instance)
                 .Create("stsmark")
                 .WithTitle("Mark")
                 .WithDescription("When applied, all enemies take damage equal to their Mark | Does not count down!")
@@ -767,10 +785,10 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateTraits()
+        private static void CreateTraits()
         {
             // TRAITS
-            /*assets.Add(new TraitDataBuilder(this)
+            /*assets.Add(new TraitDataBuilder(MainModFile.instance)
                 .Create("Ritual")
                 .SubscribeToAfterAllBuildEvent(trait =>
                 {
@@ -783,21 +801,21 @@ namespace SlayTheFrost
             );*/
         }
 
-        private void CreateIconBuilders()
+        private static void CreateIconBuilders()
         {
             // ICON BUILDERS
             // Default text color : 0.2471f, 0.1216f, 0.1647f, 1f
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Regen Icon", "spirefrost.stsregen", ImagePath("Icons/RegenIcon.png"))
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Regen Icon", "spirefrost.stsregen", MainModFile.instance.ImagePath("Icons/RegenIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.health)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords("stsregen")
             );
-            
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Vuln Icon", "spirefrost.stsvuln", ImagePath("Icons/VulnIcon.png"))
+
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Vuln Icon", "spirefrost.stsvuln", MainModFile.instance.ImagePath("Icons/VulnIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.health)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -810,9 +828,9 @@ namespace SlayTheFrost
                     action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
                 })
             );
-            
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Weak Icon", "spirefrost.stsweak", ImagePath("Icons/WeakIcon.png"))
+
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Weak Icon", "spirefrost.stsweak", MainModFile.instance.ImagePath("Icons/WeakIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.damage)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -825,9 +843,9 @@ namespace SlayTheFrost
                     action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
                 })
             );
-            
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Amplify Icon", "spirefrost.stsamplify", ImagePath("Icons/AmplifyIcon.png"))
+
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Amplify Icon", "spirefrost.stsamplify", MainModFile.instance.ImagePath("Icons/AmplifyIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.counter)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -840,9 +858,9 @@ namespace SlayTheFrost
                     action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
                 })
             );
-            
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Double Tap Icon", "spirefrost.stsdoubletap", ImagePath("Icons/DoubleTapIcon.png"))
+
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Double Tap Icon", "spirefrost.stsdoubletap", MainModFile.instance.ImagePath("Icons/DoubleTapIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.counter)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -855,9 +873,9 @@ namespace SlayTheFrost
                     action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
                 })
             );
-            
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Flight Icon", "spirefrost.stsflight", ImagePath("Icons/FlightIcon.png"))
+
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Flight Icon", "spirefrost.stsflight", MainModFile.instance.ImagePath("Icons/FlightIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.health)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -865,8 +883,8 @@ namespace SlayTheFrost
                 .WithKeywords("stsflight")
             );
 
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Ritual Icon", "spirefrost.stsritual", ImagePath("Icons/RitualIcon.png"))
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Ritual Icon", "spirefrost.stsritual", MainModFile.instance.ImagePath("Icons/RitualIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.damage)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -880,8 +898,8 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Roll Up Icon", "spirefrost.stsrollup", ImagePath("Icons/RollUpIcon.png"))
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Roll Up Icon", "spirefrost.stsrollup", MainModFile.instance.ImagePath("Icons/RollUpIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.health)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -894,9 +912,9 @@ namespace SlayTheFrost
                     action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
                 })
             );
-            
-            assets.Add(new StatusIconBuilder(this)
-                .Create("STS Mark Icon", "spirefrost.stsmark", ImagePath("Icons/MarkIcon.png"))
+
+            assets.Add(new StatusIconBuilder(MainModFile.instance)
+                .Create("STS Mark Icon", "spirefrost.stsmark", MainModFile.instance.ImagePath("Icons/MarkIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.health)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
@@ -911,10 +929,10 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateLeaders()
+        private static void CreateLeaders()
         {
             // LEADERS
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("ironclad", "Ironclad")
                 .SetSprites("Leaders/Ironclad.png", "Leaders/IroncladBG.png")
                 .SetStats(8, 3, 4)
@@ -978,7 +996,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("silent", "Silent")
                 .SetSprites("Leaders/Silent.png", "Leaders/SilentBG.png")
                 .SetStats(6, 2, 3)
@@ -1042,7 +1060,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("defect", "Defect")
                 .SetSprites("Leaders/Defect.png", "Leaders/DefectBG.png")
                 .SetStats(7, 3, 4)
@@ -1108,7 +1126,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("watcher", "Watcher")
                 .SetSprites("Leaders/Watcher.png", "Leaders/WatcherBG.png")
                 .SetStats(7, 4, 5)
@@ -1175,12 +1193,12 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateCompanions()
+        private static void CreateCompanions()
         {
             // PETS
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("louse", "Lousie")
-                .SetSprites("Units/Louse.png","Units/LouseBG.png")
+                .SetSprites("Units/Louse.png", "Units/LouseBG.png")
                 .SetStats(3, 2, 4)
                 .WithValue(25)
                 .IsPet((ChallengeData)null, true)
@@ -1198,7 +1216,7 @@ namespace SlayTheFrost
             );
 
             // UNITS
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("centurion", "Centurion")
                 .SetSprites("Units/Centurion.png", "Units/CenturionBG.png")
                 .SetStats(10, 3, 4)
@@ -1206,8 +1224,8 @@ namespace SlayTheFrost
                 .SetTraits(TStack("Frontline", 1))
                 .SetStartWithEffect(SStack("On Turn Apply Shell To Allies", 1))
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("mystic", "Mystic")
                 .SetSprites("Units/Mystic.png", "Units/MysticBG.png")
                 .SetStats(4, null, 4)
@@ -1220,8 +1238,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("looter", "Looter")
                 .SetSprites("Units/Looter.png", "Units/LooterBG.png")
                 .SetStats(5, 4, 3)
@@ -1236,7 +1254,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("nob", "Nob")
                 .SetSprites("Units/Nob.png", "Units/NobBG.png")
                 .SetStats(12, 3, 5)
@@ -1253,8 +1271,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("lagavulin", "Lagavulin")
                 .SetSprites("Units/Lagavulin.png", "Units/LagavulinBG.png")
                 .SetStats(8, 4, 0)
@@ -1269,8 +1287,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("cultist", "Cultist")
                 .SetSprites("Units/Cultist.png", "Units/CultistBG.png")
                 .SetStats(6, 2, 5)
@@ -1284,8 +1302,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("fungi", "Fungi Beast")
                 .SetSprites("Units/Fungi.png", "Units/FungiBG.png")
                 .SetStats(4, 1, 3)
@@ -1298,8 +1316,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("jawworm", "Jaw Worm")
                 .SetSprites("Units/JawWorm.png", "Units/JawWormBG.png")
                 .SetStats(4, 3, 3)
@@ -1312,8 +1330,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("slaver", "Slaver")
                 .SetSprites("Units/Slaver.png", "Units/SlaverBG.png")
                 .SetStats(6, 3, 5)
@@ -1327,8 +1345,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("byrd", "Byrd")
                 .SetSprites("Units/Byrd.png", "Units/ByrdBG.png")
                 .SetStats(4, 1, 4)
@@ -1342,8 +1360,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("chosen", "Chosen")
                 .SetSprites("Units/Chosen.png", "Units/ChosenBG.png")
                 .SetStats(11, 1, 3)
@@ -1357,8 +1375,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("spikeslime", "Spike Slime")
                 .SetSprites("Units/SpikeSlime.png", "Units/SpikeSlimeBG.png")
                 .SetStats(6, 2, 3)
@@ -1372,8 +1390,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("spikeslime2", "Spike Slime")
                 .SetSprites("Units/SpikeSlime2.png", "Units/SpikeSlimeBG.png")
                 .SetStats(6, 2, 3)
@@ -1387,8 +1405,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("spikeslime3", "Spike Slime")
                 .SetSprites("Units/SpikeSlime3.png", "Units/SpikeSlimeBG.png")
                 .SetStats(6, 2, 3)
@@ -1402,8 +1420,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("fatgremlin", "Fat Gremlin")
                 .SetSprites("Units/FatGremlin.png", "Units/FatGremlinBG.png")
                 .SetStats(3, 4, 0)
@@ -1420,8 +1438,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("madgremlin", "Mad Gremlin")
                 .SetSprites("Units/MadGremlin.png", "Units/MadGremlinBG.png")
                 .SetStats(5, 2, 4)
@@ -1434,8 +1452,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("shieldgremlin", "Shield Gremlin")
                 .SetSprites("Units/ShieldGremlin.png", "Units/ShieldGremlinBG.png")
                 .SetStats(3, null, 4)
@@ -1448,8 +1466,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("sneakygremlin", "Sneaky Gremlin")
                 .SetSprites("Units/SneakyGremlin.png", "Units/SneakyGremlinBG.png")
                 .SetStats(2, 2, 0)
@@ -1462,8 +1480,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("gremlinwizard", "Gremlin Wizard")
                 .SetSprites("Units/GremlinWizard.png", "Units/GremlinWizardBG.png")
                 .SetStats(5, 6, 6)
@@ -1478,7 +1496,7 @@ namespace SlayTheFrost
             );
 
             // CLUNKERS
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("bronzeorb", "Bronze Orb")
                 .SetSprites("Units/BronzeOrb.png", "Units/BronzeOrbBG.png")
                 .SetStats(null, null, 0)
@@ -1493,8 +1511,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("exploder", "Exploder")
                 .SetSprites("Units/Exploder.png", "Units/ExploderBG.png")
                 .SetStats(null, null, 3)
@@ -1510,8 +1528,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("repulser", "Repulser")
                 .SetSprites("Units/Repulser.png", "Units/RepulserBG.png")
                 .SetStats(null, null, 0)
@@ -1527,7 +1545,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("spiker", "Spiker")
                 .SetSprites("Units/Spiker.png", "Units/SpikerBG.png")
                 .SetStats(null, null, 3)
@@ -1543,8 +1561,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("orbwalker", "Orb Walker")
                 .SetSprites("Units/OrbWalker.png", "Units/OrbWalkerBG.png")
                 .SetStats(null, null, 0)
@@ -1560,7 +1578,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("sphericguardian", "Spheric Guardian")
                 .SetSprites("Units/SphericGuardian.png", "Units/SphericGuardianBG.png")
                 .SetStats(null, null, 0)
@@ -1576,8 +1594,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("sentry", "Sentry")
                 .SetSprites("Units/Sentry.png", "Units/SentryBG.png")
                 .SetStats(null, null, 0)
@@ -1592,8 +1610,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("bookofstabbing", "Book of Stabbing")
                 .SetSprites("Units/BookOfStabbing.png", "Units/BookOfStabbingBG.png")
                 .SetStats(null, null, 0)
@@ -1608,8 +1626,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("spirespear", "Spire Spear")
                 .SetSprites("Units/SpireSpear.png", "Units/SpireSpearBG.png")
                 .SetStats(null, 2, 3)
@@ -1625,8 +1643,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("spireshield", "Spire Shield")
                 .SetSprites("Units/SpireShield.png", "Units/SpireShieldBG.png")
                 .SetStats(null, 1, 0)
@@ -1644,10 +1662,10 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateSummons()
+        private static void CreateSummons()
         {
             // SUMMONS
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("lightningorb", "Lightning")
                 .SetSprites("Summons/LightningOrb.png", "Summons/LightningOrbBG.png")
                 .SetStats(2, 3, 1)
@@ -1655,7 +1673,7 @@ namespace SlayTheFrost
                 .SetTraits(TStack("Aimless", 1))
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("darkorb", "Dark")
                 .SetSprites("Summons/DarkOrb.png", "Summons/DarkOrbBG.png")
                 .SetStats(2, null, 1)
@@ -1668,8 +1686,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("plasmaorb", "Plasma Orb")
                 .SetSprites("Summons/PlasmaOrb.png", "Summons/PlasmaOrbBG.png")
                 .SetStats(2, null, 1)
@@ -1682,8 +1700,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("frostorb", "Frost")
                 .SetSprites("Summons/FrostOrb.png", "Summons/FrostOrbBG.png")
                 .SetStats(2, null, 1)
@@ -1692,18 +1710,18 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateItems()
+        private static void CreateItems()
         {
             // STARTERS
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("kunai", "Kunai")
                 .SetSprites("Items/Kunai.png", "Items/KunaiBG.png")
                 .WithValue(10)
                 .SetDamage(2)
                 .SetStartWithEffect(SStack("On Hit Damage Damaged Target", 1))
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("shovel", "Shovel")
                 .SetSprites("Items/Shovel.png", "Items/ShovelBG.png")
                 .WithValue(30)
@@ -1713,7 +1731,7 @@ namespace SlayTheFrost
                 .WithFlavour("Diggy diggy hole")
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("sundial", "Sundial")
                 .SetSprites("Items/Sundial.png", "Items/SundialBG.png")
                 .WithValue(50)
@@ -1721,8 +1739,8 @@ namespace SlayTheFrost
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Reduce Counter", 1), 
-                        
+                        SStack("Reduce Counter", 1),
+
                     };
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
@@ -1730,8 +1748,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("medkit", "Medical Kit")
                 .SetSprites("Items/MedicalKit.png", "Items/MedicalKitBG.png")
                 .WithValue(25)
@@ -1743,9 +1761,9 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
+
             // DRAFTABLES
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("handdrill", "Hand Drill")
                 .SetSprites("Items/HandDrill.png", "Items/HandDrillBG.png")
                 .WithValue(45)
@@ -1758,8 +1776,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("markofpain", "Mark Of Pain")
                 .SetSprites("Items/MarkOfPain.png", "Items/MarkOfPainBG.png")
                 .WithValue(50)
@@ -1774,7 +1792,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("wristblade", "Wrist Blade")
                 .SetSprites("Items/WristBlade.png", "Items/WristBladeBG.png")
                 .WithValue(55)
@@ -1787,8 +1805,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("wingboots", "Wing Boots")
                 .SetSprites("Items/WingBoots.png", "Items/WingBootsBG.png")
                 .WithValue(55)
@@ -1800,8 +1818,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("bluecandle", "Blue Candle")
                 .SetSprites("Items/BlueCandle.png", "Items/BlueCandleBG.png")
                 .WithValue(60)
@@ -1815,8 +1833,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("battery", "Nuclear Battery")
                 .SetSprites("Items/Battery.png", "Items/BatteryBG.png")
                 .WithValue(50)
@@ -1831,7 +1849,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("chemx", "Chemical X")
                 .SetSprites("Items/ChemX.png", "Items/ChemXBG.png")
                 .WithValue(50)
@@ -1844,8 +1862,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("pocketwatch", "Pocketwatch")
                 .SetSprites("Items/Pocketwatch.png", "Items/PocketwatchBG.png")
                 .WithValue(50)
@@ -1858,8 +1876,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("fusionhammer", "Fusion Hammer")
                 .SetSprites("Items/FusionHammer.png", "Items/FusionHammerBG.png")
                 .WithValue(50)
@@ -1874,7 +1892,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("lantern", "Eerie Lantern")
                 .SetSprites("Items/Lantern.png", "Items/LanternBG.png")
                 .WithValue(50)
@@ -1888,22 +1906,22 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("icecream", "Ice Cream")
                 .SetSprites("Items/IceCream.png", "Items/IceCreamBG.png")
                 .WithValue(50)
                 .SetDamage(0)
                 .SetAttackEffect(SStack("Reduce Counter", 4), SStack("Snow", 2))
             );
-            
-            assets.Add(new CardDataBuilder(this)
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("bandages", "Tough Bandages")
                 .SetSprites("Items/Bandages.png", "Items/BandagesBG.png")
                 .WithValue(50)
                 .SetAttackEffect(SStack("Increase Max Health", 1), SStack("Shell", 3))
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("anchor", "Anchor")
                 .SetSprites("Items/Anchor.png", "Items/AnchorBG.png")
                 .WithValue(50)
@@ -1917,7 +1935,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("whetstone", "Whetstone")
                 .SetSprites("Items/Whetstone.png", "Items/WhetstoneBG.png")
                 .WithValue(50)
@@ -1932,7 +1950,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("callingbell", "Calling Bell")
                 .SetSprites("Items/CallingBell.png", "Items/CallingBellBG.png")
                 .WithValue(50)
@@ -1948,7 +1966,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("gremlinhorn", "Gremlin Horn")
                 .SetSprites("Items/GremlinHorn.png", "Items/GremlinHornBG.png")
                 .WithValue(50)
@@ -1963,7 +1981,7 @@ namespace SlayTheFrost
             );
 
             // TOKENS
-            assets.Add(new CardDataBuilder(this)
+            assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("holywater", "Holy Water")
                 .SetSprites("Items/HolyWater.png", "Items/HolyWaterBG.png")
                 .WithValue(50)
@@ -1972,12 +1990,12 @@ namespace SlayTheFrost
             );
         }
 
-        private void CreateCharms()
+        private static void CreateCharms()
         {
             // CHARMS
             TargetConstraintHasHealth hasHealth = ScriptableObject.CreateInstance<TargetConstraintHasHealth>();
             TargetConstraintCanBeHit canBeHit = ScriptableObject.CreateInstance<TargetConstraintCanBeHit>();
-            /*assets.Add(new CardUpgradeDataBuilder(this)
+            /*assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("MooncatTestCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("TestCharm.png")
@@ -1997,7 +2015,7 @@ namespace SlayTheFrost
             TargetConstraintAttackMoreThan moreThan2Attack = ScriptableObject.CreateInstance<TargetConstraintAttackMoreThan>();
             moreThan2Attack.value = 2;
             TargetConstraintIsUnit isUnit = ScriptableObject.CreateInstance<TargetConstraintIsUnit>();
-            assets.Add(new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("CultistPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/CultistCharm.png")
@@ -2030,7 +2048,7 @@ namespace SlayTheFrost
                 hasReaction,
                 isItem
             };
-            assets.Add(new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("FearPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/FearCharm.png")
@@ -2048,7 +2066,7 @@ namespace SlayTheFrost
             );
 
             TargetConstraintDoesDamage doesDamage = ScriptableObject.CreateInstance<TargetConstraintDoesDamage>();
-            assets.Add(new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("StrengthPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/StrengthCharm.png")
@@ -2064,8 +2082,8 @@ namespace SlayTheFrost
                     };
                 })
             );
-            
-            assets.Add(new CardUpgradeDataBuilder(this)
+
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("FairyPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/FairyCharm.png")
@@ -2082,7 +2100,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("WeakPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/WeaknessCharm.png")
@@ -2099,7 +2117,7 @@ namespace SlayTheFrost
                 })
             );
 
-            assets.Add(new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("MiraclePotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/MiracleCharm.png")
@@ -2122,7 +2140,7 @@ namespace SlayTheFrost
                 hasCounter,
                 hasReaction
             };
-            assets.Add(new CardUpgradeDataBuilder(this)
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("IronPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/HeartOfIronCharm.png")
@@ -2139,858 +2157,6 @@ namespace SlayTheFrost
                     };
                 })
             );
-        }
-
-        public override void Load()
-        {
-            if (!preLoaded)
-            { 
-                // The spriteAsset has to be defined before any icons are made!
-                spriteAsset = HopeUtils.CreateSpriteAsset(Title);
-                CreateModAssets(); 
-            }
-            // Let our sprites automatically show up for icon descriptions
-            SpriteAsset.RegisterSpriteAsset();
-            base.Load();
-            CreateLocalizedStrings();
-            GameMode gameMode = TryGet<GameMode>("GameModeNormal"); //GameModeNormal is the standard game mode. 
-            gameMode.classes = gameMode.classes.Append(TryGet<ClassData>("Spire")).ToArray();
-            Events.OnEntityCreated += FixImage;
-        }
-
-        public override void Unload()
-        {
-            // Prevent our icons from accidentally showing up in descriptions when not loaded
-            SpriteAsset.UnRegisterSpriteAsset();
-            base.Unload();
-            GameMode gameMode = TryGet<GameMode>("GameModeNormal");
-            gameMode.classes = RemoveNulls(gameMode.classes); //Without this, a non-restarted game would crash on tribe selection
-            UnloadFromClasses();
-            Events.OnEntityCreated -= FixImage;
-        }
-
-        internal T TryGet<T>(string name) where T : DataFile
-        {
-            T data;
-            if (typeof(StatusEffectData).IsAssignableFrom(typeof(T)))
-                data = base.Get<StatusEffectData>(name) as T;
-            else if (typeof(KeywordData).IsAssignableFrom(typeof(T)))
-                data = base.Get<KeywordData>(name.ToLower()) as T;
-            else
-                data = base.Get<T>(name);
-
-            if (data == null)
-                throw new Exception($"TryGet Error: Could not find a [{typeof(T).Name}] with the name [{name}] or [{Extensions.PrefixGUID(name, this)}]");
-
-            return data;
-        }
-
-        private CardData.StatusEffectStacks SStack(string name, int amount) => new CardData.StatusEffectStacks(TryGet<StatusEffectData>(name), amount);
-
-        private CardData.TraitStacks TStack(string name, int amount) => new CardData.TraitStacks(TryGet<TraitData>(name), amount);
-
-        //Helper Method
-        private RewardPool CreateRewardPool(string name, string type, DataFile[] list)
-        {
-            RewardPool pool = ScriptableObject.CreateInstance<RewardPool>();
-            pool.name = name;
-            pool.type = type;            //The usual types are Units, Items, Charms, and Modifiers.
-            pool.list = list.ToList();
-            return pool;
-        }
-
-        //Note: you need to add the reference DeadExtensions.dll in order to use InstantiateKeepName(). 
-        public StatusEffectDataBuilder StatusCopy(string oldName, string newName)
-        {
-            StatusEffectData data = TryGet<StatusEffectData>(oldName).InstantiateKeepName();
-            data.name = GUID + "." + newName;
-            data.targetConstraints = new TargetConstraint[0];
-            StatusEffectDataBuilder builder = data.Edit<StatusEffectData, StatusEffectDataBuilder>();
-            builder.Mod = this;
-            return builder;
-        }
-
-        private CardDataBuilder CardCopy(string oldName, string newName) => DataCopy<CardData, CardDataBuilder>(oldName, newName);
-
-        private ClassDataBuilder TribeCopy(string oldName, string newName) => DataCopy<ClassData, ClassDataBuilder>(oldName, newName);
-
-        private T DataCopy<Y, T>(string oldName, string newName) where Y : DataFile where T : DataFileBuilder<Y, T>, new()
-        {
-            Y data = Get<Y>(oldName).InstantiateKeepName();
-            data.name = GUID + "." + newName;
-            T builder = data.Edit<Y, T>();
-            builder.Mod = this;
-            return builder;
-        }
-
-        private T[] DataList<T>(params string[] names) where T : DataFile => names.Select((s) => TryGet<T>(s)).ToArray();
-
-        //Credits to Hopeful for this method
-        public override List<T> AddAssets<T, Y>()
-        {
-            if (assets.OfType<T>().Any())
-                Debug.LogWarning($"[{Title}] adding {typeof(Y).Name}s: {assets.OfType<T>().Select(a => a._data.name).Join()}");
-            return assets.OfType<T>().ToList();
-        }
-
-        public void UnloadFromClasses()
-        {
-            List<ClassData> tribes = AddressableLoader.GetGroup<ClassData>("ClassData");
-            foreach (ClassData tribe in tribes)
-            {
-                if (tribe == null || tribe.rewardPools == null) { continue; } //This isn't even a tribe; skip it.
-
-                foreach (RewardPool pool in tribe.rewardPools)
-                {
-                    if (pool == null) { continue; }
-                    //This isn't even a reward pool; skip it.
-
-                    pool.list.RemoveAllWhere((item) => item == null || item.ModAdded == this); //Find and remove everything that needs to be removed.
-                }
-            }
-        }
-
-        internal T[] RemoveNulls<T>(T[] data) where T : DataFile
-        {
-            List<T> list = data.ToList();
-            list.RemoveAll(x => x == null || x.ModAdded == this);
-            return list.ToArray();
-        }
-
-        //Remember to hook this method onto Events.OnEntityCreated in the Load/Unload (see Tutorial 1 or the full code for more details).
-        private void FixImage(Entity entity)
-        {
-            if (entity.display is Card card && !card.hasScriptableImage) //These cards should use the static image
-            {
-                card.mainImage.gameObject.SetActive(true);               //And this line turns them on
-            }
-        }
-
-        public string TribeTitleKey => GUID + ".TribeTitle";
-        public string TribeDescKey => GUID + ".TribeDesc";
-
-        //Call this method in Load()
-        private void CreateLocalizedStrings()
-        {
-            StringTable uiText = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English);
-            uiText.SetString(TribeTitleKey, "The Ascenders");                                       //Create the title
-            uiText.SetString(TribeDescKey, "Denizens of the spire have formed an unlikely team after finding themselves in an unknown place. " +
-                "\n\n" +
-                "Well versed in defending themselves, they whittle their enemies down to win the war of attrition.");                                  //Create the description.
-
-        }
-    }
-
-    public class StatusEffectApplyXAfterTurnAndDecay : StatusEffectApplyX
-    {
-        public bool subbed;
-
-        public bool primed;
-
-        public override void Init()
-        {
-            base.OnTurnEnd += PostTurn;
-            Events.OnPostProcessUnits += Prime;
-            subbed = true;
-        }
-
-        public void OnDestroy()
-        {
-            Unsub();
-        }
-
-        public void Unsub()
-        {
-            if (subbed)
-            {
-                Events.OnPostProcessUnits -= Prime;
-                subbed = false;
-            }
-        }
-
-        public void Prime(Character character)
-        {
-            primed = true;
-            Unsub();
-        }
-
-        public override bool RunTurnEndEvent(Entity entity)
-        {
-            if (primed && target.enabled)
-            {
-                return entity == target;
-            }
-
-            return false;
-        }
-
-        public IEnumerator PostTurn(Entity entity)
-        {
-            ActionQueue.Stack(new ActionSequence(CountDown())
-            {
-                fixedPosition = true,
-                note = "Decay After Turn"
-            });
-            yield return Run(GetTargets());
-        }
-
-        public IEnumerator CountDown()
-        {
-            if ((bool)this && (bool)target && target.alive)
-            {
-                int amount = 1;
-                Events.InvokeStatusEffectCountDown(this, ref amount);
-                if (amount != 0)
-                {
-                    yield return CountDown(target, amount);
-                }
-            }
-        }
-    }
-
-    public class StatusEffectSTSVulnerable : StatusEffectData
-    {
-        public int amountToClear;
-
-        public StatusEffectSTSVulnerable()
-        {
-            removeOnDiscard = true;
-        }
-
-        public override void Init()
-        {
-            base.OnHit += MultiplyHit;
-        }
-
-        public override bool RunHitEvent(Hit hit)
-        {
-            if (hit.Offensive && count > 0 && hit.damage > 0)
-            {
-                return hit.target == target;
-            }
-
-            return false;
-        }
-
-        public IEnumerator MultiplyHit(Hit hit)
-        {
-            amountToClear = GetAmount();
-            hit.damage = Mathf.CeilToInt(hit.damage * (1 + (amountToClear * 0.5f)));
-            ActionQueue.Stack(new ActionSequence(Clear(amountToClear))
-            {
-                fixedPosition = true,
-                note = "Clear Vulnerable"
-            });
-            yield break;
-        }
-
-        public IEnumerator Clear(int clearMe)
-        {
-            if ((bool)this && (bool)target && target.alive)
-            {
-                int amount = clearMe;
-                Events.InvokeStatusEffectCountDown(this, ref amount);
-                if (amount != 0)
-                {
-                    yield return CountDown(target, amount);
-                }
-            }
-        }
-    }
-
-    public class StatusEffectSTSWeakness : StatusEffectData
-    {
-        private int toClear;
-
-        public StatusEffectSTSWeakness()
-        {
-            eventPriority = -999999;
-            removeOnDiscard = true;
-        }
-
-        public override void Init()
-        {
-            base.OnActionPerformed += ActionPerformed;
-            base.OnHit += HalveDamage;
-        }
-
-        public override bool RunHitEvent(Hit hit)
-        {
-            if (hit.attacker == target && hit.countsAsHit)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private IEnumerator HalveDamage(Hit hit)
-        {
-            hit.damage -= Mathf.CeilToInt(hit.damage / 2f);
-            yield break;
-        }
-
-        public override bool RunPreCardPlayedEvent(Entity entity, Entity[] targets)
-        {
-            if (toClear == 0 && entity == target && count > 0 && targets != null && targets.Length > 0)
-            {
-                toClear = 1;
-            }
-
-            return false;
-        }
-
-        public override bool RunActionPerformedEvent(PlayAction action)
-        {
-            if (toClear > 0)
-            {
-                return ActionQueue.Empty;
-            }
-
-            return false;
-        }
-
-        public IEnumerator ActionPerformed(PlayAction action)
-        {
-            toClear = 0;
-            yield return Clear(toClear);
-        }
-
-        public IEnumerator Clear(int amount)
-        {
-            Events.InvokeStatusEffectCountDown(this, ref amount);
-            if (amount != 0)
-            {
-                yield return CountDown(target, amount);
-            }
-        }
-    }
-
-    public class StatusEffectSTSAmplify : StatusEffectData
-    {
-        public bool cardPlayed;
-
-        public int current;
-
-        public int amountToClear;
-
-        public override void Init()
-        {
-            base.OnActionPerformed += ActionPerformed;
-        }
-
-        public override bool RunStackEvent(int stacks)
-        {
-            current += stacks;
-            target.effectBonus += stacks;
-            target.PromptUpdate();
-            return false;
-        }
-
-        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
-        {
-            if (!cardPlayed && entity == target && count > 0 && targets != null && targets.Length != 0)
-            {
-                cardPlayed = true;
-                amountToClear = current;
-            }
-
-            return false;
-        }
-
-        public override bool RunActionPerformedEvent(PlayAction action)
-        {
-            if (cardPlayed)
-            {
-                return ActionQueue.Empty;
-            }
-
-            return false;
-        }
-
-        public IEnumerator ActionPerformed(PlayAction action)
-        {
-            cardPlayed = false;
-            yield return Clear(amountToClear);
-        }
-
-        public IEnumerator Clear(int amount)
-        {
-            int amount2 = amount;
-            Events.InvokeStatusEffectCountDown(this, ref amount2);
-            if (amount2 != 0)
-            {
-                current -= amount2;
-                target.effectBonus -= amount2;
-                target.PromptUpdate();
-                yield return CountDown(target, amount2);
-            }
-        }
-
-        public override bool RunEndEvent()
-        {
-            target.effectBonus -= current;
-            target.PromptUpdate();
-            return false;
-        }
-    }
-
-    public class StatusEffectSTSFlight : StatusEffectData
-    {
-        public override void Init()
-        {
-            base.OnHit += FlightHit;
-        }
-
-        public override bool RunHitEvent(Hit hit)
-        {
-            if (hit.Offensive && count > 0 && hit.damage > 0)
-            {
-                return hit.target == target;
-            }
-
-            return false;
-        }
-
-        public IEnumerator FlightHit(Hit hit)
-        {
-            hit.damage = Mathf.RoundToInt(hit.damage / 2f);
-            ActionQueue.Stack(new ActionSequence(CountDown())
-            {
-                fixedPosition = true,
-                note = "Count Down Flight"
-            });
-            yield break;
-        }
-
-        public IEnumerator CountDown()
-        {
-            if ((bool)this && (bool)target && target.alive)
-            {
-                int amount = 1;
-                Events.InvokeStatusEffectCountDown(this, ref amount);
-                if (amount != 0)
-                {
-                    yield return CountDown(target, amount);
-                }
-            }
-        }
-    }
-
-    public class StatusEffectSTSMark : StatusEffectData
-    {
-        public override void Init()
-        {
-            base.OnStack += DoStuff;
-        }
-
-        private IEnumerator DoStuff(int stacks)
-        {
-            // All enemies with Mark lose hp
-            foreach (Entity entity in Battle.GetAllUnits(Battle.GetOpponent(GetDamager().owner)))
-            {
-                foreach (StatusEffectData effect in entity.statusEffects)
-                {
-                    if (effect is StatusEffectSTSMark && effect.count > 0)
-                    {
-                        // Hit em
-                        Hit hit = new Hit(GetDamager(), entity, effect.count)
-                        {
-                            screenShake = 0.25f,
-                            canRetaliate = false,
-                        };
-                        // Add VFX Later?
-                        //var transform = entity.transform;
-                        //VFXMod.instance.VFX.TryPlayEffect("stsmark", transform.position, transform.lossyScale);
-                        // Add SFX Later?
-                        //VFXMod.instance.SFX.TryPlaySound("stsmark");
-                        yield return hit.Process();
-                        yield return Sequences.Wait(0.2f);
-                    }
-                }
-            }
-        }
-    }
-
-    public class StatusEffectApplyXWhenHitOnce : StatusEffectApplyXWhenHit
-    {
-        public override void Init()
-        {
-            base.PostHit += RemoveMe;
-        }
-
-        public IEnumerator RemoveMe(Hit hit)
-        {
-            yield return Run(GetTargets(hit, GetTargetContainers(), GetTargetActualContainers()), hit.damage + hit.damageBlocked);
-            ActionQueue.Stack(new ActionSequence(CountDown())
-            {
-                fixedPosition = true,
-                note = "Remove Apply When Hit Once"
-            });
-            yield break;
-        }
-
-        public IEnumerator CountDown()
-        {
-            if ((bool)this && (bool)target && target.alive)
-            {
-                int amount = GetAmount();
-                Events.InvokeStatusEffectCountDown(this, ref amount);
-                if (amount != 0)
-                {
-                    yield return CountDown(target, amount);
-                }
-            }
-        }
-    }
-
-    public class StatusEffectApplyXToFrontEnemies : StatusEffectApplyX
-    {
-        public override void Init()
-        {
-            base.OnCardPlayed += Run;
-        }
-
-        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
-        {
-            return entity == target;
-        }
-
-        public IEnumerator Run(Entity entity, Entity[] targets)
-        {
-            int a = GetAmount();
-            List<Entity> toAffect = new List<Entity>();
-            foreach (CardContainer row in Battle.instance.GetRows(Battle.GetOpponent(target.owner)))
-            {
-                toAffect.AddIfNotNull(row.GetTop());
-            }
-
-            if (toAffect.Count <= 0)
-            {
-                yield break;
-            }
-
-            target.curveAnimator.Ping();
-            yield return Sequences.Wait(0.13f);
-            Routine.Clump clump = new Routine.Clump();
-            foreach (Entity item in toAffect)
-            {
-                Hit hit = new Hit(target, item, 0);
-                hit.AddStatusEffect(effectToApply, a);
-                clump.Add(hit.Process());
-            }
-
-            yield return clump.WaitForEnd();
-            yield return Sequences.Wait(0.13f);
-        }
-    }
-
-    public class StatusEffectApplyXToFrontEnemiesWhenHit : StatusEffectApplyX
-    {
-        [SerializeField]
-        public TargetConstraint[] attackerConstraints;
-
-        public override void Init()
-        {
-            base.PostHit += CheckHit;
-        }
-
-        public override bool RunPostHitEvent(Hit hit)
-        {
-            if (target.enabled && hit.target == target && hit.canRetaliate && (!targetMustBeAlive || (target.alive && Battle.IsOnBoard(target))) && hit.Offensive && hit.BasicHit)
-            {
-                return CheckAttackerConstraints(hit.attacker);
-            }
-
-            return false;
-        }
-
-        public IEnumerator CheckHit(Hit hit)
-        {
-            List<Entity> toAffect = new List<Entity>();
-            foreach (CardContainer row in Battle.instance.GetRows(Battle.GetOpponent(target.owner)))
-            {
-                toAffect.AddIfNotNull(row.GetTop());
-            }
-            return Run(toAffect);
-        }
-
-        public bool CheckAttackerConstraints(Entity attacker)
-        {
-            if (attackerConstraints != null)
-            {
-                TargetConstraint[] array = attackerConstraints;
-                for (int i = 0; i < array.Length; i++)
-                {
-                    if (!array[i].Check(attacker))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-    }
-
-    public class StatusEffectInstantIncreaseCounter : StatusEffectInstant
-    {
-        public override IEnumerator Process()
-        {
-            target.counter.current += GetAmount();
-            target.PromptUpdate();
-            yield return base.Process();
-        }
-    }
-
-    public class StatusEffectApplyXWhenAnyCardIsPlayed : StatusEffectApplyX
-    {
-        public TargetConstraint[] triggerConstraints;
-        public Boolean targetPlayedCard;
-
-        public override void Init()
-        {
-            base.OnCardPlayed += Check;
-        }
-
-        public static CardContainer[] GetWasInRows(Entity entity, IEnumerable<Entity> targets)
-        {
-            if (entity.data.playType == Card.PlayType.Play && entity.NeedsTarget)
-            {
-                HashSet<CardContainer> list = new HashSet<CardContainer>();
-                foreach (Entity target in targets)
-                {
-                    if (target.containers != null && target.containers.Length != 0)
-                    {
-                        list.AddRange(target.containers);
-                    }
-                    else
-                    {
-                        list.AddRange(target.preContainers);
-                    }
-                }
-
-                return list.ToArray();
-            }
-
-            return entity.containers;
-        }
-
-        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
-        {
-            if (target.enabled)
-            {
-                foreach (TargetConstraint triggerConstraint in triggerConstraints)
-                {
-                    if (!triggerConstraint.Check(entity))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public IEnumerator Check(Entity entity, Entity[] targets)
-        {
-            if (targetPlayedCard)
-            {
-                return Run(new List<Entity>() { entity });
-            } else
-            {
-                return Run(GetTargets(null, GetWasInRows(entity, targets), null, targets));
-            }    
-        }
-    }
-
-    public class TargetConstraintEmptyPile : TargetConstraint
-    {
-        public enum PileType
-        {
-            Draw,
-            Hand,
-            Discard
-        }
-
-        public PileType pile;
-
-        public override bool Check(Entity target)
-        {
-            if (pile == PileType.Draw)
-            {
-                CardContainer drawContainer = References.Player.drawContainer;
-                if (drawContainer != null && drawContainer.Count > 0)
-                {
-                    return !not;
-                }
-                return not;
-            }
-
-            if (pile == PileType.Hand)
-            {
-                CardContainer handContainer = References.Player.handContainer;
-                if (handContainer != null && handContainer.Count > 0)
-                {
-                    return !not;
-                }
-                return not;
-            }
-
-            if (pile == PileType.Discard)
-            {
-                CardContainer discardContainer = References.Player.discardContainer;
-                if (discardContainer != null && discardContainer.Count > 0)
-                {
-                    return !not;
-                }
-                return not;
-            }
-
-            return false;
-        }
-
-        public override bool Check(CardData targetData)
-        {
-            return Check((Entity)null);
-        }
-    }
-
-    public class CardScriptRunnable : CardScript
-    {
-        public delegate void ToRun(CardData data);
-
-        public ToRun runnable;
-        public override void Run(CardData target)
-        {
-            runnable(target);
-        }
-    }
-
-    internal static class CardDataExtensions
-    {
-        internal static void GiveUpgrade(this CardData target, string name = "Crown") // Give a crown by default
-        {
-            MainModFile.instance.TryGet<CardUpgradeData>(name).Clone().Assign(target);
-        }
-
-        internal static void SetRandomHealth(this CardData target, int min, int max)
-        {
-            if (target.hasHealth)
-            {
-                target.hp = new Vector2Int(min, max).Random();
-                target.hp = Mathf.Max(1, target.hp);
-            }
-        }
-
-        internal static void SetRandomDamage(this CardData target, int min, int max)
-        {
-            if (target.hasAttack)
-            {
-                target.damage = new Vector2Int(min, max).Random();
-                target.damage = Mathf.Max(0, target.damage);
-            }
-        }
-
-        internal static void SetRandomCounter(this CardData target, int min, int max)
-        {
-            if (target.counter >= 1)
-            {
-                target.counter = new Vector2Int(min, max).Random();
-                target.counter = Mathf.Max(1, target.counter);
-            }
-        }
-
-        internal static void SetRandomPassive(this CardData target, string passiveEffect, int min, int max)
-        {
-            StatusEffectData effect = MainModFile.instance.TryGet<StatusEffectData>(passiveEffect);
-            target.startWithEffects = target.startWithEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
-        }
-
-        internal static void SetRandomActive(this CardData target, string passiveEffect, int min, int max)
-        {
-            StatusEffectData effect = MainModFile.instance.TryGet<StatusEffectData>(passiveEffect);
-            target.attackEffects = target.attackEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
-        }
-    }
-
-    [HarmonyPatch(typeof(References), nameof(References.Classes), MethodType.Getter)]
-    static class FixClassesGetter
-    {
-        static void Postfix(ref ClassData[] __result) => __result = AddressableLoader.GetGroup<ClassData>("ClassData").ToArray();
-    }
-
-    [HarmonyPatch(typeof(PetHutFlagSetter), "SetupFlag")]
-    internal static class PatchInPetFlag
-    {
-        static Sprite louseFlag;
-        static void Postfix(PetHutFlagSetter __instance)
-        {
-            if (louseFlag == null)
-            {
-                Texture2D louseTex = MainModFile.instance.ImagePath("LouseFlag.png").ToTex();
-                louseFlag = Sprite.Create(louseTex, new Rect(0f, 0f, louseTex.width, louseTex.height), new Vector2(0.5f, 1.0f), 160);
-            }
-
-            int petIndex = SaveSystem.LoadProgressData("selectedPet", 0);
-            string[] petInfo = MetaprogressionSystem.GetUnlockedPets();
-
-            if (petIndex < petInfo.Length && petInfo[petIndex].Equals(Extensions.PrefixGUID("louse", MainModFile.instance)))
-            {
-                __instance.flag.sprite = louseFlag;
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(TribeHutSequence), "SetupFlags")]
-    class PatchTribeHut
-    {
-        static string TribeName = "Spire";
-        static void Postfix(TribeHutSequence __instance)
-        {
-            GameObject gameObject = GameObject.Instantiate(__instance.flags[0].gameObject);
-            gameObject.transform.SetParent(__instance.flags[0].gameObject.transform.parent, false);
-            TribeFlagDisplay flagDisplay = gameObject.GetComponent<TribeFlagDisplay>();
-            ClassData tribe = MainModFile.instance.TryGet<ClassData>(TribeName);
-            flagDisplay.flagSprite = tribe.flag;
-            __instance.flags = __instance.flags.Append(flagDisplay).ToArray();
-            flagDisplay.SetAvailable();
-            flagDisplay.SetUnlocked();
-
-            TribeDisplaySequence sequence2 = GameObject.FindObjectOfType<TribeDisplaySequence>(true);
-            GameObject gameObject2 = GameObject.Instantiate(sequence2.displays[1].gameObject);
-            gameObject2.transform.SetParent(sequence2.displays[2].gameObject.transform.parent, false);
-            sequence2.tribeNames = sequence2.tribeNames.Append(TribeName).ToArray();
-            sequence2.displays = sequence2.displays.Append(gameObject2).ToArray();
-
-            Button button = flagDisplay.GetComponentInChildren<Button>();
-            button.onClick.SetPersistentListenerState(0, UnityEngine.Events.UnityEventCallState.Off);
-            button.onClick.AddListener(() => { sequence2.Run(TribeName); });
-
-            //(SfxOneShot)
-            gameObject2.GetComponent<SfxOneshot>().eventRef = FMODUnity.RuntimeManager.PathToEventReference("event:/sfx/status/shell");
-
-            //0: Flag (ImageSprite)
-            gameObject2.transform.GetChild(0).GetComponent<ImageSprite>().SetSprite(tribe.flag);
-
-            //1: Left (ImageSprite)
-            Sprite needle = MainModFile.instance.TryGet<CardData>("ironclad").mainSprite;
-            gameObject2.transform.GetChild(1).GetComponent<ImageSprite>().SetSprite(needle);
-
-            //2: Right (ImageSprite)
-            Sprite muncher = MainModFile.instance.TryGet<CardData>("silent").mainSprite;
-            gameObject2.transform.GetChild(2).GetComponent<ImageSprite>().SetSprite(muncher);
-            gameObject2.transform.GetChild(2).localScale *= 1.2f;
-
-            //3: Textbox (Image)
-            gameObject2.transform.GetChild(3).GetComponent<Image>().color = new Color(0.12f, 0.47f, 0.57f);
-
-            //3-0: Text (LocalizedString)
-            StringTable collection = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English);
-            gameObject2.transform.GetChild(3).GetChild(0).GetComponent<LocalizeStringEvent>().StringReference = collection.GetString(MainModFile.instance.TribeDescKey);
-
-            //4:Title Ribbon (Image)
-            //4-0: Text (LocalizedString)
-            gameObject2.transform.GetChild(4).GetChild(0).GetComponent<LocalizeStringEvent>().StringReference = collection.GetString(MainModFile.instance.TribeTitleKey);
         }
     }
 }
