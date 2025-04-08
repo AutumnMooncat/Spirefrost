@@ -211,10 +211,16 @@ namespace Spirefrost
                 .Subscribe_WithStatusIcon("STS Amplify Icon")
             );
 
-            assets.Add(StatusCopy("MultiHit (Temporary, Not Visible)", "STS Double Tap")
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectDoubleTap>("STS Double Tap")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectDoubleTap>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("MultiHit");
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                })
                 .Subscribe_WithStatusIcon("STS Double Tap Icon")
             );
 
