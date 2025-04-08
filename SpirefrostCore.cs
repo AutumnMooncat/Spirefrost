@@ -27,10 +27,14 @@ namespace Spirefrost
         public override TMP_SpriteAsset SpriteAsset => spriteAsset;
         internal static TMP_SpriteAsset spriteAsset;
 
-        private Color rainbowColor = new Color(1f, 1f, 1f, 1f);
+        internal Color rainbowColor = new Color(1f, 1f, 1f, 1f);
 
         internal Texture2D overlay;
         internal Texture2D underlay;
+
+        internal GameObject managedObject;
+
+        internal bool updated;
 
         public MainModFile(string modDirectory) : base(modDirectory)
         { 
@@ -56,11 +60,13 @@ namespace Spirefrost
                 spriteAsset = HopeUtils.CreateSpriteAsset(Title);
                 SpirefrostAssetHandler.CreateAssets();
                 preLoaded = true;
+
                 overlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
                 {
                     name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmOverlay.png"))
                 };
                 overlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmOverlay.png")));
+
                 underlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
                 {
                     name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmUnderlay.png"))
@@ -74,6 +80,10 @@ namespace Spirefrost
             GameMode gameMode = TryGet<GameMode>("GameModeNormal"); //GameModeNormal is the standard game mode. 
             gameMode.classes = gameMode.classes.Append(TryGet<ClassData>("Spire")).ToArray();
             Events.OnEntityCreated += FixImage;
+
+            managedObject = new GameObject(Title+".ManagedObject");
+            UnityEngine.Object.DontDestroyOnLoad(managedObject);
+            managedObject.AddComponent<UpdateManager>();
         }
 
         public override void Unload()
@@ -85,6 +95,9 @@ namespace Spirefrost
             gameMode.classes = RemoveNulls(gameMode.classes); //Without this, a non-restarted game would crash on tribe selection
             UnloadFromClasses();
             Events.OnEntityCreated -= FixImage;
+
+            managedObject.Destroy();
+            managedObject = null;
         }
 
         internal T TryGet<T>(string name) where T : DataFile
@@ -169,7 +182,7 @@ namespace Spirefrost
 
         static void Postfix(CardCharm __instance)
         {
-            if (__instance.data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm"))
+            if (!MainModFile.instance.updated && __instance.data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm"))
             {
                 float r = (float)((Math.Cos(ToRadians((Environment.TickCount + 0000L) / 10L % 360L)) + 1.25F) / 2.3F);
                 float g = (float)((Math.Cos(ToRadians((Environment.TickCount + 1000L) / 10L % 360L)) + 1.25F) / 2.3F);
@@ -177,6 +190,7 @@ namespace Spirefrost
 
                 Color rainbow = new Color(r, g, b, 1.0f);
                 __instance.image.sprite.texture.OverlayTextures(MainModFile.instance.overlay, MainModFile.instance.underlay, rainbow);
+                MainModFile.instance.updated = true;
             }
         }
     }

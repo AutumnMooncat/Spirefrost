@@ -445,6 +445,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SpirefrostAssetHandler.cs" />
+    <Compile Include="SpirefrostBehaviours.cs" />
     <Compile Include="SpirefrostCardScripts.cs" />
     <Compile Include="SpirefrostCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

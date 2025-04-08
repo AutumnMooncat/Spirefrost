@@ -58,19 +58,44 @@ namespace Spirefrost
             {
                 Color underlayPixel = underlayPixels[i];
                 Color overlayPixel = overlayPixels[i];
-                if (underlayPixel.a > 0)
+                bool hasUnderlay = underlayPixel.a > 0;
+                bool hasOverlay = overlayPixel.a > 0;
+                if (hasUnderlay)
                 {
                     float lightness = (underlayPixel.r + underlayPixel.g + underlayPixel.b) / 3;
                     underlayPixel.r = lightness * underlayColor.r;
                     underlayPixel.g = lightness * underlayColor.g;
                     underlayPixel.b = lightness * underlayColor.b;
+
+                    //Blend Both
+                    if (hasOverlay)
+                    {
+                        float src = overlayPixel.a;
+                        float dst = 1f - src;
+                        float alpha = src + (dst * underlayPixel.a);
+                        Color result = (overlayPixel * src + underlayPixel * underlayPixel.a * dst) / alpha;
+                        result.a = alpha;
+                        mainPixels[i] = result;
+                    }
+                    //Just Underlay
+                    else
+                    {
+                        mainPixels[i] = underlayPixel;
+                    }
                 }
-                float src = overlayPixel.a;
-                float dst = 1f - src;
-                float alpha = src + (dst * underlayPixel.a);
-                Color result = (overlayPixel * src + underlayPixel * underlayPixel.a * dst) / alpha;
-                result.a = alpha;
-                mainPixels[i] = result;
+                else
+                {
+                    //Just Overlay
+                    if (hasOverlay)
+                    {
+                        mainPixels[i] = overlayPixel;
+                    }
+                    //Empty
+                    else
+                    {
+                        mainPixels[i].a = 0f;
+                    }
+                }  
             }
             mainTex.SetPixels(mainPixels);
             mainTex.Apply();
