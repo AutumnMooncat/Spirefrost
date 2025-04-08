@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -2151,6 +2152,41 @@ namespace Spirefrost
                     data.effects = new CardData.StatusEffectStacks[]
                     {
                         SStack("When Redraw Hit Apply Shell To Self", 1)
+                    };
+                })
+            );
+
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
+                .Create("EntropicBrewCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/EntropicCharm.png")
+                .WithTitle("Entropic Brew")
+                .WithText($"Apply <3> other random <Charms> to this card\nThey do not take up charm slots")
+                .WithTier(2)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    CardScriptRunnable entropicScript = ScriptableObject.CreateInstance<CardScriptRunnable>();
+                    entropicScript.runnable = card =>
+                    {
+                        List<CardUpgradeData> validUpgrades = new List<CardUpgradeData>();
+                        foreach(CardUpgradeData upgrade in AddressableLoader.GetGroup<CardUpgradeData>("CardUpgradeData"))
+                        {
+                            if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(upgrade.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm")) && upgrade.CanAssign(card))
+                            {
+                                validUpgrades.Add(upgrade);
+                            }
+                        }
+                        int applyAmount = Math.Min(3, validUpgrades.Count);
+                        for (int i = 0; i < applyAmount; i++)
+                        {
+                            CardUpgradeData applyMe = validUpgrades.TakeRandom();
+                            applyMe.takeSlot = false;
+                            applyMe.Assign(card);
+                        }
+                    };
+                    data.scripts = new CardScript[]
+                    {
+                        entropicScript
                     };
                 })
             );

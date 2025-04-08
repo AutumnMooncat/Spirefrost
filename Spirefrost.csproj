@@ -452,5 +452,10 @@
     <Compile Include="SpirefrostStatusEffects.cs" />
     <Compile Include="SpirefrostTargetConstraints.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Charms\EntropicCharm.png" />
+    <Content Include="Images\Charms\EntropicCharmOverlay.png" />
+    <Content Include="Images\Charms\EntropicCharmUnderlay.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

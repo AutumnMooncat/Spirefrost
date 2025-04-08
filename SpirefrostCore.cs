@@ -12,6 +12,8 @@ using WildfrostHopeMod.Utils; // Creates TMP_SpriteAsset
 using WildfrostHopeMod.VFX;   // Declares StatusIconBuilder
 using Extensions = Deadpan.Enums.Engine.Components.Modding.Extensions;
 using System.Collections;
+using System.IO;
+using UnityEngine.Rendering;
 
 
 namespace Spirefrost
@@ -25,9 +27,20 @@ namespace Spirefrost
         public override TMP_SpriteAsset SpriteAsset => spriteAsset;
         internal static TMP_SpriteAsset spriteAsset;
 
+        private Color rainbowColor = new Color(1f, 1f, 1f, 1f);
+
+        internal Texture2D overlay;
+        internal Texture2D underlay;
+
         public MainModFile(string modDirectory) : base(modDirectory)
         { 
             instance = this;
+            /***
+             * CardCharm.image.color is promising
+            /*this.liquidColor.r = (MathUtils.cosDeg((float)(System.currentTimeMillis() / 10L % 360L)) + 1.25F) / 2.3F;// 674
+            this.liquidColor.g = (MathUtils.cosDeg((float)((System.currentTimeMillis() + 1000L) / 10L % 360L)) + 1.25F) / 2.3F;// 675
+            this.liquidColor.b = (MathUtils.cosDeg((float)((System.currentTimeMillis() + 2000L) / 10L % 360L)) + 1.25F) / 2.3F;// 676
+            */
         }
 
         public override string GUID => "autumnmooncat.wildfrost.spirefrost";
@@ -43,6 +56,16 @@ namespace Spirefrost
                 spriteAsset = HopeUtils.CreateSpriteAsset(Title);
                 SpirefrostAssetHandler.CreateAssets();
                 preLoaded = true;
+                overlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
+                {
+                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmOverlay.png"))
+                };
+                overlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmOverlay.png")));
+                underlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
+                {
+                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmUnderlay.png"))
+                };
+                underlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmUnderlay.png")));
             }
             // Let our sprites automatically show up for icon descriptions
             SpriteAsset.RegisterSpriteAsset();
@@ -133,6 +156,40 @@ namespace Spirefrost
                 "\n\n" +
                 "Well versed in defending themselves, they whittle their enemies down to win the war of attrition.");                                  //Create the description.
 
+        }
+    }
+
+    [HarmonyPatch(typeof(CardCharm), "Update")]
+    internal static class TrackImages
+    {
+        static float ToRadians(float degrees)
+        {
+            return degrees * (float)Math.PI / 180;
+        }
+
+        static void Postfix(CardCharm __instance)
+        {
+            /*if (__instance.data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm"))
+            {
+                float r = (float)((Math.Cos(ToRadians((Environment.TickCount + 0000L) / 10L % 360L)) + 1.25F) / 2.3F);
+                float g = (float)((Math.Cos(ToRadians((Environment.TickCount + 1000L) / 10L % 360L)) + 1.25F) / 2.3F);
+                float b = (float)((Math.Cos(ToRadians((Environment.TickCount + 2000L) / 10L % 360L)) + 1.25F) / 2.3F);
+
+                Color current = __instance.image.color;
+                current.r = r;
+                current.g = g;
+                current.b = b;
+                __instance.image.color = current;
+            }*/
+            if (__instance.data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm"))
+            {
+                float r = (float)((Math.Cos(ToRadians((Environment.TickCount + 0000L) / 10L % 360L)) + 1.25F) / 2.3F);
+                float g = (float)((Math.Cos(ToRadians((Environment.TickCount + 1000L) / 10L % 360L)) + 1.25F) / 2.3F);
+                float b = (float)((Math.Cos(ToRadians((Environment.TickCount + 2000L) / 10L % 360L)) + 1.25F) / 2.3F);
+
+                Color rainbow = new Color(r, g, b, 1.0f);
+                __instance.image.sprite.texture.OverlayTextures(MainModFile.instance.overlay, MainModFile.instance.underlay, rainbow);
+            }
         }
     }
 

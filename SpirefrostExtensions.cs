@@ -46,4 +46,34 @@ namespace Spirefrost
             target.attackEffects = target.attackEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
         }
     }
+
+    internal static class Texture2DExtensions
+    {
+        internal static void OverlayTextures(this Texture2D mainTex, Texture2D overlay, Texture2D underlay, Color underlayColor)
+        {
+            Color[] overlayPixels = overlay.GetPixels();
+            Color[] underlayPixels = underlay.GetPixels();
+            Color[] mainPixels = mainTex.GetPixels();
+            for (int i = 0; i < mainPixels.Length; i++)
+            {
+                Color underlayPixel = underlayPixels[i];
+                Color overlayPixel = overlayPixels[i];
+                if (underlayPixel.a > 0)
+                {
+                    float lightness = (underlayPixel.r + underlayPixel.g + underlayPixel.b) / 3;
+                    underlayPixel.r = lightness * underlayColor.r;
+                    underlayPixel.g = lightness * underlayColor.g;
+                    underlayPixel.b = lightness * underlayColor.b;
+                }
+                float src = overlayPixel.a;
+                float dst = 1f - src;
+                float alpha = src + (dst * underlayPixel.a);
+                Color result = (overlayPixel * src + underlayPixel * underlayPixel.a * dst) / alpha;
+                result.a = alpha;
+                mainPixels[i] = result;
+            }
+            mainTex.SetPixels(mainPixels);
+            mainTex.Apply();
+        }
+    }
 }
