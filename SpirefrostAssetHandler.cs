@@ -1885,7 +1885,7 @@ namespace Spirefrost
                 .CreateItem("fusionhammer", "Fusion Hammer")
                 .SetSprites("Items/FusionHammer.png", "Items/FusionHammerBG.png")
                 .WithValue(50)
-                .SetDamage(2)
+                .SetDamage(1)
                 .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
