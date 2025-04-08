@@ -149,7 +149,7 @@ namespace Spirefrost
 
         public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
         {
-            if (!cardPlayed && entity == target && count > 0 && targets != null && targets.Length != 0)
+            if (!cardPlayed && entity == target && count > 0)
             {
                 cardPlayed = true;
                 amountToClear = current;
@@ -170,9 +170,9 @@ namespace Spirefrost
 
         public IEnumerator ActionPerformed(PlayAction action)
         {
-            cardPlayed = false;
-            yield return Clear(amountToClear);
-        }
+                cardPlayed = false;
+                yield return Clear(amountToClear);
+            }
 
         public IEnumerator Clear(int amount)
         {
