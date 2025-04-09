@@ -695,6 +695,39 @@ namespace Spirefrost
                     };
                 })
             );
+
+            assets.Add(StatusCopy("On Card Played Add Gearhammer To Hand", "On Card Played Do Discovery")
+                .WithText("Choose 1 of <{a}> random <Items> to add to your hand")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Discovery");
+                })
+            );
+
+            assets.Add(StatusCopy("Instant Summon Gunk In Hand", "Instant Summon Chosen Card")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
+                {
+                    data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Chosen Card");
+                    data.summonCopy = true;
+                })
+            );
+
+            assets.Add(StatusCopy("Summon Gearhammer", "Summon Chosen Card")
+                .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
+                {
+                    data.summonCard = null;
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectDiscovery>("STS Discovery")
+                .WithText("")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectDiscovery>(data =>
+                {
+                    data.instantSummon = (StatusEffectInstantSummon)TryGet<StatusEffectData>("Instant Summon Chosen Card");
+                })
+            );
         }
 
         private static void CreateKeywords()
@@ -1981,6 +2014,22 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("On Kill Draw", 2)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(MainModFile.instance)
+                .CreateItem("toolbox", "Toolbox")
+                .SetSprites("Items/Toolbox.png", "Items/ToolboxBG.png")
+                .WithValue(50)
+                .SetTraits(TStack("Consume", 1))
+                .CanPlayOnHand(true)
+                .NeedsTarget(false)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Card Played Do Discovery", 3)
                     };
                 })
             );

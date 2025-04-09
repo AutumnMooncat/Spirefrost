@@ -14,6 +14,8 @@ using Extensions = Deadpan.Enums.Engine.Components.Modding.Extensions;
 using System.Collections;
 using System.IO;
 using UnityEngine.Rendering;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.AddressableAssets;
 
 
 namespace Spirefrost
@@ -32,7 +34,8 @@ namespace Spirefrost
         internal Texture2D overlay;
         internal Texture2D underlay;
 
-        internal GameObject managedObject;
+        internal GameObject managedObjects;
+        internal GameObject tempObjects;
 
         internal bool updated;
 
@@ -80,10 +83,15 @@ namespace Spirefrost
             GameMode gameMode = TryGet<GameMode>("GameModeNormal"); //GameModeNormal is the standard game mode. 
             gameMode.classes = gameMode.classes.Append(TryGet<ClassData>("Spire")).ToArray();
             Events.OnEntityCreated += FixImage;
+            Events.PostBattle += CleanUpBattleEnd;
+            Events.OnBackToMainMenu += CleanUpTemp;
 
-            managedObject = new GameObject(Title+".ManagedObject");
-            UnityEngine.Object.DontDestroyOnLoad(managedObject);
-            managedObject.AddComponent<UpdateManager>();
+            managedObjects = new GameObject(Title+".ManagedObjects");
+            UnityEngine.Object.DontDestroyOnLoad(managedObjects);
+            managedObjects.AddComponent<UpdateManager>();
+
+            tempObjects = new GameObject(Title + ".TempObjects");
+            UnityEngine.Object.DontDestroyOnLoad(tempObjects);
         }
 
         public override void Unload()
@@ -95,9 +103,12 @@ namespace Spirefrost
             gameMode.classes = RemoveNulls(gameMode.classes); //Without this, a non-restarted game would crash on tribe selection
             UnloadFromClasses();
             Events.OnEntityCreated -= FixImage;
-
-            managedObject.Destroy();
-            managedObject = null;
+            Events.PostBattle -= CleanUpBattleEnd;
+            Events.OnBackToMainMenu -= CleanUpTemp;
+            managedObjects.Destroy();
+            managedObjects = null;
+            tempObjects.Destroy();
+            tempObjects = null;
         }
 
         internal T TryGet<T>(string name) where T : DataFile
@@ -148,6 +159,18 @@ namespace Spirefrost
             return list.ToArray();
         }
 
+        private void CleanUpTemp()
+        {
+            tempObjects.Destroy();
+            tempObjects = new GameObject(Title + ".TempObjects");
+            UnityEngine.Object.DontDestroyOnLoad(tempObjects);
+        }
+
+        private void CleanUpBattleEnd(CampaignNode node)
+        {
+            CleanUpTemp();
+        }
+
         //Remember to hook this method onto Events.OnEntityCreated in the Load/Unload (see Tutorial 1 or the full code for more details).
         private void FixImage(Entity entity)
         {
@@ -172,8 +195,66 @@ namespace Spirefrost
         }
     }
 
+    [HarmonyPatch(typeof(CardSelector), "TakeCard")]
+    internal static class ItemRewardPatches
+    {
+        internal static bool doOverride;
+        internal static Entity movedEntity;
+        internal static AssetReference effectPrefabRef;
+        internal static CardController controller;
+        static bool Prefix(CardSelector __instance, Entity entity)
+        {
+            if (doOverride)
+            {
+                if ((bool)__instance.character && (bool)entity.data)
+                {
+                    Debug.Log("CardSelector → adding [" + entity.data.name + "] to " + __instance.character.name + "'s hand");
+                    // Make copy first
+                    Card copy = CreateCardCopy(entity.data, References.Player.handContainer, controller);
+                    ActionQueue.Stack(new ActionSequence(copy.UpdateData()), fixedPosition: true);
+                    ActionQueue.Stack(new ActionSequence(Animate(copy.entity)), fixedPosition: true);
+                    ActionQueue.Stack(new ActionRunEnableEvent(copy.entity), fixedPosition: true);
+                    ActionQueue.Stack(new ActionMove(copy.entity, References.Player.handContainer), fixedPosition: true);
+                    //References.Player.handContainer.Add(entity);
+                    //entity.transform.parent = References.Player.handContainer.gameObject.transform;
+                    //entity.display?.hover?.Disable();
+                    __instance.selectEvent.Invoke(copy.entity);
+                    movedEntity = copy.entity;
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private static Card CreateCardCopy(CardData cardData, CardContainer container, CardController controller)
+        {
+            Card card = CardManager.Get(cardData, controller, container.owner, inPlay: true, container.owner.team == References.Player.team);
+            card.entity.flipper.FlipUpInstant();
+            card.canvasGroup.alpha = 0f;
+            container.Add(card.entity);
+            Transform transform = card.transform;
+            transform.localPosition = card.entity.GetContainerLocalPosition();
+            transform.localEulerAngles = card.entity.GetContainerLocalRotation();
+            transform.localScale = card.entity.GetContainerScale();
+            container.Remove(card.entity);
+            card.entity.owner.reserveContainer.Add(card.entity);
+            return card;
+        }
+
+        private static IEnumerator Animate(Entity entity, params CardData.StatusEffectStacks[] withEffects)
+        {
+            AsyncOperationHandle<GameObject> handle = effectPrefabRef.InstantiateAsync(entity.transform);
+            yield return handle;
+            CreateCardAnimation component = handle.Result.GetComponent<CreateCardAnimation>();
+            if ((object)component != null)
+            {
+                yield return component.Run(entity, withEffects);
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(CardCharm), "Update")]
-    internal static class TrackImages
+    internal static class EntropicPatches
     {
         static float ToRadians(float degrees)
         {

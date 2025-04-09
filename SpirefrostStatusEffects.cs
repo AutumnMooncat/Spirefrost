@@ -5,6 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.SceneManagement;
+using static Routine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Spirefrost
 {
@@ -594,6 +600,130 @@ namespace Spirefrost
             {
                 return Run(GetTargets(null, GetWasInRows(entity, targets), null, targets));
             }
+        }
+    }
+
+    public class StatusEffectDiscovery : StatusEffectInstant
+    {
+        public StatusEffectInstantSummon instantSummon;
+
+        public override IEnumerator Process()
+        {
+            int toSpawn = GetAmount();
+            if (toSpawn > 0)
+            {
+                List<PlayAction> actions = new List<PlayAction>(ActionQueue.instance.queue);
+                PlayAction current = ActionQueue.current;
+                ActionQueue.instance.queue.Clear();
+                ActionQueue.current = null;
+                ActionQueue.instance.count = 0;
+                CampaignNodeTypeItem nodetype = null;
+                foreach (CampaignNodeType file in AddressableLoader.GetGroup<CampaignNodeType>("CampaignNodeType"))
+                {
+                    if (file.name.Equals("CampaignNodeItem"))
+                    {
+                        nodetype = (CampaignNodeTypeItem)file;
+                        break;
+                    }
+                }
+                AsyncOperationHandle<GameObject> task = nodetype.routinePrefabRef.InstantiateAsync(MainModFile.instance.tempObjects.transform);
+                yield return new WaitUntil(() => task.IsDone);
+                GameObject gameObject = task.Result;
+                EventRoutine eventRoutine = gameObject.GetComponent<EventRoutine>();
+                ItemEventRoutine itemEventRoutine = (ItemEventRoutine)eventRoutine;
+                List<CardData> randomCards = GetRandomCards(toSpawn);
+                CampaignNode dummyNode = new CampaignNode
+                {
+                    data = new Dictionary<string, object>
+                {
+                    {
+                        "open",
+                        false
+                    },
+                    {
+                        "cards",
+                        randomCards.ToSaveCollectionOfNames()
+                    }
+                }
+                };
+                itemEventRoutine.node = dummyNode;
+                CinemaBarSystem.InInstant();
+                GameObject battleCanvas = Battle.instance.gameObject.transform.GetChild(0).gameObject;
+                GameObject battleBackground = Battle.instance.gameObject.transform.GetChild(2).gameObject;
+                List<Scene> scenes = SceneManager.Loaded.Values.ToList();
+                GameObject targetSystem = null;
+                GameObject uiCanvas = null;
+                foreach (Scene scene in scenes)
+                {
+                    if (scene.name.Equals("Battle"))
+                    {
+                        targetSystem = scene.GetRootGameObjects().First(obj => obj.name.Equals("UnitTargetSystem"));
+                    }
+                    else if (scene.name.Equals("UI"))
+                    {
+                        uiCanvas = scene.GetRootGameObjects().First(obj => obj.name.Equals("Canvas"));
+                    }
+                }
+                target.gameObject.SetActive(false);
+                Battle.GetAllCards().ForEach(x =>
+                {
+                    x.display.hover.SetHoverable(false);
+                });
+                targetSystem.SetActive(false);
+                battleCanvas.SetActive(false);
+                battleBackground.SetActive(false);
+                uiCanvas.SetActive(false);
+                ItemRewardPatches.doOverride = true;
+                ItemRewardPatches.effectPrefabRef = instantSummon.targetSummon.effectPrefabRef;
+                ItemRewardPatches.controller = target.display.hover.controller;
+                yield return itemEventRoutine.Populate();
+                itemEventRoutine.promptOpen = true;
+                yield return itemEventRoutine.Run();
+                yield return base.Process();
+                ItemRewardPatches.doOverride = false;
+                gameObject.SetActive(false);
+                CinemaBarSystem.OutInstant();
+                uiCanvas.SetActive(true);
+                battleBackground.SetActive(true);
+                battleCanvas.SetActive(true);
+                targetSystem.SetActive(true);
+                Battle.GetAllCards().ForEach(x =>
+                {
+                    x.display.hover.SetHoverable(true);
+                });
+                target.gameObject.SetActive(true);
+                ActionQueue.current = current;
+                ActionQueue.instance.queue.AddRange(actions);
+                ActionQueue.instance.count += actions.Count;
+            }
+        }
+
+        private List<CardData> GetRandomCards(int choices)
+        {
+            List<CardData> cardChoices = new List<CardData>();
+            List<CardData> allCards = new List<CardData>();
+            foreach (RewardPool pool in References.PlayerData.classData.rewardPools)
+            {
+                if (pool.type == "Items")
+                {
+                    foreach (DataFile data in pool.list)
+                    {
+                        if (data is CardData card && card.IsItem)
+                        {
+                            allCards.Add(card);
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < choices; i++)
+            {
+                CardData randomCard = allCards.RandomItem();
+                allCards.Remove(randomCard);
+                cardChoices.Add(randomCard);
+            }
+
+            return cardChoices;
         }
     }
 }

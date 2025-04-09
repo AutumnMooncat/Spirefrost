@@ -457,6 +457,8 @@
     <Content Include="Images\Charms\EntropicCharm.png" />
     <Content Include="Images\Charms\EntropicCharmOverlay.png" />
     <Content Include="Images\Charms\EntropicCharmUnderlay.png" />
+    <Content Include="Images\Items\Toolbox.png" />
+    <Content Include="Images\Items\ToolboxBG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
