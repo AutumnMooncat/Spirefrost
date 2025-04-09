@@ -1915,7 +1915,8 @@ namespace Spirefrost
                 .SetSprites("Items/IceCream.png", "Items/IceCreamBG.png")
                 .WithValue(50)
                 .SetDamage(0)
-                .SetAttackEffect(SStack("Reduce Counter", 4), SStack("Snow", 2))
+                .SetTraits(TStack("Consume", 1))
+                .SetAttackEffect(SStack("Reduce Max Counter", 1), SStack("Snow", 2))
             );
 
             assets.Add(new CardDataBuilder(MainModFile.instance)
