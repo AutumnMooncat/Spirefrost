@@ -698,9 +698,13 @@ namespace Spirefrost
 
             for (int i = 0; i < choices; i++)
             {
-                CardData randomCard = allCards.RandomItem();
-                allCards.Remove(randomCard);
-                cardChoices.Add(randomCard);
+                // Dont explode if we make too many choices
+                if (allCards.Count() > 0)
+                {
+                    CardData randomCard = allCards.RandomItem();
+                    allCards.Remove(randomCard);
+                    cardChoices.Add(randomCard);
+                }
             }
 
             return cardChoices;
