@@ -612,11 +612,10 @@ namespace Spirefrost
             int toSpawn = GetAmount();
             if (toSpawn > 0)
             {
-                List<PlayAction> actions = new List<PlayAction>(ActionQueue.instance.queue);
-                PlayAction current = ActionQueue.current;
-                ActionQueue.instance.queue.Clear();
-                ActionQueue.current = null;
-                ActionQueue.instance.count = 0;
+                // Halt current actions
+                HaltManager.HaltActions();
+
+                // Generate Node
                 CampaignNodeTypeItem nodetype = null;
                 foreach (CampaignNodeType file in AddressableLoader.GetGroup<CampaignNodeType>("CampaignNodeType"))
                 {
@@ -628,74 +627,55 @@ namespace Spirefrost
                 }
                 AsyncOperationHandle<GameObject> task = nodetype.routinePrefabRef.InstantiateAsync(MainModFile.instance.tempObjects.transform);
                 yield return new WaitUntil(() => task.IsDone);
-                GameObject gameObject = task.Result;
-                EventRoutine eventRoutine = gameObject.GetComponent<EventRoutine>();
-                ItemEventRoutine itemEventRoutine = (ItemEventRoutine)eventRoutine;
-                List<CardData> randomCards = GetRandomCards(toSpawn);
-                CampaignNode dummyNode = new CampaignNode
-                {
-                    data = new Dictionary<string, object>
-                {
-                    {
-                        "open",
-                        false
-                    },
-                    {
-                        "cards",
-                        randomCards.ToSaveCollectionOfNames()
-                    }
-                }
-                };
-                itemEventRoutine.node = dummyNode;
-                CinemaBarSystem.InInstant();
-                GameObject battleCanvas = Battle.instance.gameObject.transform.GetChild(0).gameObject;
-                GameObject battleBackground = Battle.instance.gameObject.transform.GetChild(2).gameObject;
-                List<Scene> scenes = SceneManager.Loaded.Values.ToList();
-                GameObject targetSystem = null;
-                GameObject uiCanvas = null;
-                foreach (Scene scene in scenes)
-                {
-                    if (scene.name.Equals("Battle"))
-                    {
-                        targetSystem = scene.GetRootGameObjects().First(obj => obj.name.Equals("UnitTargetSystem"));
-                    }
-                    else if (scene.name.Equals("UI"))
-                    {
-                        uiCanvas = scene.GetRootGameObjects().First(obj => obj.name.Equals("Canvas"));
-                    }
-                }
+                GameObject nodeObject = task.Result;
+
+                // Grab routine from node
+                ItemEventRoutine itemEventRoutine = PrepareItemEventRoutine(nodeObject, toSpawn);
+
+                // Halt visual components
+                HaltManager.HaltBattleComponents();
                 target.gameObject.SetActive(false);
-                Battle.GetAllCards().ForEach(x =>
-                {
-                    x.display.hover.SetHoverable(false);
-                });
-                targetSystem.SetActive(false);
-                battleCanvas.SetActive(false);
-                battleBackground.SetActive(false);
-                uiCanvas.SetActive(false);
+
+                // Prep divert card to hand patches
                 ItemRewardPatches.doOverride = true;
                 ItemRewardPatches.effectPrefabRef = instantSummon.targetSummon.effectPrefabRef;
                 ItemRewardPatches.controller = target.display.hover.controller;
+
+                // Prep and run item routine
+                CinemaBarSystem.InInstant();
                 yield return itemEventRoutine.Populate();
                 itemEventRoutine.promptOpen = true;
                 yield return itemEventRoutine.Run();
-                yield return base.Process();
+                
+                // Clean up after
                 ItemRewardPatches.doOverride = false;
-                gameObject.SetActive(false);
+                nodeObject.Destroy();
                 CinemaBarSystem.OutInstant();
-                uiCanvas.SetActive(true);
-                battleBackground.SetActive(true);
-                battleCanvas.SetActive(true);
-                targetSystem.SetActive(true);
-                Battle.GetAllCards().ForEach(x =>
-                {
-                    x.display.hover.SetHoverable(true);
-                });
+                
+                // Resume halted components
                 target.gameObject.SetActive(true);
-                ActionQueue.current = current;
-                ActionQueue.instance.queue.AddRange(actions);
-                ActionQueue.instance.count += actions.Count;
+                HaltManager.ResumeBattleComponents();
+                HaltManager.ResumeActions();
             }
+
+            // Remove self
+            yield return base.Process();
+        }
+
+        private ItemEventRoutine PrepareItemEventRoutine(GameObject nodeObject, int cardsToSpawn)
+        {
+            ItemEventRoutine itemEventRoutine = (ItemEventRoutine)nodeObject.GetComponent<EventRoutine>();
+            List<CardData> randomCards = GetRandomCards(cardsToSpawn);
+            CampaignNode dummyNode = new CampaignNode
+            {
+                data = new Dictionary<string, object>
+                    {
+                        { "open", false },
+                        { "cards", randomCards.ToSaveCollectionOfNames() }
+                    }
+            };
+            itemEventRoutine.node = dummyNode;
+            return itemEventRoutine;
         }
 
         private List<CardData> GetRandomCards(int choices)

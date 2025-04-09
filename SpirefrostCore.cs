@@ -16,6 +16,7 @@ using System.IO;
 using UnityEngine.Rendering;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
+using UnityEngine.SceneManagement;
 
 
 namespace Spirefrost
@@ -192,6 +193,82 @@ namespace Spirefrost
                 "\n\n" +
                 "Well versed in defending themselves, they whittle their enemies down to win the war of attrition.");                                  //Create the description.
 
+        }
+    }
+
+    internal static class HaltManager
+    {
+        private static List<PlayAction> actions;
+        private static PlayAction current;
+        internal static void HaltActions()
+        {
+            actions = new List<PlayAction>(ActionQueue.instance.queue);
+            current = ActionQueue.current;
+            ActionQueue.instance.queue.Clear();
+            ActionQueue.current = null;
+            ActionQueue.instance.count = 0;
+        }
+
+        internal static void ResumeActions()
+        {
+            if (current != null)
+            {
+                ActionQueue.current = current;
+            }
+            if (actions != null)
+            {
+                ActionQueue.instance.queue.AddRange(actions);
+                ActionQueue.instance.count += actions.Count;
+            }
+            current = null;
+            actions = null;
+        }
+
+        private static GameObject battleCanvas;
+        private static GameObject battleBackground;
+        private static GameObject targetSystem;
+        private static GameObject uiCanvas;
+        internal static void HaltBattleComponents()
+        {
+            battleCanvas = Battle.instance.gameObject.transform.GetChild(0).gameObject;
+            battleBackground = Battle.instance.gameObject.transform.GetChild(2).gameObject;
+            List<Scene> scenes = SceneManager.Loaded.Values.ToList();
+            foreach (Scene scene in scenes)
+            {
+                if (scene.name.Equals("Battle"))
+                {
+                    targetSystem = scene.GetRootGameObjects().First(obj => obj.name.Equals("UnitTargetSystem"));
+                }
+                else if (scene.name.Equals("UI"))
+                {
+                    uiCanvas = scene.GetRootGameObjects().First(obj => obj.name.Equals("Canvas"));
+                }
+            }
+            Battle.GetAllCards().ForEach(x =>
+            {
+                x.display.hover.SetHoverable(false);
+            });
+            targetSystem.SetActive(false);
+            battleCanvas.SetActive(false);
+            battleBackground.SetActive(false);
+            uiCanvas.SetActive(false);
+        }
+
+        internal static void ResumeBattleComponents()
+        {
+            uiCanvas?.SetActive(true);
+            battleBackground?.SetActive(true);
+            battleCanvas?.SetActive(true);
+            targetSystem?.SetActive(true);
+            Battle.GetAllCards().ForEach(x =>
+            {
+                x.display.hover.SetHoverable(true);
+            });
+
+            uiCanvas = null;
+            battleBackground = null;
+            battleCanvas = null;
+            targetSystem = null;
         }
     }
 
