@@ -485,7 +485,6 @@ namespace Spirefrost
 
     public class StatusEffectApplyXToFrontEnemiesWhenHit : StatusEffectApplyX
     {
-        [SerializeField]
         public TargetConstraint[] attackerConstraints;
 
         public override void Init()
