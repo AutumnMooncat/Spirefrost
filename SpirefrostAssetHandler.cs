@@ -2022,7 +2022,7 @@ namespace Spirefrost
                 .CreateItem("toolbox", "Toolbox")
                 .SetSprites("Items/Toolbox.png", "Items/ToolboxBG.png")
                 .WithValue(50)
-                .SetTraits(TStack("Consume", 1))
+                .SetTraits(TStack("Consume", 1), TStack("Zoomlin", 1))
                 .CanPlayOnHand(true)
                 .NeedsTarget(false)
                 .SubscribeToAfterAllBuildEvent(data =>
