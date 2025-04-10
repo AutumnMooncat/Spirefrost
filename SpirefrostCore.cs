@@ -170,7 +170,7 @@ namespace Spirefrost
         private void CleanUpBattleEnd(CampaignNode node)
         {
             CleanUpTemp();
-            HaltManager.ResumeBattleComponents()
+            HaltManager.ResumeBattleComponents();
         }
 
         //Remember to hook this method onto Events.OnEntityCreated in the Load/Unload (see Tutorial 1 or the full code for more details).
