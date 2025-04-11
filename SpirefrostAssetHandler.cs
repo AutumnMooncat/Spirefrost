@@ -422,8 +422,6 @@ namespace Spirefrost
             assets.Add(StatusCopy("On Hit Pull Target", "On Hit Increase Counter")
                 .WithText("Count up target's <keyword=counter> by <{a}>")
                 .WithCanBeBoosted(true)
-                .WithIsKeyword(false)
-                .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnHit>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
@@ -476,6 +474,7 @@ namespace Spirefrost
 
             assets.Add(StatusCopy("On Card Played Boost To RandomEnemy", "On Card Played Increase Counter To RandomEnemy")
                 .WithText("Count up <keyword=counter> of a random enemy by {a}")
+                .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Counter");
