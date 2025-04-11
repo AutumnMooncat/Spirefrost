@@ -40,6 +40,8 @@ namespace Spirefrost
 
         internal bool updated;
 
+        internal Dictionary<string, Sprite> maskedSpries = new Dictionary<string, Sprite>();
+
         public MainModFile(string modDirectory) : base(modDirectory)
         { 
             instance = this;

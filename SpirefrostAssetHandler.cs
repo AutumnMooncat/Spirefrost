@@ -1298,6 +1298,7 @@ namespace Spirefrost
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
+                    MainModFile.instance.maskedSpries.Add(data.name, MainModFile.instance.ImagePath("Units/NobMask.png").ToSprite());
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("STS Vuln", 2)
@@ -1317,6 +1318,7 @@ namespace Spirefrost
                 .SetTraits(TStack("Smackback", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
+                    MainModFile.instance.maskedSpries.Add(data.name, MainModFile.instance.ImagePath("Units/LagavulinMask.png").ToSprite());
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Shell", 4),
