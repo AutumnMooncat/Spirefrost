@@ -211,6 +211,10 @@ namespace Spirefrost
         }
 
         public override bool CanActivate()
+        {
+            return true;
+        }
+
         public override bool RunStackEvent(int stacks)
         {
             current += stacks;
