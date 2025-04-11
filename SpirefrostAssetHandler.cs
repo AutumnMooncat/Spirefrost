@@ -754,10 +754,11 @@ namespace Spirefrost
 
             assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectTempConvertAttackToYPreTrigger>("Attack Above X Counts As Frenzy")
-                .WithText("<keyword=attack> above {a} counts as <keyword=frenzy>")
+                .WithText("<keyword=attack> above <{a}> counts as <keyword=frenzy>")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectTempConvertAttackToYPreTrigger>(data =>
                 {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("MultiHit");
                     data.oncePerTurn = true;
                     data.targetConstraints = new TargetConstraint[]

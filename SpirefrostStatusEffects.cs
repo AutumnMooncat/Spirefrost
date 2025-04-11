@@ -824,6 +824,11 @@ namespace Spirefrost
 
         public IEnumerator ActionPerformed(PlayAction action)
         {
+            /*UnityEngine.Debug.Log($"{MainModFile.instance.Title} - Clearing temp stacks?");
+            UnityEngine.Debug.Log($"{MainModFile.instance.Title} - Removed current: {removedCurrent}");
+            UnityEngine.Debug.Log($"{MainModFile.instance.Title} - Removed max: {removedMax}");
+            UnityEngine.Debug.Log($"{MainModFile.instance.Title} - Removed temp: {removedTemp}");
+            UnityEngine.Debug.Log($"{MainModFile.instance.Title} - Effect added: {effectAmountAdded}");*/
             cardPlayed = false;
             target.damage.current += removedCurrent;
             target.damage.max += removedMax;
@@ -842,8 +847,7 @@ namespace Spirefrost
                 {
                     target.curveAnimator.Ping();
                 }
-                count = addedEffect.count - 1;
-                yield return addedEffect.RemoveStacks(effectAmountAdded, removeTemporary: false);
+                yield return addedEffect?.RemoveStacks(effectAmountAdded, removeTemporary: false);
             }
             effectAmountAdded = 0;
             yield break;
@@ -863,7 +867,6 @@ namespace Spirefrost
     }
 
     // Thank you AbsentAbigail!
-
     public class StatusEffectDiscovery : StatusEffectInstant
     {
         public enum CardSource
