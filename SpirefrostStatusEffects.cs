@@ -895,24 +895,40 @@ namespace Spirefrost
             CardContainer container = GetCardContainer();
 
             if (source == CardSource.Custom)
+            {
                 foreach (Entity entity in container)
+                {
                     yield return entity.GetCard().UpdateData();
+                }
+            }
 
             CinemaBarSystem.In();
             CinemaBarSystem.SetSortingLayer("UI2");
             if (!title.IsEmpty)
+            {
                 CinemaBarSystem.Top.SetPrompt(title.GetLocalizedString(), "Select");
+            }
             pocketSequence.AddCards(container);
+
             DiscoveryPatches.instantSnap = true;
             yield return pocketSequence.Run();
             DiscoveryPatches.instantSnap = false;
 
             if (selectedEntity != null) //Card Selected
             {
-                Events.InvokeCardDraw(1);
+                if (source != CardSource.Custom)
+                {
+                    Events.InvokeCardDraw(1);
+                }
+                
                 yield return Sequences.CardMove(selectedEntity, new CardContainer[] { References.Player.handContainer });
                 References.Player.handContainer.TweenChildPositions();
-                Events.InvokeCardDrawEnd();
+
+                if (source != CardSource.Custom)
+                {
+                    Events.InvokeCardDrawEnd();
+                }
+                    
                 selectedEntity.flipper.FlipUp();
                 //yield return Sequences.WaitForAnimationEnd(_selected);
                 yield return new ActionRunEnableEvent(selectedEntity).Run();
