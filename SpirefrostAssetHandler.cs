@@ -473,7 +473,7 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("On Card Played Boost To RandomEnemy", "On Card Played Increase Counter To RandomEnemy")
-                .WithText("Count up <keyword=counter> of a random enemy by {a}")
+                .WithText("Count up <keyword=counter> of a random enemy by <{a}>")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
