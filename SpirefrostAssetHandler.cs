@@ -195,18 +195,17 @@ namespace Spirefrost
                 {
                     TargetConstraintMaxCounterMoreThan hasCounter = ScriptableObject.CreateInstance<TargetConstraintMaxCounterMoreThan>();
                     hasCounter.moreThan = 0;
-                    TargetConstraintOr hasReactionOrCounter = ScriptableObject.CreateInstance<TargetConstraintOr>();
-                    hasReactionOrCounter.constraints = new TargetConstraint[]
+                    TargetConstraintOr doesTrigger = ScriptableObject.CreateInstance<TargetConstraintOr>();
+                    doesTrigger.constraints = new TargetConstraint[]
                     {
+                        ScriptableObject.CreateInstance<TargetConstraintIsItem>(),
                         ScriptableObject.CreateInstance<TargetConstraintHasReaction>(),
                         hasCounter
-
                     };
                     data.targetConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintCanBeBoosted>(),
-                        ScriptableObject.CreateInstance<TargetConstraintIsUnit>(),
-                        hasReactionOrCounter
+                        doesTrigger
                     };
                 })
                 .Subscribe_WithStatusIcon("STS Amplify Icon")
