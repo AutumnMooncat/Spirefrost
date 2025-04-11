@@ -2080,8 +2080,7 @@ namespace Spirefrost
                 .WithValue(55)
                 .SetTraits(TStack("Consume", 1))
                 .CanPlayOnHand(true)
-                .CanPlayOnEnemy(false)
-                .CanPlayOnFriendly(false)
+                .CanPlayOnBoard(false)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
