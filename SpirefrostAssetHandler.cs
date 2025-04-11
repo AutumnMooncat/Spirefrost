@@ -98,7 +98,7 @@ namespace Spirefrost
                         data.leaders = DataList<CardData>("ironclad", "silent", "defect", "watcher");
 
                         Inventory inventory = ScriptableObject.CreateInstance<Inventory>();
-                        inventory.deck.list = DataList<CardData>("kunai", "kunai", "kunai", "kunai", "shovel", "sundial", "medkit", "bronzeorb").ToList();
+                        inventory.deck.list = DataList<CardData>("shuriken", "shuriken", "shuriken", "shuriken", "shovel", "sundial", "medkit", "bronzeorb").ToList();
                         //Test Charms
                         //inventory.upgrades.Add(TryGet<CardUpgradeData>("CardUpgradeCritical"));
                         data.startingInventory = inventory;
@@ -112,7 +112,7 @@ namespace Spirefrost
                             "handdrill", "markofpain", "wristblade", "wingboots", "battery", 
                             "chemx", "pocketwatch", "fusionhammer", "lantern", "icecream", 
                             "bandages", "anchor", "whetstone", "callingbell", "gremlinhorn", 
-                            "toolbox", "boot", "cultistmask", 
+                            "toolbox", "boot", "cultistmask", "kunai",
                             "exploder", "repulser", "spiker", "orbwalker", "sphericguardian", 
                             "sentry", "bookofstabbing", "spirespear", "spireshield"));
 
@@ -743,10 +743,26 @@ namespace Spirefrost
             );
 
             assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectEquipMask>("STS Equip Mask").WithCanBeBoosted(false)
+                .Create<StatusEffectEquipMask>("STS Equip Mask")
+                .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectEquipMask>(data =>
                 {
                     
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectTempConvertAttackToYPreTrigger>("Attack Above X Counts As Frenzy")
+                .WithText("<keyword=attack> above {a} counts as <keyword=frenzy>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectTempConvertAttackToYPreTrigger>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("MultiHit");
+                    data.oncePerTurn = true;
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintDoesDamage>()
+                    };
                 })
             );
         }
@@ -1774,8 +1790,8 @@ namespace Spirefrost
         {
             // STARTERS
             assets.Add(new CardDataBuilder(MainModFile.instance)
-                .CreateItem("kunai", "Kunai")
-                .SetSprites("Items/Kunai.png", "Items/KunaiBG.png")
+                .CreateItem("shuriken", "Shuriken")
+                .SetSprites("Items/Shuriken.png", "Items/ShurikenBG.png")
                 .WithValue(10)
                 .SetDamage(2)
                 .SetStartWithEffect(SStack("On Hit Damage Damaged Target", 1))
@@ -2086,6 +2102,21 @@ namespace Spirefrost
                         SStack("STS Ritual", 1),
                         SStack("STS Equip Mask", 1)
                         //SStack("Reduce Max Health", 3)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
+                .CreateItem("kunai", "Kunai")
+                .SetSprites("Items/Kunai.png", "Items/KunaiBG.png")
+                .WithValue(50)
+                .SetDamage(4)
+                .WithFlavour("I am the era.")
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Attack Above X Counts As Frenzy", 1)
                     };
                 })
             );

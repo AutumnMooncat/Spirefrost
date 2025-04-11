@@ -735,6 +735,126 @@ namespace Spirefrost
         }
     }
 
+    public class StatusEffectTempConvertAttackToYPreTrigger : StatusEffectApplyXPreTrigger
+    {
+        private int removedTemp;
+
+        private int removedCurrent;
+
+        private int removedMax;
+
+        private int effectAmountAdded;
+
+        private bool cardPlayed;
+
+        public StatusEffectTempConvertAttackToYPreTrigger()
+        {
+            scriptableAmount = ScriptableObject.CreateInstance<ScriptableFixedAmount>();
+            ((ScriptableFixedAmount)scriptableAmount).amount = 0;
+            eventPriority = -10000;
+        }
+
+        public override void Init()
+        {
+            base.PreTrigger += EntityPreTrigger;
+            base.OnActionPerformed += ActionPerformed;
+        }
+
+        public new IEnumerator EntityPreTrigger(Trigger trigger)
+        {
+            if (oncePerTurn)
+            {
+                hasRunThisTurn = true;
+            }
+
+            running = true;
+            ((ScriptableFixedAmount)scriptableAmount).amount = 0;
+            int reduceTo = GetAmount();
+            bool prompt = false;
+            if (target.damage.current + target.tempDamage.Value > reduceTo)
+            {
+                // Current damage goes to reduceTo if higher than it
+                // Temp damage needs to be set so damage+temp = reduceTo
+                ((ScriptableFixedAmount)scriptableAmount).amount = target.damage.current + target.tempDamage.Value - reduceTo;
+                if (target.damage.current > reduceTo)
+                {
+                    removedCurrent = target.damage.current - reduceTo;
+                    target.damage.current = reduceTo;
+                    prompt = true;
+                }
+
+                removedTemp = target.tempDamage.Value - (reduceTo - target.damage.current);
+                target.tempDamage.Value = reduceTo - target.damage.current;
+            }
+
+            // Also reduce max if applicable
+            if (target.damage.max > reduceTo)
+            {
+                removedMax = target.damage.max - reduceTo;
+                target.damage.max = reduceTo;
+                prompt = true;
+            }
+            if (prompt)
+            {
+                target.PromptUpdate();
+            }
+            if (((ScriptableFixedAmount)scriptableAmount).amount > 0)
+            {
+                effectAmountAdded += ((ScriptableFixedAmount)scriptableAmount).amount;
+                yield return Run(runAgainst);
+            }
+            runAgainst = null;
+            running = false;
+        }
+
+        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        {
+            if (!cardPlayed && entity == target)
+            {
+                cardPlayed = true;
+            }
+
+            return false;
+        }
+
+        public override bool RunActionPerformedEvent(PlayAction action)
+        {
+            if (cardPlayed)
+            {
+                return ActionQueue.Empty;
+            }
+
+            return false;
+        }
+
+        public IEnumerator ActionPerformed(PlayAction action)
+        {
+            cardPlayed = false;
+            target.damage.current += removedCurrent;
+            target.damage.max += removedMax;
+            target.tempDamage.Value += removedTemp;
+            if (removedCurrent != 0 || removedMax != 0)
+            {
+                target.PromptUpdate();
+            }
+            removedCurrent = 0;
+            removedMax = 0;
+            removedTemp = 0;
+            if (effectAmountAdded > 0)
+            {
+                StatusEffectData addedEffect = target.statusEffects.Find((StatusEffectData a) => a.name.Equals(effectToApply.name));
+                if (doPing)
+                {
+                    target.curveAnimator.Ping();
+                }
+                count = addedEffect.count - 1;
+                yield return addedEffect.RemoveStacks(effectAmountAdded, removeTemporary: false);
+            }
+            effectAmountAdded = 0;
+            yield break;
+        }
+    }
+
     public class StatusEffectEquipMask : StatusEffectData
     {
         public override void Init()
