@@ -41,6 +41,7 @@ namespace Spirefrost
         internal bool updated;
 
         internal Dictionary<string, Sprite> maskedSpries = new Dictionary<string, Sprite>();
+        internal Dictionary<string, Predicate<object>> predicateReferences = new Dictionary<string, Predicate<object>>();
 
         public MainModFile(string modDirectory) : base(modDirectory)
         { 

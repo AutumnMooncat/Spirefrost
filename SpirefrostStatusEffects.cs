@@ -11,6 +11,9 @@ using UnityEngine.SceneManagement;
 using static Routine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using UnityEngine.Localization;
+using WildfrostHopeMod.Utils;
+using DeadExtensions;
 
 namespace Spirefrost
 {
@@ -867,111 +870,236 @@ namespace Spirefrost
         }
     }
 
+    // Thank you AbsentAbigail!
+
     public class StatusEffectDiscovery : StatusEffectInstant
     {
-        public StatusEffectInstantSummon instantSummon;
+        public enum CardSource
+        {
+            Draw,
+            Discard,
+            Custom // Use Summon Copy
+        }
+
+        public CardSource source = CardSource.Draw;
+        public string[] customCardList;
+        public int copies = 1;
+        public StatusEffectInstantSummon summonCopy;
+        public CardData.StatusEffectStacks[] addEffectStacks;
+        public LocalizedString title;
+        public bool addToDeck;
+
+        private CardContainer _cardContainer;
+        private GameObject _gameObject;
+        private GameObject _objectGroup;
+
+        private Entity _selected;
+        private CardPocketSequence _sequence;
 
         public override IEnumerator Process()
         {
-            int toSpawn = GetAmount();
-            if (toSpawn > 0)
+            _sequence = FindObjectOfType<CardPocketSequence>(true);
+            var cc = (CardControllerSelectCard)_sequence.cardController;
+            cc.pressEvent.AddListener(ChooseCard);
+            cc.canPress = true;
+            var container = GetCardContainer();
+
+            if (source == CardSource.Custom)
+                foreach (var entity in container)
+                    yield return entity.GetCard().UpdateData();
+
+            CinemaBarSystem.In();
+            CinemaBarSystem.SetSortingLayer("UI2");
+            if (!title.IsEmpty)
+                CinemaBarSystem.Top.SetPrompt(title.GetLocalizedString(), "Select");
+            _sequence.AddCards(container);
+            yield return _sequence.Run();
+
+            if (_selected != null) //Card Selected
             {
-                // Halt current actions
-                HaltManager.HaltActions();
+                Events.InvokeCardDraw(1);
+                yield return Sequences.CardMove(_selected, new CardContainer[] { References.Player.handContainer });
+                References.Player.handContainer.TweenChildPositions();
+                Events.InvokeCardDrawEnd();
+                _selected.flipper.FlipUp();
+                yield return Sequences.WaitForAnimationEnd(_selected);
+                yield return new ActionRunEnableEvent(_selected).Run();
+                _selected.display.hover.enabled = true;
 
-                // Generate Node
-                CampaignNodeTypeItem nodetype = null;
-                foreach (CampaignNodeType file in AddressableLoader.GetGroup<CampaignNodeType>("CampaignNodeType"))
-                {
-                    if (file.name.Equals("CampaignNodeItem"))
-                    {
-                        nodetype = (CampaignNodeTypeItem)file;
-                        break;
-                    }
-                }
-                AsyncOperationHandle<GameObject> task = nodetype.routinePrefabRef.InstantiateAsync(MainModFile.instance.tempObjects.transform);
-                yield return new WaitUntil(() => task.IsDone);
-                GameObject nodeObject = task.Result;
+                foreach (var stack in addEffectStacks)
+                    ActionQueue.Stack(new ActionApplyStatus(_selected, null, stack.data, stack.count));
 
-                // Grab routine from node
-                ItemEventRoutine itemEventRoutine = PrepareItemEventRoutine(nodeObject, toSpawn);
+                _selected.display.promptUpdateDescription = true;
+                _selected.PromptUpdate();
 
-                // Halt visual components
-                HaltManager.HaltBattleComponents();
-                target.gameObject.SetActive(false);
+                ActionQueue.Stack(new ActionSequence(_selected.UpdateTraits()) { note = $"[{_selected}] Update Traits" });
 
-                // Prep divert card to hand patches
-                ItemRewardPatches.doOverride = true;
-                ItemRewardPatches.effectPrefabRef = instantSummon.targetSummon.effectPrefabRef;
-                ItemRewardPatches.controller = target.display.hover.controller;
-
-                // Prep and run item routine
-                CinemaBarSystem.InInstant();
-                yield return itemEventRoutine.Populate();
-                itemEventRoutine.promptOpen = true;
-                yield return itemEventRoutine.Run();
-                
-                // Clean up after
-                ItemRewardPatches.doOverride = false;
-                nodeObject.Destroy();
-                CinemaBarSystem.OutInstant();
-                
-                // Resume halted components
-                target.gameObject.SetActive(true);
-                HaltManager.ResumeBattleComponents();
-                HaltManager.ResumeActions();
+                _selected = null;
             }
 
-            // Remove self
-            yield return base.Process();
+            _cardContainer?.ClearAndDestroyAllImmediately();
+
+            cc.canPress = false;
+            cc.pressEvent.RemoveListener(ChooseCard);
+
+            CinemaBarSystem.Clear();
+            CinemaBarSystem.Out();
+
+            yield return Remove();
         }
 
-        private ItemEventRoutine PrepareItemEventRoutine(GameObject nodeObject, int cardsToSpawn)
+        private void ChooseCard(Entity entity)
         {
-            ItemEventRoutine itemEventRoutine = (ItemEventRoutine)nodeObject.GetComponent<EventRoutine>();
-            List<CardData> randomCards = GetRandomCards(cardsToSpawn);
-            CampaignNode dummyNode = new CampaignNode
+            _selected = entity;
+            _sequence.promptEnd = true;
+
+            if (!summonCopy)
+                return;
+
+            var cardData = _selected.data;
+            summonCopy.targetSummon.summonCard = cardData;
+            summonCopy.withEffects = new StatusEffectData[addEffectStacks.Length];
+            for (int i = 0; i < addEffectStacks.Length; i++)
             {
-                data = new Dictionary<string, object>
-                    {
-                        { "open", false },
-                        { "cards", randomCards.ToSaveCollectionOfNames() }
-                    }
-            };
-            itemEventRoutine.node = dummyNode;
-            return itemEventRoutine;
+                summonCopy.withEffects[i] = addEffectStacks[i].data;
+            }
+            ActionQueue.Stack(new ActionApplyStatus(target, target, summonCopy, copies));
+
+            AddToDeck(cardData);
+
+            _selected = null;
         }
 
-        private List<CardData> GetRandomCards(int choices)
+        private void AddToDeck(CardData cardData)
         {
-            List<CardData> cardChoices = new List<CardData>();
-            List<CardData> allCards = new List<CardData>();
+            if (!addToDeck)
+                return;
+
+            References.PlayerData.inventory.deck.Add(cardData);
+            Events.InvokeEntityShowUnlocked(_selected);
+        }
+
+        private CardContainer GetCardContainer()
+        {
+            switch (source)
+            {
+                case CardSource.Draw:
+                    return References.Player.drawContainer;
+                case CardSource.Discard:
+                    return References.Player.discardContainer;
+                case CardSource.Custom:
+                    _objectGroup = new GameObject("SelectCardRoutine");
+                    _objectGroup.SetActive(false);
+                    _objectGroup.transform.SetParent(GameObject.Find("Canvas/Padding/HUD/DeckpackLayout").transform.parent
+                        .GetChild(0));
+                    _objectGroup.transform.SetAsFirstSibling();
+
+                    _gameObject = new GameObject("SelectCard");
+                    var rect = _gameObject.AddComponent<RectTransform>();
+                    rect.sizeDelta = new Vector2(7, 2);
+
+                    _cardContainer = CreateCardGrid(_objectGroup.transform, rect);
+
+                    FillCardContainer(GetAmount());
+
+                    _cardContainer.AssignController(Battle.instance.playerCardController);
+
+                    return _cardContainer;
+                default:
+                    return null;
+            }
+        }
+
+        private void FillCardContainer(int amount)
+        {
+            if (customCardList.Length <= 0)
+            {
+                PredicateContainer(amount);
+                return;
+            }
+
+            amount = amount == 0 ? customCardList.Length : amount;
+            foreach (var cardName in InPettyRandomOrder(customCardList).Take(amount))
+            {
+                var cardData = AddressableLoader.Get<CardData>("CardData", cardName).Clone();
+                var card = CardManager.Get(cardData, Battle.instance.playerCardController, References.Player,
+                    true,
+                    true);
+                _cardContainer.Add(card.entity);
+            }
+        }
+
+        private void PredicateContainer(int amount)
+        {
+            Predicate<CardData> predicate = MainModFile.instance.predicateReferences[this.name];
+            List<CardData> validCards = new List<CardData>();
             foreach (RewardPool pool in References.PlayerData.classData.rewardPools)
             {
                 if (pool.type == "Items")
                 {
                     foreach (DataFile data in pool.list)
                     {
-                        if (data is CardData card && card.IsItem)
+                        if (data is CardData card && predicate(card))
                         {
-                            allCards.Add(card);
+                            validCards.Add(card);
                         }
                     }
                 }
             }
 
-            for (int i = 0; i < choices; i++)
+            for (int i = 0; i < amount; i++)
             {
                 // Dont explode if we make too many choices
-                if (allCards.Count() > 0)
+                if (validCards.Count() > 0)
                 {
-                    CardData randomCard = allCards.RandomItem();
-                    allCards.Remove(randomCard);
-                    cardChoices.Add(randomCard);
+                    CardData randomCard = validCards.RandomItem();
+                    validCards.Remove(randomCard);
+                    _cardContainer.Add(CardManager.Get(randomCard.Clone(), Battle.instance.playerCardController, References.Player, inPlay: true, isPlayerCard: true).entity);
                 }
             }
+        }
 
-            return cardChoices;
+        // Random Order from Pokefrost StatusEffectChangeData
+        private static IOrderedEnumerable<T> InPettyRandomOrder<T>(IEnumerable<T> source)
+        {
+            return source.OrderBy(_ => Dead.PettyRandom.Range(0f, 1f));
+        }
+
+        // Card Grid Code by Phan
+        private static CardContainerGrid CreateCardGrid(Transform parent, RectTransform bounds = null)
+        {
+            return CreateCardGrid(parent, new Vector2(2.25f, 3.375f), 5, bounds);
+        }
+
+        private static CardContainerGrid CreateCardGrid(Transform parent, Vector2 cellSize, int columnCount,
+            RectTransform bounds = null)
+        {
+            var gridObj = new GameObject("CardGrid", typeof(RectTransform), typeof(CardContainerGrid));
+            gridObj.transform.SetParent(bounds ?? parent);
+            gridObj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+            var grid = gridObj.GetComponent<CardContainerGrid>();
+            grid.holder = grid.GetComponent<RectTransform>();
+            grid.onAdd = new UnityEventEntity(); // Fix null reference
+            grid.onAdd.AddListener(entity =>
+                entity.flipper.FlipUp()); // Flip up card when it's time (without waiting for others)
+            grid.onRemove = new UnityEventEntity(); // Fix null reference
+
+            grid.cellSize = cellSize;
+            grid.columnCount = columnCount;
+
+            AddScrollers(gridObj); // No click-and-drag. That needs Scroll View
+            var scroller = gridObj.GetOrAdd<Scroller>();
+            scroller.bounds = bounds; // Change scroller.bounds here if it only scrolls partially
+
+            return grid;
+        }
+
+        private static void AddScrollers(GameObject parentObject)
+        {
+            var scroller = parentObject.GetOrAdd<Scroller>(); // Scroll with mouse
+            parentObject.GetOrAdd<ScrollToNavigation>().scroller = scroller; // Scroll with controllers
+            parentObject.GetOrAdd<TouchScroller>().scroller = scroller; // Scroll with touchscreen
         }
     }
 }

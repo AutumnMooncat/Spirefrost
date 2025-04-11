@@ -697,11 +697,11 @@ namespace Spirefrost
                 })
             );
 
-            assets.Add(StatusCopy("On Card Played Add Gearhammer To Hand", "On Card Played Do Discovery")
+            assets.Add(StatusCopy("On Card Played Add Gearhammer To Hand", "On Card Played Do Discovery Toolbox")
                 .WithText("Choose 1 of <{a}> random <Items> to add to your hand")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
-                    data.effectToApply = TryGet<StatusEffectData>("STS Discovery");
+                    data.effectToApply = TryGet<StatusEffectData>("STS Discovery Toolbox");
                 })
             );
 
@@ -709,7 +709,6 @@ namespace Spirefrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
                 {
                     data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Chosen Card");
-                    data.summonCopy = true;
                 })
             );
 
@@ -721,12 +720,15 @@ namespace Spirefrost
             );
 
             assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectDiscovery>("STS Discovery")
+                .Create<StatusEffectDiscovery>("STS Discovery Toolbox")
                 .WithText("")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectDiscovery>(data =>
                 {
-                    data.instantSummon = (StatusEffectInstantSummon)TryGet<StatusEffectData>("Instant Summon Chosen Card");
+                    MainModFile.instance.predicateReferences.Add(data.name, obj => obj is CardData cardData && cardData.IsItem);
+                    data.source = StatusEffectDiscovery.CardSource.Custom;
+                    data.summonCopy = (StatusEffectInstantSummon)TryGet<StatusEffectData>("Instant Summon Chosen Card");
+                    data.title = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English).GetString(SpirefrostStrings.ToolboxTitle);
                 })
             );
 
@@ -2068,7 +2070,7 @@ namespace Spirefrost
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("On Card Played Do Discovery", 3)
+                        SStack("On Card Played Do Discovery Toolbox", 3)
                     };
                 })
             );
