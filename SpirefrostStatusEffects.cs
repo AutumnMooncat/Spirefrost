@@ -210,6 +210,7 @@ namespace Spirefrost
             base.OnActionPerformed += ActionPerformed;
         }
 
+        public override bool CanActivate()
         public override bool RunStackEvent(int stacks)
         {
             current += stacks;
