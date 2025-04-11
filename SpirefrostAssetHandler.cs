@@ -1843,7 +1843,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("handdrill", "Hand Drill")
                 .SetSprites("Items/HandDrill.png", "Items/HandDrillBG.png")
-                .WithValue(45)
+                .WithValue(50)
                 .SetDamage(2)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -1886,7 +1886,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("wingboots", "Wing Boots")
                 .SetSprites("Items/WingBoots.png", "Items/WingBootsBG.png")
-                .WithValue(55)
+                .WithValue(45)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
@@ -1914,7 +1914,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("battery", "Nuclear Battery")
                 .SetSprites("Items/Battery.png", "Items/BatteryBG.png")
-                .WithValue(50)
+                .WithValue(60)
                 .SetTraits(TStack("Consume", 1))
                 .CanPlayOnHand(true)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -1943,7 +1943,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("pocketwatch", "Pocketwatch")
                 .SetSprites("Items/Pocketwatch.png", "Items/PocketwatchBG.png")
-                .WithValue(50)
+                .WithValue(40)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
@@ -1957,7 +1957,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("fusionhammer", "Fusion Hammer")
                 .SetSprites("Items/FusionHammer.png", "Items/FusionHammerBG.png")
-                .WithValue(50)
+                .WithValue(45)
                 .SetDamage(1)
                 .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -1972,7 +1972,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("lantern", "Eerie Lantern")
                 .SetSprites("Items/Lantern.png", "Items/LanternBG.png")
-                .WithValue(50)
+                .WithValue(45)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
@@ -1986,7 +1986,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("icecream", "Ice Cream")
                 .SetSprites("Items/IceCream.png", "Items/IceCreamBG.png")
-                .WithValue(50)
+                .WithValue(60)
                 .SetDamage(0)
                 .SetTraits(TStack("Consume", 1))
                 .SetAttackEffect(SStack("Reduce Max Counter", 1), SStack("Snow", 2))
@@ -1995,7 +1995,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("bandages", "Tough Bandages")
                 .SetSprites("Items/Bandages.png", "Items/BandagesBG.png")
-                .WithValue(50)
+                .WithValue(40)
                 .SetAttackEffect(SStack("Increase Max Health", 1), SStack("Shell", 3))
             );
 
@@ -2031,7 +2031,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("callingbell", "Calling Bell")
                 .SetSprites("Items/CallingBell.png", "Items/CallingBellBG.png")
-                .WithValue(50)
+                .WithValue(55)
                 .CanPlayOnHand(true)
                 .SetTraits(TStack("Consume", 1))
                 .WithFlavour("Bing Bong")
@@ -2077,7 +2077,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("boot", "Boot")
                 .SetSprites("Items/Boot.png", "Items/BootBG.png")
-                .WithValue(50)
+                .WithValue(55)
                 .SetTraits(TStack("Consume", 1))
                 .CanPlayOnHand(true)
                 .CanPlayOnEnemy(false)
