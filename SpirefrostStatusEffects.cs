@@ -876,22 +876,20 @@ namespace Spirefrost
         public CardSource source = CardSource.Draw;
         public string[] customCardList;
         public int copies = 1;
-        public StatusEffectInstantSummon summonCopy;
         public CardData.StatusEffectStacks[] addEffectStacks;
         public LocalizedString title;
-        public bool addToDeck;
 
-        private CardContainer _cardContainer;
-        private GameObject _gameObject;
-        private GameObject _objectGroup;
+        private CardContainer constructedContainer;
+        private GameObject selectCardObject;
+        private GameObject selectCardObjectGroup;
 
-        private Entity _selected;
-        private CardPocketSequence _sequence;
+        private Entity selectedEntity;
+        private CardPocketSequence pocketSequence;
 
         public override IEnumerator Process()
         {
-            _sequence = FindObjectOfType<CardPocketSequence>(true);
-            CardControllerSelectCard cardController = (CardControllerSelectCard)_sequence.cardController;
+            pocketSequence = FindObjectOfType<CardPocketSequence>(true);
+            CardControllerSelectCard cardController = (CardControllerSelectCard)pocketSequence.cardController;
             cardController.pressEvent.AddListener(ChooseCard);
             cardController.canPress = true;
             CardContainer container = GetCardContainer();
@@ -904,34 +902,36 @@ namespace Spirefrost
             CinemaBarSystem.SetSortingLayer("UI2");
             if (!title.IsEmpty)
                 CinemaBarSystem.Top.SetPrompt(title.GetLocalizedString(), "Select");
-            _sequence.AddCards(container);
+            pocketSequence.AddCards(container);
             DiscoveryPatches.instantSnap = true;
-            yield return _sequence.Run();
+            yield return pocketSequence.Run();
             DiscoveryPatches.instantSnap = false;
 
-            if (_selected != null) //Card Selected
+            if (selectedEntity != null) //Card Selected
             {
                 Events.InvokeCardDraw(1);
-                yield return Sequences.CardMove(_selected, new CardContainer[] { References.Player.handContainer });
+                yield return Sequences.CardMove(selectedEntity, new CardContainer[] { References.Player.handContainer });
                 References.Player.handContainer.TweenChildPositions();
                 Events.InvokeCardDrawEnd();
-                _selected.flipper.FlipUp();
+                selectedEntity.flipper.FlipUp();
                 //yield return Sequences.WaitForAnimationEnd(_selected);
-                yield return new ActionRunEnableEvent(_selected).Run();
-                _selected.display.hover.enabled = true;
+                yield return new ActionRunEnableEvent(selectedEntity).Run();
+                selectedEntity.display.hover.enabled = true;
 
-                foreach (var stack in addEffectStacks)
-                    ActionQueue.Stack(new ActionApplyStatus(_selected, null, stack.data, stack.count));
+                foreach (CardData.StatusEffectStacks stack in addEffectStacks)
+                {
+                    ActionQueue.Stack(new ActionApplyStatus(selectedEntity, null, stack.data, stack.count));
+                }
 
-                _selected.display.promptUpdateDescription = true;
-                _selected.PromptUpdate();
+                selectedEntity.display.promptUpdateDescription = true;
+                selectedEntity.PromptUpdate();
 
-                ActionQueue.Stack(new ActionSequence(_selected.UpdateTraits()) { note = $"[{_selected}] Update Traits" });
+                ActionQueue.Stack(new ActionSequence(selectedEntity.UpdateTraits()) { note = $"[{selectedEntity}] Update Traits" });
 
-                _selected = null;
+                selectedEntity = null;
             }
 
-            _cardContainer?.ClearAndDestroyAllImmediately();
+            constructedContainer?.ClearAndDestroyAllImmediately();
 
             cardController.canPress = false;
             cardController.pressEvent.RemoveListener(ChooseCard);
@@ -944,33 +944,8 @@ namespace Spirefrost
 
         private void ChooseCard(Entity entity)
         {
-            _selected = entity;
-            _sequence.promptEnd = true;
-
-            if (!summonCopy)
-                return;
-
-            var cardData = _selected.data;
-            summonCopy.targetSummon.summonCard = cardData;
-            summonCopy.withEffects = new StatusEffectData[addEffectStacks.Length];
-            for (int i = 0; i < addEffectStacks.Length; i++)
-            {
-                summonCopy.withEffects[i] = addEffectStacks[i].data;
-            }
-            ActionQueue.Stack(new ActionApplyStatus(target, target, summonCopy, copies));
-
-            AddToDeck(cardData);
-
-            _selected = null;
-        }
-
-        private void AddToDeck(CardData cardData)
-        {
-            if (!addToDeck)
-                return;
-
-            References.PlayerData.inventory.deck.Add(cardData);
-            Events.InvokeEntityShowUnlocked(_selected);
+            selectedEntity = entity;
+            pocketSequence.promptEnd = true;
         }
 
         private CardContainer GetCardContainer()
@@ -982,23 +957,22 @@ namespace Spirefrost
                 case CardSource.Discard:
                     return References.Player.discardContainer;
                 case CardSource.Custom:
-                    _objectGroup = new GameObject("SelectCardRoutine");
-                    _objectGroup.SetActive(false);
-                    _objectGroup.transform.SetParent(GameObject.Find("Canvas/Padding/HUD/DeckpackLayout").transform.parent
-                        .GetChild(0));
-                    _objectGroup.transform.SetAsFirstSibling();
+                    selectCardObjectGroup = new GameObject("SelectCardRoutine");
+                    selectCardObjectGroup.SetActive(false);
+                    selectCardObjectGroup.transform.SetParent(GameObject.Find("Canvas/Padding/HUD/DeckpackLayout").transform.parent.GetChild(0));
+                    selectCardObjectGroup.transform.SetAsFirstSibling();
 
-                    _gameObject = new GameObject("SelectCard");
-                    var rect = _gameObject.AddComponent<RectTransform>();
+                    selectCardObject = new GameObject("SelectCard");
+                    RectTransform rect = selectCardObject.AddComponent<RectTransform>();
                     rect.sizeDelta = new Vector2(7, 2);
 
-                    _cardContainer = CreateCardGrid(_objectGroup.transform, rect);
+                    constructedContainer = CreateCardGrid(selectCardObjectGroup.transform, rect);
 
                     FillCardContainer(GetAmount());
 
-                    _cardContainer.AssignController(Battle.instance.playerCardController);
+                    constructedContainer.AssignController(Battle.instance.playerCardController);
 
-                    return _cardContainer;
+                    return constructedContainer;
                 default:
                     return null;
             }
@@ -1012,14 +986,16 @@ namespace Spirefrost
                 return;
             }
 
-            amount = amount == 0 ? customCardList.Length : amount;
-            foreach (var cardName in InPettyRandomOrder(customCardList).Take(amount))
+            if (amount == 0)
             {
-                var cardData = AddressableLoader.Get<CardData>("CardData", cardName).Clone();
-                var card = CardManager.Get(cardData, Battle.instance.playerCardController, References.Player,
-                    true,
-                    true);
-                _cardContainer.Add(card.entity);
+                amount = customCardList.Length;
+            }
+
+            foreach(string cardName in InPettyRandomOrder(customCardList).Take(amount))
+            {
+                CardData cardData = AddressableLoader.Get<CardData>("CardData", cardName).Clone();
+                Card card = CardManager.Get(cardData, Battle.instance.playerCardController, References.Player, true, true);
+                constructedContainer.Add(card.entity);
             }
         }
 
@@ -1047,7 +1023,7 @@ namespace Spirefrost
                 CardData randomCard = validCards.RandomItem();
                 validCards.Remove(randomCard);
                 Entity entity = CardManager.Get(randomCard.Clone(), Battle.instance.playerCardController, References.Player, inPlay: true, isPlayerCard: true).entity;
-                _cardContainer.Add(entity);
+                constructedContainer.Add(entity);
             }
         }
 
@@ -1063,25 +1039,23 @@ namespace Spirefrost
             return CreateCardGrid(parent, new Vector2(2.25f, 3.375f), 5, bounds);
         }
 
-        private static CardContainerGrid CreateCardGrid(Transform parent, Vector2 cellSize, int columnCount,
-            RectTransform bounds = null)
+        private static CardContainerGrid CreateCardGrid(Transform parent, Vector2 cellSize, int columnCount, RectTransform bounds = null)
         {
-            var gridObj = new GameObject("CardGrid", typeof(RectTransform), typeof(CardContainerGrid));
+            GameObject gridObj = new GameObject("CardGrid", typeof(RectTransform), typeof(CardContainerGrid));
             gridObj.transform.SetParent(bounds ?? parent);
             gridObj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-            var grid = gridObj.GetComponent<CardContainerGrid>();
+            CardContainerGrid grid = gridObj.GetComponent<CardContainerGrid>();
             grid.holder = grid.GetComponent<RectTransform>();
             grid.onAdd = new UnityEventEntity(); // Fix null reference
-            grid.onAdd.AddListener(entity =>
-                entity.flipper.FlipUp()); // Flip up card when it's time (without waiting for others)
+            grid.onAdd.AddListener(entity => entity.flipper.FlipUp()); // Flip up card when it's time (without waiting for others)
             grid.onRemove = new UnityEventEntity(); // Fix null reference
 
             grid.cellSize = cellSize;
             grid.columnCount = columnCount;
 
             AddScrollers(gridObj); // No click-and-drag. That needs Scroll View
-            var scroller = gridObj.GetOrAdd<Scroller>();
+            Scroller scroller = gridObj.GetOrAdd<Scroller>();
             scroller.bounds = bounds; // Change scroller.bounds here if it only scrolls partially
 
             return grid;
@@ -1089,7 +1063,7 @@ namespace Spirefrost
 
         private static void AddScrollers(GameObject parentObject)
         {
-            var scroller = parentObject.GetOrAdd<Scroller>(); // Scroll with mouse
+            Scroller scroller = parentObject.GetOrAdd<Scroller>(); // Scroll with mouse
             parentObject.GetOrAdd<ScrollToNavigation>().scroller = scroller; // Scroll with controllers
             parentObject.GetOrAdd<TouchScroller>().scroller = scroller; // Scroll with touchscreen
         }

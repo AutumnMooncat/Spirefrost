@@ -727,7 +727,6 @@ namespace Spirefrost
                 {
                     MainModFile.instance.predicateReferences.Add(data.name, obj => obj is CardData cardData && cardData.IsItem);
                     data.source = StatusEffectDiscovery.CardSource.Custom;
-                    data.summonCopy = (StatusEffectInstantSummon)TryGet<StatusEffectData>("Instant Summon Chosen Card");
                     data.title = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English).GetString(SpirefrostStrings.ToolboxTitle);
                 })
             );
