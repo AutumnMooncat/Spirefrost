@@ -167,7 +167,6 @@ namespace Spirefrost
         private void CleanUpBattleEnd(CampaignNode node)
         {
             CleanUpTemp();
-            HaltManager.ResumeBattleComponents();
         }
 
         //Remember to hook this method onto Events.OnEntityCreated in the Load/Unload (see Tutorial 1 or the full code for more details).
@@ -180,137 +179,27 @@ namespace Spirefrost
         }
     }
 
-    internal static class HaltManager
+    [HarmonyPatch(typeof(CardPocketSequence), "Move")]
+    internal static class DiscoveryPatches
     {
-        private static List<PlayAction> actions;
-        private static PlayAction current;
-        internal static void HaltActions()
-        {
-            actions = new List<PlayAction>(ActionQueue.instance.queue);
-            current = ActionQueue.current;
-            ActionQueue.instance.queue.Clear();
-            ActionQueue.current = null;
-            ActionQueue.instance.count = 0;
-        }
+        internal static bool instantSnap;
 
-        internal static void ResumeActions()
+        static bool Prefix(CardPocketSequence __instance, Entity entity, bool includeRandomness)
         {
-            if (current != null)
+            if (instantSnap)
             {
-                ActionQueue.current = current;
-            }
-            if (actions != null)
-            {
-                ActionQueue.instance.queue.AddRange(actions);
-                ActionQueue.instance.count += actions.Count;
-            }
-            current = null;
-            actions = null;
-        }
-
-        private static GameObject battleCanvas;
-        private static GameObject battleBackground;
-        private static GameObject targetSystem;
-        private static GameObject uiCanvas;
-        internal static void HaltBattleComponents()
-        {
-            battleCanvas = Battle.instance.gameObject.transform.GetChild(0).gameObject;
-            battleBackground = Battle.instance.gameObject.transform.GetChild(2).gameObject;
-            List<Scene> scenes = SceneManager.Loaded.Values.ToList();
-            foreach (Scene scene in scenes)
-            {
-                if (scene.name.Equals("Battle"))
+                if (entity.transform.parent == __instance.container.holder)
                 {
-                    targetSystem = scene.GetRootGameObjects().First(obj => obj.name.Equals("UnitTargetSystem"));
+                    Vector3 childPosition = __instance.container.GetChildPosition(entity);
+                    Vector3 childRotation = __instance.container.GetChildRotation(entity);
+                    Vector3 childScale = __instance.container.GetChildScale(entity);
+                    entity.transform.localPosition = childPosition;
+                    entity.transform.localEulerAngles = childRotation;
+                    entity.transform.localScale = childScale;
+                    return false;
                 }
-                else if (scene.name.Equals("UI"))
-                {
-                    uiCanvas = scene.GetRootGameObjects().First(obj => obj.name.Equals("Canvas"));
-                }
-            }
-            Battle.GetAllCards().ForEach(x =>
-            {
-                x.display.hover.SetHoverable(false);
-            });
-            targetSystem.SetActive(false);
-            battleCanvas.SetActive(false);
-            battleBackground.SetActive(false);
-            uiCanvas.SetActive(false);
-        }
-
-        internal static void ResumeBattleComponents()
-        {
-            uiCanvas?.SetActive(true);
-            battleBackground?.SetActive(true);
-            battleCanvas?.SetActive(true);
-            targetSystem?.SetActive(true);
-            Battle.GetAllCards().ForEach(x =>
-            {
-                x.display.hover.SetHoverable(true);
-            });
-
-            uiCanvas = null;
-            battleBackground = null;
-            battleCanvas = null;
-            targetSystem = null;
-        }
-    }
-
-    [HarmonyPatch(typeof(CardSelector), "TakeCard")]
-    internal static class ItemRewardPatches
-    {
-        internal static bool doOverride;
-        internal static Entity movedEntity;
-        internal static AssetReference effectPrefabRef;
-        internal static CardController controller;
-        static bool Prefix(CardSelector __instance, Entity entity)
-        {
-            if (doOverride)
-            {
-                if ((bool)__instance.character && (bool)entity.data)
-                {
-                    Debug.Log("CardSelector → adding [" + entity.data.name + "] to " + __instance.character.name + "'s hand");
-                    // Make copy first
-                    Card copy = CreateCardCopy(entity.data, References.Player.handContainer, controller);
-                    ActionQueue.Stack(new ActionSequence(copy.UpdateData()), fixedPosition: true);
-                    ActionQueue.Stack(new ActionSequence(Animate(copy.entity)), fixedPosition: true);
-                    ActionQueue.Stack(new ActionRunEnableEvent(copy.entity), fixedPosition: true);
-                    ActionQueue.Stack(new ActionMove(copy.entity, References.Player.handContainer), fixedPosition: true);
-                    //References.Player.handContainer.Add(entity);
-                    //entity.transform.parent = References.Player.handContainer.gameObject.transform;
-                    //entity.display?.hover?.Disable();
-                    __instance.selectEvent.Invoke(copy.entity);
-                    movedEntity = copy.entity;
-                }
-                return false;
             }
             return true;
-        }
-
-        private static Card CreateCardCopy(CardData cardData, CardContainer container, CardController controller)
-        {
-            Card card = CardManager.Get(cardData, controller, container.owner, inPlay: true, container.owner.team == References.Player.team);
-            card.entity.flipper.FlipUpInstant();
-            card.canvasGroup.alpha = 0f;
-            container.Add(card.entity);
-            Transform transform = card.transform;
-            transform.localPosition = card.entity.GetContainerLocalPosition();
-            transform.localEulerAngles = card.entity.GetContainerLocalRotation();
-            transform.localScale = card.entity.GetContainerScale();
-            container.Remove(card.entity);
-            card.entity.owner.reserveContainer.Add(card.entity);
-            return card;
-        }
-
-        private static IEnumerator Animate(Entity entity, params CardData.StatusEffectStacks[] withEffects)
-        {
-            AsyncOperationHandle<GameObject> handle = effectPrefabRef.InstantiateAsync(entity.transform);
-            yield return handle;
-            CreateCardAnimation component = handle.Result.GetComponent<CreateCardAnimation>();
-            if ((object)component != null)
-            {
-                yield return component.Run(entity, withEffects);
-            }
         }
     }
 

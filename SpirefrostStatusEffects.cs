@@ -1,19 +1,11 @@
-﻿using System;
+﻿using FMOD;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.SceneManagement;
-using static Routine;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 using UnityEngine.Localization;
 using WildfrostHopeMod.Utils;
-using DeadExtensions;
 
 namespace Spirefrost
 {
@@ -899,13 +891,13 @@ namespace Spirefrost
         public override IEnumerator Process()
         {
             _sequence = FindObjectOfType<CardPocketSequence>(true);
-            var cc = (CardControllerSelectCard)_sequence.cardController;
-            cc.pressEvent.AddListener(ChooseCard);
-            cc.canPress = true;
-            var container = GetCardContainer();
+            CardControllerSelectCard cardController = (CardControllerSelectCard)_sequence.cardController;
+            cardController.pressEvent.AddListener(ChooseCard);
+            cardController.canPress = true;
+            CardContainer container = GetCardContainer();
 
             if (source == CardSource.Custom)
-                foreach (var entity in container)
+                foreach (Entity entity in container)
                     yield return entity.GetCard().UpdateData();
 
             CinemaBarSystem.In();
@@ -913,7 +905,9 @@ namespace Spirefrost
             if (!title.IsEmpty)
                 CinemaBarSystem.Top.SetPrompt(title.GetLocalizedString(), "Select");
             _sequence.AddCards(container);
+            DiscoveryPatches.instantSnap = true;
             yield return _sequence.Run();
+            DiscoveryPatches.instantSnap = false;
 
             if (_selected != null) //Card Selected
             {
@@ -922,7 +916,7 @@ namespace Spirefrost
                 References.Player.handContainer.TweenChildPositions();
                 Events.InvokeCardDrawEnd();
                 _selected.flipper.FlipUp();
-                yield return Sequences.WaitForAnimationEnd(_selected);
+                //yield return Sequences.WaitForAnimationEnd(_selected);
                 yield return new ActionRunEnableEvent(_selected).Run();
                 _selected.display.hover.enabled = true;
 
@@ -939,8 +933,8 @@ namespace Spirefrost
 
             _cardContainer?.ClearAndDestroyAllImmediately();
 
-            cc.canPress = false;
-            cc.pressEvent.RemoveListener(ChooseCard);
+            cardController.canPress = false;
+            cardController.pressEvent.RemoveListener(ChooseCard);
 
             CinemaBarSystem.Clear();
             CinemaBarSystem.Out();
@@ -1035,7 +1029,7 @@ namespace Spirefrost
             List<CardData> validCards = new List<CardData>();
             foreach (RewardPool pool in References.PlayerData.classData.rewardPools)
             {
-                if (pool.type == "Items")
+                if (pool.type != "Charms")
                 {
                     foreach (DataFile data in pool.list)
                     {
@@ -1047,15 +1041,13 @@ namespace Spirefrost
                 }
             }
 
-            for (int i = 0; i < amount; i++)
+            int toAdd = Math.Min(amount, validCards.Count);
+            for (int i = 0; i < toAdd; i++)
             {
-                // Dont explode if we make too many choices
-                if (validCards.Count() > 0)
-                {
-                    CardData randomCard = validCards.RandomItem();
-                    validCards.Remove(randomCard);
-                    _cardContainer.Add(CardManager.Get(randomCard.Clone(), Battle.instance.playerCardController, References.Player, inPlay: true, isPlayerCard: true).entity);
-                }
+                CardData randomCard = validCards.RandomItem();
+                validCards.Remove(randomCard);
+                Entity entity = CardManager.Get(randomCard.Clone(), Battle.instance.playerCardController, References.Player, inPlay: true, isPlayerCard: true).entity;
+                _cardContainer.Add(entity);
             }
         }
 
