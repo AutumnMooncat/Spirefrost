@@ -615,7 +615,7 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("On Turn Apply Teeth To Self", "On Turn Apply Explode To Self")
-                .WithText("Gain <{a}><keyword=explode>")
+                .WithText("Gain <{a}> <keyword=explode>")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
                 {
