@@ -112,6 +112,7 @@
     </Reference>
     <Reference Include="Steamworks">
       <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\Steamworks.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
