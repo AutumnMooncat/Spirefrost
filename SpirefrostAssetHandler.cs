@@ -109,11 +109,12 @@ namespace Spirefrost
                             "madgremlin", "shieldgremlin", "sneakygremlin", "gremlinwizard"));
 
                         RewardPool itemPool = CreateRewardPool("SpireItemPool", "Items", DataList<CardData>(
-                            "handdrill", "markofpain", "wristblade", "wingboots", "bluecandle",
-                            "battery", "chemx", "pocketwatch", "fusionhammer", "lantern",
-                            "icecream", "bandages", "anchor", "whetstone", "callingbell",
-                            "gremlinhorn", "exploder", "repulser", "spiker", "orbwalker",
-                            "sphericguardian", "sentry", "bookofstabbing", "spirespear", "spireshield"));
+                            "handdrill", "markofpain", "wristblade", "wingboots", "battery", 
+                            "chemx", "pocketwatch", "fusionhammer", "lantern", "icecream", 
+                            "bandages", "anchor", "whetstone", "callingbell", "gremlinhorn", 
+                            "toolbox", "boot", "cultistmask", 
+                            "exploder", "repulser", "spiker", "orbwalker", "sphericguardian", 
+                            "sentry", "bookofstabbing", "spirespear", "spireshield"));
 
                         //Dont forget Scrap Charm
                         RewardPool charmPool = CreateRewardPool("SpireCharmPool", "Charms", DataList<CardUpgradeData>(
@@ -726,6 +727,26 @@ namespace Spirefrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectDiscovery>(data =>
                 {
                     data.instantSummon = (StatusEffectInstantSummon)TryGet<StatusEffectData>("Instant Summon Chosen Card");
+                })
+            );
+
+            assets.Add(StatusCopy("Set Attack", "Set Attack Of Card In Hand")
+                .WithText("Set <keyword=attack> of a card in your hand to <{a}>")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSetAttack>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintDoesDamage>()
+                    };
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectEquipMask>("STS Equip Mask").WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectEquipMask>(data =>
+                {
+                    
                 })
             );
         }
@@ -1858,7 +1879,7 @@ namespace Spirefrost
                 })
             );
 
-            assets.Add(new CardDataBuilder(MainModFile.instance)
+            /*assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("bluecandle", "Blue Candle")
                 .SetSprites("Items/BlueCandle.png", "Items/BlueCandleBG.png")
                 .WithValue(60)
@@ -1871,7 +1892,7 @@ namespace Spirefrost
                         SStack("Reduce Max Health", 3)
                     };
                 })
-            );
+            );*/
 
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("battery", "Nuclear Battery")
@@ -2032,6 +2053,39 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("On Card Played Do Discovery", 3)
+                    };
+                })
+            );
+            
+            assets.Add(new CardDataBuilder(MainModFile.instance)
+                .CreateItem("boot", "Boot")
+                .SetSprites("Items/Boot.png", "Items/BootBG.png")
+                .WithValue(50)
+                .SetTraits(TStack("Consume", 1))
+                .CanPlayOnHand(true)
+                .CanPlayOnEnemy(false)
+                .CanPlayOnFriendly(false)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Set Attack Of Card In Hand", 5)
+                    };
+                })
+            );
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
+                .CreateItem("cultistmask", "Cultist Mask")
+                .SetSprites("Items/CultistMask.png", "Items/BlueCandleBG.png")
+                .WithValue(60)
+                .SetTraits(TStack("Consume", 1))
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("STS Ritual", 1),
+                        SStack("STS Equip Mask", 1)
+                        //SStack("Reduce Max Health", 3)
                     };
                 })
             );
