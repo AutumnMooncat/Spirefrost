@@ -45,12 +45,6 @@ namespace Spirefrost
         public MainModFile(string modDirectory) : base(modDirectory)
         { 
             instance = this;
-            /***
-             * CardCharm.image.color is promising
-            /*this.liquidColor.r = (MathUtils.cosDeg((float)(System.currentTimeMillis() / 10L % 360L)) + 1.25F) / 2.3F;// 674
-            this.liquidColor.g = (MathUtils.cosDeg((float)((System.currentTimeMillis() + 1000L) / 10L % 360L)) + 1.25F) / 2.3F;// 675
-            this.liquidColor.b = (MathUtils.cosDeg((float)((System.currentTimeMillis() + 2000L) / 10L % 360L)) + 1.25F) / 2.3F;// 676
-            */
         }
 
         public override string GUID => "autumnmooncat.wildfrost.spirefrost";
@@ -82,7 +76,7 @@ namespace Spirefrost
             // Let our sprites automatically show up for icon descriptions
             SpriteAsset.RegisterSpriteAsset();
             base.Load();
-            CreateLocalizedStrings();
+            SpirefrostStrings.CreateLocalizedStrings();
             GameMode gameMode = TryGet<GameMode>("GameModeNormal"); //GameModeNormal is the standard game mode. 
             gameMode.classes = gameMode.classes.Append(TryGet<ClassData>("Spire")).ToArray();
             Events.OnEntityCreated += FixImage;
@@ -182,20 +176,6 @@ namespace Spirefrost
             {
                 card.mainImage.gameObject.SetActive(true);               //And this line turns them on
             }
-        }
-
-        public string TribeTitleKey => GUID + ".TribeTitle";
-        public string TribeDescKey => GUID + ".TribeDesc";
-
-        //Call this method in Load()
-        private void CreateLocalizedStrings()
-        {
-            StringTable uiText = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English);
-            uiText.SetString(TribeTitleKey, "The Ascenders");                                       //Create the title
-            uiText.SetString(TribeDescKey, "Denizens of the spire have formed an unlikely team after finding themselves in an unknown place. " +
-                "\n\n" +
-                "Well versed in defending themselves, they whittle their enemies down to win the war of attrition.");                                  //Create the description.
-
         }
     }
 
@@ -429,11 +409,11 @@ namespace Spirefrost
 
             //3-0: Text (LocalizedString)
             StringTable collection = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English);
-            gameObject2.transform.GetChild(3).GetChild(0).GetComponent<LocalizeStringEvent>().StringReference = collection.GetString(MainModFile.instance.TribeDescKey);
+            gameObject2.transform.GetChild(3).GetChild(0).GetComponent<LocalizeStringEvent>().StringReference = collection.GetString(SpirefrostStrings.TribeDescKey);
 
             //4:Title Ribbon (Image)
             //4-0: Text (LocalizedString)
-            gameObject2.transform.GetChild(4).GetChild(0).GetComponent<LocalizeStringEvent>().StringReference = collection.GetString(MainModFile.instance.TribeTitleKey);
+            gameObject2.transform.GetChild(4).GetChild(0).GetComponent<LocalizeStringEvent>().StringReference = collection.GetString(SpirefrostStrings.TribeTitleKey);
         }
     }
 }
