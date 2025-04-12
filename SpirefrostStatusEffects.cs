@@ -849,6 +849,7 @@ namespace Spirefrost
             if (entity == target && cardPlayed)
             {
                 cardPlayed = false;
+                hasRunThisTurn = false;
                 ActionQueue.Stack(new ActionSequence(ActionPerformed(null))
                 {
                     note = "Clear Amplify"
