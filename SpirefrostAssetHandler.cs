@@ -1856,7 +1856,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("frostorb", "Frost")
                 .SetSprites("Summons/FrostOrb.png", "Summons/FrostOrbBG.png")
-                .SetStats(2, null, 1)
+                .SetStats(2, 0, 1)
                 .WithCardType("Summoned")
                 .SetAttackEffect(SStack("Frost", 1))
             );
