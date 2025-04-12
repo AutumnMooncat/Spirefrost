@@ -307,12 +307,50 @@ namespace Spirefrost
                 })
             );
 
+            assets.Add(StatusCopy("On Turn Summon Bootleg Copy of RandomEnemy", "On Turn Summon Lightning Orb")
+                .WithText("Summon {0}")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.lightningorb>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Summon Lightning Orb At Appliers Position");
+                })
+            );
+
+            assets.Add(StatusCopy("Instant Summon Bootleg Copy At Appliers Position", "Instant Summon Lightning Orb At Appliers Position")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
+                {
+                    data.withEffects = new StatusEffectData[0];
+                    data.summonCopy = false;
+                    data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Lightning Orb");
+                })
+            );
+
             assets.Add(StatusCopy("Summon Beepop", "Summon Lightning Orb")
                 .WithText("Summon {0}")
                 .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.lightningorb>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
                 {
                     data.summonCard = TryGet<CardData>("lightningorb");
+                })
+            );
+
+            assets.Add(StatusCopy("On Turn Summon Bootleg Copy of RandomEnemy", "On Turn Summon Dark Orb")
+                .WithText("Summon {0}")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.darkorb>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Summon Dark Orb At Appliers Position");
+                })
+            );
+
+            assets.Add(StatusCopy("Instant Summon Bootleg Copy At Appliers Position", "Instant Summon Dark Orb At Appliers Position")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
+                {
+                    data.withEffects = new StatusEffectData[0];
+                    data.summonCopy = false;
+                    data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Dark Orb");
                 })
             );
 
@@ -325,12 +363,50 @@ namespace Spirefrost
                 })
             );
 
+            assets.Add(StatusCopy("On Turn Summon Bootleg Copy of RandomEnemy", "On Turn Summon Frost Orb")
+                .WithText("Summon {0}")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.frostorb>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Summon Frost Orb At Appliers Position");
+                })
+            );
+
+            assets.Add(StatusCopy("Instant Summon Bootleg Copy At Appliers Position", "Instant Summon Frost Orb At Appliers Position")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
+                {
+                    data.withEffects = new StatusEffectData[0];
+                    data.summonCopy = false;
+                    data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Frost Orb");
+                })
+            );
+
             assets.Add(StatusCopy("Summon Beepop", "Summon Frost Orb")
                 .WithText("Summon {0}")
                 .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.frostorb>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
                 {
                     data.summonCard = TryGet<CardData>("frostorb");
+                })
+            );
+
+            assets.Add(StatusCopy("On Turn Summon Bootleg Copy of RandomEnemy", "On Turn Summon Plasma Orb")
+                .WithText("Summon {0}")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.plasmaorb>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Summon Plasma Orb At Appliers Position");
+                })
+            );
+
+            assets.Add(StatusCopy("Instant Summon Bootleg Copy At Appliers Position", "Instant Summon Plasma Orb At Appliers Position")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
+                {
+                    data.withEffects = new StatusEffectData[0];
+                    data.summonCopy = false;
+                    data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Plasma Orb");
                 })
             );
 
@@ -1157,7 +1233,7 @@ namespace Spirefrost
                                 card.SetRandomHealth(7, 9);
                                 card.SetRandomDamage(0, 1);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive("Summon Lightning Orb", 1, 1);
+                                card.SetRandomPassive("On Turn Summon Lightning Orb", 1, 1);
                                 break;
 
                             // Dark
@@ -1165,7 +1241,7 @@ namespace Spirefrost
                                 card.SetRandomHealth(5, 7);
                                 card.SetRandomDamage(0, 1);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive("Summon Dark Orb", 1, 1);
+                                card.SetRandomPassive("On Turn Summon Dark Orb", 1, 1);
                                 break;
 
                             // Plasma
@@ -1173,7 +1249,7 @@ namespace Spirefrost
                                 card.SetRandomHealth(8, 10);
                                 card.SetRandomDamage(5, 7);
                                 card.SetRandomCounter(6, 7);
-                                card.SetRandomPassive("Summon Plasma Orb", 1, 1);
+                                card.SetRandomPassive("On Turn Summon Plasma Orb", 1, 1);
                                 break;
 
                             // Frost
@@ -1181,7 +1257,7 @@ namespace Spirefrost
                                 card.SetRandomHealth(6, 8);
                                 card.SetRandomDamage(3, 5);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive("Summon Frost Orb", 1, 1);
+                                card.SetRandomPassive("On Turn Summon Frost Orb", 1, 1);
                                 break;
 
                             // Claw
