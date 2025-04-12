@@ -590,7 +590,7 @@ namespace Spirefrost
                 {
                     data.targetPlayedCard = true;
                     data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
-                    data.targetConstraints = new TargetConstraint[]
+                    data.applyConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintIsItem>(),
                         ScriptableObject.CreateInstance<TargetConstraintDoesDamage>()
