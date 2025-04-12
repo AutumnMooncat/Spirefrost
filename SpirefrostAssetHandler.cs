@@ -219,7 +219,6 @@ namespace Spirefrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectDoubleTap>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("MultiHit");
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                 })
                 .Subscribe_WithStatusIcon("STS Double Tap Icon")
             );

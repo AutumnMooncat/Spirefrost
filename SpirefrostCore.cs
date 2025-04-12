@@ -179,6 +179,15 @@ namespace Spirefrost
         }
     }
 
+    [HarmonyPatch(typeof(Discarder), "ClearStatusEffects")]
+    internal static class DiscarderPatch
+    {
+        static void Prefix(Discarder __instance, Entity entity)
+        {
+            SpirefrostUtils.InvokeMovedByDiscarder(entity);
+        }
+    }
+
     [HarmonyPatch(typeof(CardPocketSequence), "Move")]
     internal static class DiscoveryPatches
     {

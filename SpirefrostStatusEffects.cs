@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization;
 using WildfrostHopeMod.Utils;
+using Debug = UnityEngine.Debug;
 
 namespace Spirefrost
 {
@@ -138,6 +139,24 @@ namespace Spirefrost
         public override void Init()
         {
             base.OnActionPerformed += ActionPerformed;
+            SpirefrostUtils.OnMovedByDiscarder += DiscardCheck;
+        }
+
+        public void OnDestroy()
+        {
+            SpirefrostUtils.OnMovedByDiscarder -= DiscardCheck;
+        }
+
+        private void DiscardCheck(Entity entity)
+        {
+            if (entity == target && cardPlayed && amountToClear != 0)
+            {
+                cardPlayed = false;
+                ActionQueue.Stack(new ActionSequence(Clear(amountToClear))
+                {
+                    note = "Clear Amplify"
+                }, fixedPosition: true);
+            }
         }
 
         public override bool RunStackEvent(int stacks)
@@ -171,20 +190,28 @@ namespace Spirefrost
 
         public IEnumerator ActionPerformed(PlayAction action)
         {
-                cardPlayed = false;
-                yield return Clear(amountToClear);
+            cardPlayed = false;
+            yield return Clear(amountToClear);
         }
 
         public IEnumerator Clear(int amount)
         {
-            int amount2 = amount;
-            Events.InvokeStatusEffectCountDown(this, ref amount2);
-            if (amount2 != 0)
+            amountToClear = 0;
+            Events.InvokeStatusEffectCountDown(this, ref amount);
+            if (amount != 0)
             {
-                current -= amount2;
-                target.effectBonus -= amount2;
+                current -= amount;
+                target.effectBonus -= amount;
                 target.PromptUpdate();
-                yield return CountDown(target, amount2);
+                yield return CountDownForced(amount);
+            }
+        }
+
+        public IEnumerator CountDownForced(int amount)
+        {
+            if ((bool)target)
+            {
+                yield return RemoveStacks(amount, removeTemporary: false);
             }
         }
 
@@ -196,7 +223,7 @@ namespace Spirefrost
         }
     }
 
-    public class StatusEffectDoubleTap : StatusEffectWhileActiveX
+    public class StatusEffectDoubleTap : StatusEffectData
     {
         public bool cardPlayed;
 
@@ -204,21 +231,42 @@ namespace Spirefrost
 
         public int amountToClear;
 
+        public StatusEffectData effectToApply;
+
         public override void Init()
         {
-            base.Init();
             base.OnActionPerformed += ActionPerformed;
+            base.OnStack += StackRoutine;
+            base.OnEnd += EndRoutine;
+            SpirefrostUtils.OnMovedByDiscarder += DiscardCheck;
         }
 
-        public override bool CanActivate()
+        public void OnDestroy()
         {
-            return true;
+            SpirefrostUtils.OnMovedByDiscarder -= DiscardCheck;
+        }
+
+        private void DiscardCheck(Entity entity)
+        {
+            if (entity == target && cardPlayed && amountToClear != 0)
+            {
+                cardPlayed = false;
+                ActionQueue.Stack(new ActionSequence(Clear(amountToClear))
+                {
+                    note = "Clear Double Tap"
+                }, fixedPosition: true);
+            }
         }
 
         public override bool RunStackEvent(int stacks)
         {
             current += stacks;
-            return false;
+            return true;
+        }
+
+        public override IEnumerator StackRoutine(int stacks)
+        {
+            yield return ModifyFrenzyStacks(stacks);
         }
 
         public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
@@ -250,12 +298,42 @@ namespace Spirefrost
 
         public IEnumerator Clear(int amount)
         {
-            int amount2 = amount;
-            Events.InvokeStatusEffectCountDown(this, ref amount2);
-            if (amount2 != 0)
+            amountToClear = 0;
+            Events.InvokeStatusEffectCountDown(this, ref amount);
+            if (amount != 0)
             {
-                current -= amount2;
-                yield return CountDown(target, amount2);
+                current -= amount;
+                yield return ModifyFrenzyStacks(-amount);
+                yield return CountDownForced(amount);
+            }
+        }
+
+        public IEnumerator CountDownForced(int amount)
+        {
+            if ((bool)target)
+            {
+                yield return RemoveStacks(amount, removeTemporary: false);
+            }
+        }
+
+        public override IEnumerator EndRoutine()
+        {
+            yield return ModifyFrenzyStacks(-current);
+        }
+
+        private IEnumerator ModifyFrenzyStacks(int stacks)
+        {
+            if (stacks > 0)
+            {
+                target.curveAnimator.Ping();
+                yield return StatusEffectSystem.Apply(target, target, effectToApply, stacks, temporary: true);
+                target.PromptUpdate();
+            }
+            else if (stacks < 0)
+            {
+                StatusEffectData frenzyEffect = target.statusEffects.Find((StatusEffectData a) => a.name.Equals(effectToApply.name));
+                target.curveAnimator.Ping();
+                yield return frenzyEffect?.RemoveStacks(-stacks, removeTemporary: true);
             }
         }
     }
@@ -758,6 +836,24 @@ namespace Spirefrost
         {
             base.PreTrigger += EntityPreTrigger;
             base.OnActionPerformed += ActionPerformed;
+            SpirefrostUtils.OnMovedByDiscarder += DiscardCheck;
+        }
+
+        public void OnDestroy()
+        {
+            SpirefrostUtils.OnMovedByDiscarder -= DiscardCheck;
+        }
+
+        private void DiscardCheck(Entity entity)
+        {
+            if (entity == target && cardPlayed)
+            {
+                cardPlayed = false;
+                ActionQueue.Stack(new ActionSequence(ActionPerformed(null))
+                {
+                    note = "Clear Amplify"
+                }, fixedPosition: true);
+            }
         }
 
         public new IEnumerator EntityPreTrigger(Trigger trigger)
