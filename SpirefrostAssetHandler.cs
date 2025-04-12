@@ -1326,7 +1326,7 @@ namespace Spirefrost
 
                             // Empty Mind
                             case 3:
-                                card.traits = new List<CardData.TraitStacks> { TStack("Draw", 1) };
+                                card.traits = new List<CardData.TraitStacks> { TStack("Draw", 2) };
                                 card.SetRandomHealth(8, 10);
                                 card.SetRandomDamage(4, 5);
                                 card.SetRandomCounter(4, 5);
