@@ -24,9 +24,9 @@ namespace Spirefrost
                 CardContainer drawContainer = References.Player.drawContainer;
                 if (drawContainer != null && drawContainer.Count > 0)
                 {
-                    return !not;
+                    return not;
                 }
-                return not;
+                return !not;
             }
 
             if (pile == PileType.Hand)
@@ -34,9 +34,9 @@ namespace Spirefrost
                 CardContainer handContainer = References.Player.handContainer;
                 if (handContainer != null && handContainer.Count > 0)
                 {
-                    return !not;
+                    return not;
                 }
-                return not;
+                return !not;
             }
 
             if (pile == PileType.Discard)
@@ -44,9 +44,9 @@ namespace Spirefrost
                 CardContainer discardContainer = References.Player.discardContainer;
                 if (discardContainer != null && discardContainer.Count > 0)
                 {
-                    return !not;
+                    return not;
                 }
-                return not;
+                return !not;
             }
 
             return false;
