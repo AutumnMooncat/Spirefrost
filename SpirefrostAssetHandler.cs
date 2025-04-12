@@ -521,6 +521,15 @@ namespace Spirefrost
                 })
             );
 
+            assets.Add(StatusCopy("On Turn Apply Shell To Allies", "On Turn Apply Amplify AllyBehind")
+                .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> ally behind")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Amplify");
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.AllyBehind;
+                })
+            );
+
             assets.Add(StatusCopy("Split", "STS Split")
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstantSplit>(data =>
@@ -1522,7 +1531,7 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("MultiHit", 1),
-                        SStack("While Active Increase Effects To AllyBehind", 1)
+                        SStack("On Turn Apply Amplify AllyBehind", 1)
                     };
                 })
             );
