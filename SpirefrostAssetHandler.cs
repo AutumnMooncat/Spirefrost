@@ -1840,7 +1840,7 @@ namespace Spirefrost
             );
 
             assets.Add(new CardDataBuilder(MainModFile.instance)
-                .CreateUnit("plasmaorb", "Plasma Orb")
+                .CreateUnit("plasmaorb", "Plasma")
                 .SetSprites("Summons/PlasmaOrb.png", "Summons/PlasmaOrbBG.png")
                 .SetStats(2, null, 1)
                 .WithCardType("Summoned")
