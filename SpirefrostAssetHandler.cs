@@ -2472,37 +2472,20 @@ namespace Spirefrost
         private static void CreateCharms()
         {
             // CHARMS
-            TargetConstraintHasHealth hasHealth = ScriptableObject.CreateInstance<TargetConstraintHasHealth>();
+            //TargetConstraintHasHealth hasHealth = ScriptableObject.CreateInstance<TargetConstraintHasHealth>();
             TargetConstraintCanBeHit canBeHit = ScriptableObject.CreateInstance<TargetConstraintCanBeHit>();
-            /*assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
-                .Create("MooncatTestCharm")
-                .WithType(CardUpgradeData.Type.Charm)
-                .WithImage("TestCharm.png")
-                .WithTitle("Mooncat Test Charm")
-                .WithText($"Testing: Gain <3> <keyword=autumnmooncat.wildfrost.spirefrost.stsregen>")
-                .WithTier(2) //Affects cost in shops
-                .SetConstraints(hasHealth, canBeHit)
-                .SubscribeToAfterAllBuildEvent(data =>
-                {
-                    data.effects = new CardData.StatusEffectStacks[]
-                    {
-                        SStack("STS Regen", 3)
-                    };
-                })
-            );*/
-
-            TargetConstraintAttackMoreThan moreThan2Attack = ScriptableObject.CreateInstance<TargetConstraintAttackMoreThan>();
-            moreThan2Attack.value = 2;
+            TargetConstraintAttackMoreThan moreThan0Attack = ScriptableObject.CreateInstance<TargetConstraintAttackMoreThan>();
+            moreThan0Attack.value = 0;
             TargetConstraintIsUnit isUnit = ScriptableObject.CreateInstance<TargetConstraintIsUnit>();
             assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("CultistPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/CultistCharm.png")
                 .WithTitle("Cultist Potion")
-                .WithText($"Start with <1> <keyword=autumnmooncat.wildfrost.spirefrost.stsritual>\nReduce <keyword=attack> by <3>")
+                .WithText($"Start with <1><keyword=autumnmooncat.wildfrost.spirefrost.stsritual>\nReduce <keyword=attack> by <1>")
                 .WithTier(2)
-                .ChangeDamage(-3)
-                .SetConstraints(moreThan2Attack, isUnit)
+                .ChangeDamage(-1)
+                .SetConstraints(moreThan0Attack, isUnit)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.effects = new CardData.StatusEffectStacks[]
@@ -2532,7 +2515,7 @@ namespace Spirefrost
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/FearCharm.png")
                 .WithTitle("Fear Potion")
-                .WithText($"Apply <2> <keyword=autumnmooncat.wildfrost.spirefrost.stsvuln>")
+                .WithText($"Apply <2><keyword=autumnmooncat.wildfrost.spirefrost.stsvuln>")
                 .WithTier(2)
                 .SetConstraints(playsOnBoard, doesNotPlayOnSlot, doesTrigger)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -2567,7 +2550,7 @@ namespace Spirefrost
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/FairyCharm.png")
                 .WithTitle("Fairy in a Bottle")
-                .WithText($"Start with <2> <keyword=autumnmooncat.wildfrost.spirefrost.stsflight>")
+                .WithText($"Start with <2><keyword=autumnmooncat.wildfrost.spirefrost.stsflight>")
                 .WithTier(1)
                 .SetConstraints(canBeHit)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -2584,7 +2567,7 @@ namespace Spirefrost
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/WeaknessCharm.png")
                 .WithTitle("Weak Potion")
-                .WithText($"Apply <1> <keyword=autumnmooncat.wildfrost.spirefrost.stsweak>")
+                .WithText($"Apply <1><keyword=autumnmooncat.wildfrost.spirefrost.stsweak>")
                 .WithTier(2)
                 .SetConstraints(playsOnBoard, doesNotPlayOnSlot, doesTrigger)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -2606,15 +2589,14 @@ namespace Spirefrost
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/MiracleCharm.png")
                 .WithTitle("Bottled Miracle")
-                .WithText($"Count down all allies' <sprite name=counter> by <1>\nIncrease <keyword=counter> by <2>")
-                .WithTier(3)
-                .ChangeCounter(2)
+                .WithText($"When hit, count down <keyword=counter> by <1>")
+                .WithTier(2)
                 .SetConstraints(isUnit, canAct)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("On Card Played Reduce Counter To Allies", 1)
+                        SStack("When Hit Reduce Counter To Self", 1)
                     };
                 })
             );
@@ -2669,6 +2651,41 @@ namespace Spirefrost
                     {
                         entropicScript
                     };
+                })
+            );
+
+            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
+                .Create("DuplicationCharm")
+                .WithType(CardUpgradeData.Type.Charm)
+                .WithImage("Charms/DuplicationCharm.png")
+                .WithTitle("Duplication Potion")
+                .WithText($"Create a copy of an <Item>\nDoes not take up a charm slot")
+                .WithTier(2)
+                .SetConstraints(isItem)
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    CardScriptRunnable duplicationScript = ScriptableObject.CreateInstance<CardScriptRunnable>();
+                    duplicationScript.runnable = card =>
+                    {
+                        if (!MainModFile.instance.looping)
+                        {
+                            // Safety Lock
+                            MainModFile.instance.looping = true;
+
+                            System.Collections.IEnumerator logic = SpirefrostUtils.DuplicationLogic(data, card);
+
+                            while (logic.MoveNext())
+                            {
+                                object n = logic.Current;
+                                Debug.Log("Duplication Script: "+n);
+                            }
+                        }
+                    };
+                    data.scripts = new CardScript[]
+                    {
+                        duplicationScript
+                    };
+                    //data.takeSlot = false;
                 })
             );
         }

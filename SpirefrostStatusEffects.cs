@@ -884,7 +884,7 @@ namespace Spirefrost
                 hasRunThisTurn = false;
                 ActionQueue.Stack(new ActionSequence(ActionPerformed(null))
                 {
-                    note = "Clear Amplify"
+                    note = "Clear Temp Convert"
                 }, fixedPosition: true);
             }
         }
@@ -1089,13 +1089,7 @@ namespace Spirefrost
                 {
                     CardUpgradeData applyMe = validUpgrades.TakeRandom().Clone();
                     yield return applyMe.Assign(target);
-                    //applyMe.Assign(target.data);
                 }
-                /*if (target.display is Card card)
-                {
-                    target.display.promptUpdateDescription = true;
-                    yield return card.UpdateData();
-                }*/
             }
             yield return base.Process();
         }

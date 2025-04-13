@@ -32,13 +32,17 @@ namespace Spirefrost
 
         internal Color rainbowColor = new Color(1f, 1f, 1f, 1f);
 
-        internal Texture2D overlay;
-        internal Texture2D underlay;
+        internal Texture2D entropicOverlay;
+        internal Texture2D entropicUnderlay;
+
+        internal Texture2D duplicationOverlay;
+        internal Texture2D duplicationUnderlay;
 
         internal GameObject managedObjects;
         internal GameObject tempObjects;
 
         internal bool updated;
+        internal bool looping;
 
         internal Dictionary<string, Sprite> maskedSpries = new Dictionary<string, Sprite>();
         internal Dictionary<string, Predicate<object>> predicateReferences = new Dictionary<string, Predicate<object>>();
@@ -62,17 +66,29 @@ namespace Spirefrost
                 SpirefrostAssetHandler.CreateAssets();
                 preLoaded = true;
 
-                overlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
+                entropicOverlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
                 {
                     name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmOverlay.png"))
                 };
-                overlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmOverlay.png")));
+                entropicOverlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmOverlay.png")));
 
-                underlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
+                entropicUnderlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
                 {
                     name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmUnderlay.png"))
                 };
-                underlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmUnderlay.png")));
+                entropicUnderlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmUnderlay.png")));
+
+                duplicationOverlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
+                {
+                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/DuplicationCharmOverlay.png"))
+                };
+                duplicationOverlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/DuplicationCharmOverlay.png")));
+
+                duplicationUnderlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
+                {
+                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/DuplicationCharmUnderlay.png"))
+                };
+                duplicationUnderlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/DuplicationCharmUnderlay.png")));
             }
             // Let our sprites automatically show up for icon descriptions
             SpriteAsset.RegisterSpriteAsset();
@@ -213,34 +229,53 @@ namespace Spirefrost
     }
 
     [HarmonyPatch(typeof(UpgradeDisplay), "SetData")]
-    internal static class EntropicTest
+    internal static class CharmOverlay
     {
+        static Image CreateAndAlignOverlay(Image other)
+        {
+            GameObject imageHolder = new GameObject("Charm Overlay");
+            Transform imageTransform = imageHolder.transform;
+            Transform charmTransform = other.gameObject.transform;
+            imageTransform.SetParent(charmTransform, false);
+            imageTransform.Align(charmTransform);
+
+            Image overlayImage = imageHolder.AddComponent<Image>();
+            RectTransform overlayRect = (RectTransform)overlayImage.transform;
+            RectTransform charmImageRect = (RectTransform)other.gameObject.transform;
+            overlayRect.Align(charmImageRect);
+
+            overlayImage.material = other.material;
+            overlayImage.preserveAspect = other.preserveAspect;
+            overlayImage.raycastTarget = other.raycastTarget;
+
+            return overlayImage;
+        }
+
         static void Postfix(UpgradeDisplay __instance, CardUpgradeData data)
         {
             if (data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm")) {
-                GameObject imageHolder = new GameObject("Entropic Overlay");
-                Transform imageTransform = imageHolder.transform;
-                Transform charmTransform = __instance.image.gameObject.transform;
-                imageTransform.SetParent(charmTransform, false);
-                imageTransform.Align(charmTransform);
-
-                Image overlayImage = imageHolder.AddComponent<Image>();
-                RectTransform overlayRect = (RectTransform)overlayImage.transform;
-                RectTransform charmImageRect = (RectTransform)__instance.image.gameObject.transform;
-                overlayRect.Align(charmImageRect);
-
-                overlayImage.sprite = MainModFile.instance.overlay.ToSprite();
-                overlayImage.material = __instance.image.material;
-                overlayImage.preserveAspect = __instance.image.preserveAspect;
-                overlayImage.raycastTarget = __instance.image.raycastTarget;
-                __instance.image.sprite = MainModFile.instance.underlay.ToSprite();
+                Image overlayImage = CreateAndAlignOverlay(__instance.image);
+                overlayImage.sprite = MainModFile.instance.entropicOverlay.ToSprite();
+                __instance.image.sprite = MainModFile.instance.entropicUnderlay.ToSprite();
+            } 
+            else if (data.name.Equals("autumnmooncat.wildfrost.spirefrost.DuplicationCharm"))
+            {
+                Image overlayImage = CreateAndAlignOverlay(__instance.image);
+                overlayImage.sprite = MainModFile.instance.duplicationOverlay.ToSprite();
+                __instance.image.sprite = MainModFile.instance.duplicationUnderlay.ToSprite();
             }
         }
     }
 
     [HarmonyPatch(typeof(CardCharm), "Update")]
-    internal static class EntropicPatches
+    internal static class RainbowCharms
     {
+        static readonly List<String> rainbowEnabled = new List<String>()
+        {
+            "autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm",
+            "autumnmooncat.wildfrost.spirefrost.DuplicationCharm"
+        };
+
         static float ToRadians(float degrees)
         {
             return degrees * (float)Math.PI / 180;
@@ -248,7 +283,7 @@ namespace Spirefrost
 
         static void Postfix(CardCharm __instance)
         {
-            if (__instance.data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm"))
+            if (rainbowEnabled.Contains(__instance.data.name))
             {
                 if (!MainModFile.instance.updated)
                 {
