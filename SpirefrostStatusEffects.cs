@@ -383,15 +383,46 @@ namespace Spirefrost
 
     public class StatusEffectSTSMark : StatusEffectData
     {
+        public bool subbed;
+
+        public bool primed;
+
         public override void Init()
         {
             base.OnStack += DoStuff;
+            Events.OnPreProcessUnits += Prime;
+            subbed = true;
+        }
+
+        public void OnDestroy()
+        {
+            Unsub();
+        }
+
+        public void Unsub()
+        {
+            if (subbed)
+            {
+                Events.OnPreProcessUnits -= Prime;
+                subbed = false;
+            }
+        }
+
+        public void Prime(Character character)
+        {
+            primed = true;
+            Unsub();
         }
 
         private IEnumerator DoStuff(int stacks)
         {
             // All enemies with Mark lose hp
-            foreach (Entity entity in Battle.GetAllUnits(Battle.GetOpponent(GetDamager().owner)))
+            if (!primed)
+            {
+                yield break;
+            }
+
+            foreach (Entity entity in Battle.GetAllUnits(target.owner))
             {
                 int markAmount = 0;
                 foreach (StatusEffectData effect in entity.statusEffects)
