@@ -2528,7 +2528,7 @@ namespace Spirefrost
             );
 
             TargetConstraintDoesDamage doesDamage = ScriptableObject.CreateInstance<TargetConstraintDoesDamage>();
-            assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
+            /*assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("StrengthPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/StrengthCharm.png")
@@ -2543,7 +2543,7 @@ namespace Spirefrost
                         SStack("On Turn Apply Attack To Self", 1)
                     };
                 })
-            );
+            );*/
 
             assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create("FairyPotionCharm")
