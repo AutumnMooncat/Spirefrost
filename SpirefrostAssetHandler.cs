@@ -2037,7 +2037,7 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("spirespear", "Spire Spear")
                 .SetSprites("Units/SpireSpear.png", "Units/SpireSpearBG.png")
-                .SetStats(null, 2, 3)
+                .SetStats(null, 2, 0)
                 .WithCardType("Clunker")
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -2045,8 +2045,8 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 3),
-                        SStack("Pre Trigger Gain Temp MultiHit Equal To Scrap - 1", 1),
-                        SStack("On Card Played Lose Scrap To Self", 1)
+                        SStack("MultiHit", 2),
+                        SStack("When Hit Trigger To Self", 1)
                     };
                 })
             );
