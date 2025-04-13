@@ -153,8 +153,7 @@ namespace Spirefrost
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        ScriptableObject.CreateInstance<TargetConstraintHasHealth>(),
-                        ScriptableObject.CreateInstance<TargetConstraintIsAlive>()
+                        ScriptableObject.CreateInstance<TargetConstraintHasHealth>()
                     };
                 })
                 .Subscribe_WithStatusIcon("STS Regen Icon")
