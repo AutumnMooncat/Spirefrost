@@ -118,7 +118,7 @@ namespace Spirefrost
 
                         //Dont forget Scrap Charm
                         RewardPool charmPool = CreateRewardPool("SpireCharmPool", "Charms", DataList<CardUpgradeData>(
-                            "CultistPotionCharm", "FearPotionCharm", "StrengthPotionCharm",
+                            "CultistPotionCharm", "FearPotionCharm", "DuplicationPotionCharm", // StrengthPotionCharm
                             "FairyPotionCharm", "WeakPotionCharm", "MiraclePotionCharm",
                             "IronPotionCharm", "CardUpgradeScrap"));
 
@@ -2655,7 +2655,7 @@ namespace Spirefrost
             );
 
             assets.Add(new CardUpgradeDataBuilder(MainModFile.instance)
-                .Create("DuplicationCharm")
+                .Create("DuplicationPotionCharm")
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/DuplicationCharm.png")
                 .WithTitle("Duplication Potion")
