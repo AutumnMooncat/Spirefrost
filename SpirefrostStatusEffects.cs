@@ -163,6 +163,7 @@ namespace Spirefrost
         {
             current += stacks;
             target.effectBonus += stacks;
+            target.curveAnimator.Ping();
             target.PromptUpdate();
             return false;
         }
