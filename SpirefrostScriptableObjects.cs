@@ -57,4 +57,12 @@ namespace Spirefrost
             return Check((Entity)null);
         }
     }
+
+    public class ScriptableSkillsInHand : ScriptableAmount
+    {
+        public override int Get(Entity entity)
+        {
+            return References.Player.handContainer.Where(e => e.data.IsItem && !e.data.hasAttack).Count();
+        }
+    }
 }

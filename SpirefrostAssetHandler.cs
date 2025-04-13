@@ -737,6 +737,29 @@ namespace Spirefrost
                 })
             );
 
+            assets.Add(StatusCopy("On Card Played Add Gearhammer To Hand", "On Card Played Add Shiv To Hand")
+                .WithText("Add <{a}> {0} to your hand")
+                .WithTextInsert("<card=autumnmooncat.wildfrost.spirefrost.shiv>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Summon Shiv In Hand");
+                })
+            );
+
+            assets.Add(StatusCopy("Instant Summon Gearhammer In Hand", "Instant Summon Shiv In Hand")
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantSummon>(data =>
+                {
+                    data.targetSummon = (StatusEffectSummon)TryGet<StatusEffectData>("Summon Shiv");
+                })
+            );
+
+            assets.Add(StatusCopy("Summon Gearhammer", "Summon Shiv")
+                .SubscribeToAfterAllBuildEvent<StatusEffectSummon>(data =>
+                {
+                    data.summonCard = TryGet<CardData>("shiv");
+                })
+            );
+
             assets.Add(StatusCopy("On Turn Heal & Cleanse Allies", "On Turn Cleanse Self")
                 .WithText("<keyword=cleanse> self")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
@@ -847,6 +870,136 @@ namespace Spirefrost
                         ScriptableObject.CreateInstance<TargetConstraintDoesDamage>()
                     };
                 })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectLessonLearned>("Lesson Learned")
+                .WithText("At the end of combat, add +{a}<keyword=attack> to a random <Item> in your deck")
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectLessonLearned>(data =>
+                {
+                    
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", "On Card Played Add Zoomlin To Random Attack In Hand")
+                .WithText("Add <keyword=zoomlin> to a random <Item> with <keyword=attack> in your hand")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    TargetConstraintAnd damageItem = ScriptableObject.CreateInstance<TargetConstraintAnd>();
+                    damageItem.constraints = new TargetConstraint[] {
+                        ScriptableObject.CreateInstance<TargetConstraintDoesDamage>(),
+                        ScriptableObject.CreateInstance<TargetConstraintIsItem>()
+                    };
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        damageItem
+                    };
+                })
+            );
+
+            assets.Add(StatusCopy("On Turn Apply Snow To Enemies", "On Turn Judge Enemies")
+                .WithText("Set the <keyword=health> of all enemies with <{a}> or less to <0>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Judgement");
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintHasHealth>()
+                    };
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectJudgement>("STS Judgement")
+                .WithText("If the target has <{a}> or less <keyword=health>, set their <keyword=health> to 0")
+                .SubscribeToAfterAllBuildEvent<StatusEffectJudgement>(data =>
+                {
+                    
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", "On Card Played Apply Double Tap To Random Attack In Hand")
+                .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsdoubletap> to a random <Item> with <keyword=attack> in your hand")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Double Tap");
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintDoesDamage>(),
+                        ScriptableObject.CreateInstance<TargetConstraintIsItem>()
+                    };
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Damage To Self", "On Card Played Combust Enemies")
+                .WithText("Deal <{a}> damage to all enemies")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
+                })
+            );
+
+            assets.Add(StatusCopy("Bonus Damage Equal To Gold Factor 0.02", "Bonus Damage Equal To Skills In Hand")
+                .WithText("Deal additional damage equal to <Items> in hand without <keyword=attack>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectBonusDamageEqualToX>(data =>
+                {
+                    ScriptableSkillsInHand skills = ScriptableObject.CreateInstance<ScriptableSkillsInHand>();
+                    data.scriptableAmount = skills;
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Apply Attack To Self", "On Card Played Gain Random Charm")
+                .WithText("Gain a random <Charm> for the rest of combat")
+                .WithStackable(false)
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Apply Random Charm");
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectApplyRandomCharm>("Instant Apply Random Charm")
+                .WithText("Apply a random <Charm>")
+                .WithStackable(false)
+                .WithCanBeBoosted(false)
+            );
+
+            assets.Add(StatusCopy("On Kill Apply Attack To Self", "On Kill Reduce Max Counter")
+                .WithText("On kill, reduce <keyword=counter> by <{a}>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnKill>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Reduce Max Counter");
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", "On Card Played Apply Amplify To Random Item In Hand")
+                .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> to a random <Item> in your hand")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("STS Amplify");
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintCanBeBoosted>(),
+                        ScriptableObject.CreateInstance<TargetConstraintIsItem>()
+                    };
+                })
+            );
+
+            assets.Add(StatusCopy("On Card Played Lose Health", "On Card Played Lose Health Self")
+                .WithText("Lose <{a}><keyword=health>")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>("Instant Lose Health");
+                    data.doPing = true;
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectInstantLoseHealth>("Instant Lose Health")
+                .WithText("Reduce current <keyword=health> by <{a}>")
             );
         }
 
@@ -1104,7 +1257,7 @@ namespace Spirefrost
                     ironcladScript.runnable = card =>
                     {
                         card.GiveUpgrade();
-                        int ability = new Vector2Int(0, 4).Random();
+                        int ability = new Vector2Int(0, 6).Random();
                         switch (ability)
                         {
                             // Feel No Pain
@@ -1146,6 +1299,23 @@ namespace Spirefrost
                                 card.SetRandomCounter(4, 5);
                                 card.SetRandomPassive("On Kill Increase Health To Self", 2, 3);
                                 break;
+
+                            // Double Tap
+                            case 5:
+                                card.SetRandomHealth(9, 11);
+                                card.SetRandomDamage(4, 5);
+                                card.SetRandomCounter(5, 5);
+                                card.SetRandomPassive("On Card Played Apply Double Tap To Random Attack In Hand", 1, 1);
+                                break;
+
+                            // Combust
+                            case 6:
+                                card.SetRandomHealth(10, 14);
+                                card.SetRandomDamage(2, 3);
+                                card.SetRandomCounter(4, 5);
+                                card.SetRandomPassive("On Card Played Lose Health Self", 1, 1);
+                                card.SetRandomPassive("On Card Played Combust Enemies", 1, 1);
+                                break;
                         }
                     };
 
@@ -1168,7 +1338,7 @@ namespace Spirefrost
                     silentScript.runnable = card =>
                     {
                         card.GiveUpgrade();
-                        int ability = new Vector2Int(0, 4).Random();
+                        int ability = new Vector2Int(0, 6).Random();
                         switch (ability)
                         {
                             // Accuracy
@@ -1187,19 +1357,27 @@ namespace Spirefrost
                                 card.SetRandomPassive("When Enemy Is Hit By Item Apply Shroom To Them", 1, 1);
                                 break;
 
-                            // Grand Finale
+                            // Grand Finale - Removed
+                            /*case 2:
+                                card.SetRandomHealth(8, 10);
+                                card.SetRandomDamage(3, 4);
+                                card.SetRandomCounter(3, 4);
+                                card.SetRandomPassive("On Hit Damage If Draw Pile Empty", 4, 4);
+                                break;*/
+
+                            // Blade Dance
                             case 2:
                                 card.SetRandomHealth(8, 11);
-                                card.SetRandomDamage(4, 6);
-                                card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive("On Hit Damage If Draw Pile Empty", 4, 4);
+                                card.SetRandomDamage(1, 2);
+                                card.SetRandomCounter(3, 4);
+                                card.SetRandomPassive("On Card Played Add Shiv To Hand", 2, 2);
                                 break;
 
                             // Malaise
                             case 3:
                                 card.SetRandomHealth(6, 9);
                                 card.SetRandomDamage(3, 5);
-                                card.SetRandomCounter(5, 6);
+                                card.SetRandomCounter(4, 5);
                                 card.SetRandomActive("STS Weak", 1, 1);
                                 break;
 
@@ -1209,6 +1387,22 @@ namespace Spirefrost
                                 card.SetRandomDamage(2, 3);
                                 card.SetRandomCounter(3, 4);
                                 card.SetRandomPassive("Teeth", 2, 3);
+                                break;
+
+                            // Flechettes
+                            case 5:
+                                card.SetRandomHealth(7, 9);
+                                card.SetRandomDamage(2, 3);
+                                card.SetRandomCounter(3, 4);
+                                card.SetRandomPassive("Bonus Damage Equal To Skills In Hand", 1, 1);
+                                break;
+
+                            // Alchemize
+                            case 6:
+                                card.SetRandomHealth(8, 10);
+                                card.SetRandomDamage(3, 5);
+                                card.SetRandomCounter(4, 5);
+                                card.SetRandomPassive("On Card Played Gain Random Charm", 1, 1);
                                 break;
                         }
                     };
@@ -1232,7 +1426,7 @@ namespace Spirefrost
                     defectScript.runnable = card =>
                     {
                         card.GiveUpgrade();
-                        int ability = new Vector2Int(0, 4).Random();
+                        int ability = new Vector2Int(0, 6).Random();
                         switch (ability)
                         {
                             // Lightning
@@ -1274,6 +1468,22 @@ namespace Spirefrost
                                 card.SetRandomCounter(4, 4);
                                 card.SetRandomPassive("When Item Played, Increase Its Attack", 1, 1);
                                 break;
+
+                            // Sunder 
+                            case 5:
+                                card.SetRandomHealth(8, 10);
+                                card.SetRandomDamage(4, 6);
+                                card.SetRandomCounter(5, 5);
+                                card.SetRandomPassive("On Kill Reduce Max Counter", 1, 1);
+                                break;
+
+                            // Amplify 
+                            case 6:
+                                card.SetRandomHealth(8, 10);
+                                card.SetRandomDamage(3, 4);
+                                card.SetRandomCounter(4, 4);
+                                card.SetRandomPassive("On Card Played Apply Amplify To Random Item In Hand", 1, 1);
+                                break;
                         }
                     };
 
@@ -1296,15 +1506,15 @@ namespace Spirefrost
                     watcherScript.runnable = card =>
                     {
                         card.GiveUpgrade();
-                        int ability = new Vector2Int(0, 4).Random();
+                        int ability = new Vector2Int(0, 6).Random();
                         switch (ability)
                         {
-                            // Calm
+                            // Swivel
                             case 0:
                                 card.SetRandomHealth(8, 10);
                                 card.SetRandomDamage(4, 6);
                                 card.SetRandomCounter(5, 5);
-                                card.SetRandomPassive("On Card Played Add Zoomlin To Random Card In Hand", 1, 1);
+                                card.SetRandomPassive("On Card Played Add Zoomlin To Random Attack In Hand", 1, 1);
                                 break;
 
                             // Pressure Points
@@ -1338,6 +1548,22 @@ namespace Spirefrost
                                 card.SetRandomDamage(3, 3);
                                 card.SetRandomCounter(5, 6);
                                 card.SetRandomPassive("When Attack Item Played, Reduce Counter", 1, 1);
+                                break;
+
+                            // Lesson Learned
+                            case 5:
+                                card.SetRandomHealth(8, 10);
+                                card.SetRandomDamage(4, 6);
+                                card.SetRandomCounter(3, 4);
+                                card.SetRandomPassive("Lesson Learned", 1, 1);
+                                break;
+
+                            // Judgement
+                            case 6:
+                                card.SetRandomHealth(7, 9);
+                                card.SetRandomDamage(4, 6);
+                                card.SetRandomCounter(4, 5);
+                                card.SetRandomPassive("On Turn Judge Enemies", 2, 2);
                                 break;
                         }
                     };
@@ -2211,6 +2437,14 @@ namespace Spirefrost
                 .SetAttackEffect(SStack("Reduce Counter", 3))
                 .SetTraits(TStack("Consume", 1))
             );
+
+            assets.Add(new CardDataBuilder(MainModFile.instance)
+                .CreateItem("shiv", "Shiv")
+                .SetSprites("Items/Shiv.png", "Items/ShivBG.png")
+                .WithValue(50)
+                .SetDamage(2)
+                .SetTraits(TStack("Consume", 1), TStack("Zoomlin", 1))
+            );
         }
 
         private static void CreateCharms()
@@ -2404,7 +2638,7 @@ namespace Spirefrost
                         int applyAmount = Math.Min(3, validUpgrades.Count);
                         for (int i = 0; i < applyAmount; i++)
                         {
-                            CardUpgradeData applyMe = validUpgrades.TakeRandom();
+                            CardUpgradeData applyMe = validUpgrades.TakeRandom().Clone();
                             applyMe.takeSlot = false;
                             applyMe.Assign(card);
                         }

@@ -988,6 +988,119 @@ namespace Spirefrost
         }
     }
 
+    public class StatusEffectLessonLearned : StatusEffectData
+    {
+        public override void Init()
+        {
+            Events.OnBattleWinPreRewards += UpgradeCard;
+        }
+
+        public void OnDestroy()
+        {
+            Events.OnBattleWinPreRewards -= UpgradeCard;
+        }
+
+        private void UpgradeCard()
+        {
+            target.curveAnimator.Ping();
+            CardData randomCard = References.PlayerData.inventory.deck.list.Where(data => data.hasAttack && data.IsItem).ToList().RandomItem();
+            if (randomCard)
+            {
+                randomCard.damage += GetAmount();
+            }
+        }
+    }
+
+    public class StatusEffectJudgement : StatusEffectInstant
+    {
+        public override IEnumerator Process()
+        {
+            if (target.hp.current <= GetAmount())
+            {
+                target.hp.current = 0;
+                target.ResetWhenHealthLostEffects();
+                target.PromptUpdate();
+            }
+            return base.Process();
+        }
+    }
+
+    public class StatusEffectInstantLoseHealth : StatusEffectInstant
+    {
+        public override IEnumerator Process()
+        {
+            target.hp.current -= GetAmount();
+            target.ResetWhenHealthLostEffects();
+            target.PromptUpdate();
+            return base.Process();
+        }
+    }
+
+    public class StatusEffectApplyRandomCharm : StatusEffectInstant
+    {
+        public bool useBanlist = false;
+
+        private static readonly List<string> bannedCharms = new List<string>()
+        {
+            "CardUpgradeBalanced",
+            "CardUpgradeBombskull",
+            "CardUpgradeAttackRemoveEffects",
+            "CardUpgradeBlue",
+            "CardUpgradePig",
+            "CardUpgradeBootleg",
+            "CardUpgradeMime",
+            "CardUpgradeFlameberry",
+            "CardUpgradeGlass",
+            "CardUpgradeShroomReduceHealth",
+            "CardUpgradeFrenzyReduceAttack"
+        };
+
+        private bool HasRoom(Entity entity)
+        {
+            int count = entity.data.upgrades.FindAll((CardUpgradeData a) => a.type == CardUpgradeData.Type.Charm && a.takeSlot).Count;
+            int num = entity.data.charmSlots;
+            if (entity.data.customData != null)
+            {
+                num += entity.data.customData.Get("extraCharmSlots", 0);
+            }
+
+            if (count >= num)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public override IEnumerator Process()
+        {
+            if (HasRoom(target))
+            {
+                List<CardUpgradeData> validUpgrades = new List<CardUpgradeData>();
+                foreach (CardUpgradeData upgrade in AddressableLoader.GetGroup<CardUpgradeData>("CardUpgradeData"))
+                {
+                    if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(useBanlist && bannedCharms.Contains(upgrade.name)) && upgrade.CanAssign(target))
+                    {
+                        validUpgrades.Add(upgrade);
+                    }
+                }
+                int applyAmount = Math.Min(GetAmount(), validUpgrades.Count);
+                for (int i = 0; i < applyAmount; i++)
+                {
+                    CardUpgradeData applyMe = validUpgrades.TakeRandom().Clone();
+                    yield return applyMe.Assign(target);
+                    //applyMe.Assign(target.data);
+                }
+                /*if (target.display is Card card)
+                {
+                    target.display.promptUpdateDescription = true;
+                    yield return card.UpdateData();
+                }*/
+            }
+            yield return base.Process();
+        }
+    }
+
     public class StatusEffectEquipMask : StatusEffectData
     {
         public override void Init()

@@ -453,7 +453,7 @@
     <Compile Include="SpirefrostExtensions.cs" />
     <Compile Include="SpirefrostStatusEffects.cs" />
     <Compile Include="SpirefrostStrings.cs" />
-    <Compile Include="SpirefrostTargetConstraints.cs" />
+    <Compile Include="SpirefrostScriptableObjects.cs" />
     <Compile Include="SpirefrostUtils.cs" />
   </ItemGroup>
   <ItemGroup />
