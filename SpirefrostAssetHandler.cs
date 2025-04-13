@@ -2659,7 +2659,7 @@ namespace Spirefrost
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/DuplicationCharm.png")
                 .WithTitle("Duplication Potion")
-                .WithText($"Create a copy of an <Item>\nDoes not take up a charm slot")
+                .WithText($"Create a copy of an <Item>") // \nDoes not take up a charm slot
                 .WithTier(2)
                 .SetConstraints(isItem)
                 .SubscribeToAfterAllBuildEvent(data =>
