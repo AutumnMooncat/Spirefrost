@@ -212,6 +212,32 @@ namespace Spirefrost
         }
     }
 
+    [HarmonyPatch(typeof(UpgradeDisplay), "SetData")]
+    internal static class EntropicTest
+    {
+        static void Postfix(UpgradeDisplay __instance, CardUpgradeData data)
+        {
+            if (data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm")) {
+                GameObject imageHolder = new GameObject("Entropic Overlay");
+                Transform imageTransform = imageHolder.transform;
+                Transform charmTransform = __instance.image.gameObject.transform;
+                imageTransform.SetParent(charmTransform, false);
+                imageTransform.Align(charmTransform);
+
+                Image overlayImage = imageHolder.AddComponent<Image>();
+                RectTransform overlayRect = (RectTransform)overlayImage.transform;
+                RectTransform charmImageRect = (RectTransform)__instance.image.gameObject.transform;
+                overlayRect.Align(charmImageRect);
+
+                overlayImage.sprite = MainModFile.instance.overlay.ToSprite();
+                overlayImage.material = __instance.image.material;
+                overlayImage.preserveAspect = __instance.image.preserveAspect;
+                overlayImage.raycastTarget = __instance.image.raycastTarget;
+                __instance.image.sprite = MainModFile.instance.underlay.ToSprite();
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(CardCharm), "Update")]
     internal static class EntropicPatches
     {
@@ -222,15 +248,17 @@ namespace Spirefrost
 
         static void Postfix(CardCharm __instance)
         {
-            if (!MainModFile.instance.updated && __instance.data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm"))
+            if (__instance.data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm"))
             {
-                float r = (float)((Math.Cos(ToRadians((Environment.TickCount + 0000L) / 10L % 360L)) + 1.25F) / 2.3F);
-                float g = (float)((Math.Cos(ToRadians((Environment.TickCount + 1000L) / 10L % 360L)) + 1.25F) / 2.3F);
-                float b = (float)((Math.Cos(ToRadians((Environment.TickCount + 2000L) / 10L % 360L)) + 1.25F) / 2.3F);
-
-                Color rainbow = new Color(r, g, b, 1.0f);
-                __instance.image.sprite.texture.OverlayTextures(MainModFile.instance.overlay, MainModFile.instance.underlay, rainbow);
-                MainModFile.instance.updated = true;
+                if (!MainModFile.instance.updated)
+                {
+                    float r = (float)((Math.Cos(ToRadians((Environment.TickCount + 0000L) / 10L % 360L)) + 1.25F) / 2.3F);
+                    float g = (float)((Math.Cos(ToRadians((Environment.TickCount + 1000L) / 10L % 360L)) + 1.25F) / 2.3F);
+                    float b = (float)((Math.Cos(ToRadians((Environment.TickCount + 2000L) / 10L % 360L)) + 1.25F) / 2.3F);
+                    MainModFile.instance.rainbowColor = new Color(r, g, b, 1.0f);
+                    MainModFile.instance.updated = true;
+                }
+                __instance.image.color = MainModFile.instance.rainbowColor;
             }
         }
     }

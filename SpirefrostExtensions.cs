@@ -101,4 +101,29 @@ namespace Spirefrost
             mainTex.Apply();
         }
     }
+
+    internal static class TransformExtensions
+    {
+        internal static void Align(this Transform self, Transform target)
+        {
+            self.localPosition = target.localPosition;
+            self.localEulerAngles = target.localEulerAngles;
+            self.localScale = target.localScale;
+        }
+
+        internal static void Align(this RectTransform self, RectTransform target)
+        {
+            self.localPosition = target.localPosition;
+            self.localEulerAngles = target.localEulerAngles;
+            self.localScale = target.localScale;
+            self.anchoredPosition = target.anchoredPosition;
+            self.anchoredPosition3D = target.anchoredPosition3D;
+            self.anchorMax = target.anchorMax;
+            self.anchorMin = target.anchorMin;
+            self.offsetMax = target.offsetMax;
+            self.offsetMin = target.offsetMin;
+            self.pivot = target.pivot;
+            self.sizeDelta = target.sizeDelta;
+        }
+    }
 }
