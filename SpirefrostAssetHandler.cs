@@ -1001,6 +1001,28 @@ namespace Spirefrost
                 .Create<StatusEffectInstantLoseHealth>("Instant Lose Health")
                 .WithText("Reduce current <keyword=health> by <{a}>")
             );
+
+            assets.Add(StatusCopy("When Hit Apply Snow To Attacker", "When Hit Increase Attacker Counter")
+                .WithText("When hit, increase attacker's <keyword=counter> by {a}")
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHit>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>("Increase Max Counter Adjusted");
+                })
+            );
+
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectInstantIncreaseMaxCounterAdjusted>("Increase Max Counter Adjusted")
+                .WithCanBeBoosted(true)
+                .WithOffensive(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantIncreaseMaxCounterAdjusted>(data =>
+                {
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintMaxCounterMoreThan>(),
+                    };
+                })
+            );
         }
 
         private static void CreateKeywords()
@@ -1892,7 +1914,7 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack("When Hit Apply Shell To AlliesInRow", 2)
+                        SStack("When Hit Increase Attacker Counter", 1)
                     };
                 })
             );
