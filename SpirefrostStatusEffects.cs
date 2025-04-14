@@ -434,6 +434,8 @@ namespace Spirefrost
 
         public bool primed;
 
+        public bool ignoreSilence = true;
+
         public override void Init()
         {
             base.OnTurnEnd += PostTurn;
@@ -459,6 +461,11 @@ namespace Spirefrost
         {
             primed = true;
             Unsub();
+        }
+
+        public override bool TargetSilenced()
+        {
+            return ignoreSilence || base.TargetSilenced();
         }
 
         public override bool RunTurnEndEvent(Entity entity)
