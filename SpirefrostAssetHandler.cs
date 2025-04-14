@@ -934,6 +934,8 @@ namespace Spirefrost
 
             assets.Add(StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", "On Card Played Apply Double Tap To Random Attack In Hand")
                 .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsdoubletap> to a random <Item> with <keyword=attack> in your hand")
+                .WithCanBeBoosted(true)
+                .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Double Tap");
