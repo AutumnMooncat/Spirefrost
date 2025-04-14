@@ -976,6 +976,7 @@ namespace Spirefrost
 
             assets.Add(StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", "On Card Played Apply Amplify To Random Item In Hand")
                 .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> to a random <Item> in your hand")
+                .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Amplify");
