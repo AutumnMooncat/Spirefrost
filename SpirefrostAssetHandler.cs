@@ -2627,14 +2627,14 @@ namespace Spirefrost
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/HeartOfIronCharm.png")
                 .WithTitle("Heart of Iron")
-                .WithText($"When <Redraw Bell> is hit, gain <1><keyword=shell>")
+                .WithText($"When <Redraw Bell> is hit, gain <2><keyword=shell>")
                 .WithTier(1)
                 .SetConstraints(canBeHit)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("When Redraw Hit Apply Shell To Self", 1)
+                        SStack("When Redraw Hit Apply Shell To Self", 2)
                     };
                 })
             );
