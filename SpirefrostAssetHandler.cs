@@ -521,7 +521,7 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("On Turn Apply Shell To Allies", "On Turn Apply Amplify AllyBehind")
-                .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> ally behind")
+                .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> to ally behind")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Amplify");
