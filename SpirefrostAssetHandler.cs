@@ -2465,7 +2465,7 @@ namespace Spirefrost
                 .SetSprites("Items/Shiv.png", "Items/ShivBG.png")
                 .WithValue(50)
                 .SetDamage(2)
-                .SetTraits(TStack("Consume", 1), TStack("Zoomlin", 1))
+                .SetTraits(TStack("Zoomlin", 1), TStack("Consume", 1))
             );
         }
 
@@ -2608,7 +2608,6 @@ namespace Spirefrost
                 .WithTitle("Heart of Iron")
                 .WithText($"When <Redraw Bell> is hit, gain <1><keyword=shell>")
                 .WithTier(1)
-                .ChangeCounter(2)
                 .SetConstraints(canBeHit)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
