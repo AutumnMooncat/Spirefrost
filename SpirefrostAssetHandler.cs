@@ -1307,10 +1307,10 @@ namespace Spirefrost
                         {
                             // Feel No Pain
                             case 0:
-                                card.SetRandomHealth(8, 12);
+                                card.SetRandomHealth(7, 9);
                                 card.SetRandomDamage(4, 6);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive("When Card Destroyed, Gain Shell", 1, 2);
+                                card.SetRandomPassive("When Card Destroyed, Gain Shell", 1, 1);
                                 break;
 
                             // Demon Form
