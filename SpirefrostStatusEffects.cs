@@ -625,14 +625,38 @@ namespace Spirefrost
         }
     }
 
+    // This now only works for items, but thats my only use case at the moment
     public class StatusEffectApplyXWhenAnyCardIsPlayed : StatusEffectApplyX
     {
         public TargetConstraint[] triggerConstraints;
-        public Boolean targetPlayedCard;
+
+        public bool targetPlayedCard;
+
+        private bool primed;
+
+        private Entity entityRef;
+
+        private Entity[] targetsRef;
 
         public override void Init()
         {
-            base.OnCardPlayed += Check;
+            Events.OnActionPerform += CheckAction;
+        }
+
+        public void OnDestroy()
+        {
+            Events.OnActionPerform -= CheckAction;
+        }
+
+        private void CheckAction(PlayAction playAction)
+        {
+            if (playAction is ActionReduceUses && primed)
+            {
+                ActionQueue.Stack(new ActionSequence(DoStuff(entityRef, targetsRef))
+                {
+                    note = "StatusEffectApplyXWhenAnyCardIsPlayed"
+                }, fixedPosition: true);
+            }
         }
 
         public static CardContainer[] GetWasInRows(Entity entity, IEnumerable<Entity> targets)
@@ -660,7 +684,7 @@ namespace Spirefrost
 
         public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
         {
-            if (target.enabled)
+            if (target.enabled && !primed)
             {
                 foreach (TargetConstraint triggerConstraint in triggerConstraints)
                 {
@@ -669,13 +693,21 @@ namespace Spirefrost
                         return false;
                     }
                 }
-                return true;
+
+                primed = true;
+                entityRef = entity;
+                targetsRef = targets;
             }
+
             return false;
         }
 
-        public IEnumerator Check(Entity entity, Entity[] targets)
+        public IEnumerator DoStuff(Entity entity, Entity[] targets)
         {
+            primed = false;
+            entityRef = null;
+            targetsRef = null;
+
             if (targetPlayedCard)
             {
                 return Run(new List<Entity>() { entity });
