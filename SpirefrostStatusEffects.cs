@@ -465,7 +465,11 @@ namespace Spirefrost
 
         public override bool TargetSilenced()
         {
-            return ignoreSilence || base.TargetSilenced();
+            if (ignoreSilence)
+            {
+                return false;
+            }
+            return base.TargetSilenced();
         }
 
         public override bool RunTurnEndEvent(Entity entity)
