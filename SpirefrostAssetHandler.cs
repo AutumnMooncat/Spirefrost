@@ -422,6 +422,7 @@ namespace Spirefrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Regen");
+                    data.noTargetTypeArgs = new string[] { "<sprite name=spirefrost.stsregen>" };
                 })
             );
 
@@ -462,6 +463,8 @@ namespace Spirefrost
                     {
                         ScriptableObject.CreateInstance<TargetConstraintCanBeHit>()
                     };
+                    data.noTargetType = NoTargetType.NoTargetForStatus;
+                    data.noTargetTypeArgs = new string[] { "<sprite name=spirefrost.stsvuln>" };
                 })
             );
 
@@ -526,6 +529,7 @@ namespace Spirefrost
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Amplify");
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.AllyBehind;
+                    data.noTargetTypeArgs = new string[] { "<sprite name=spirefrost.stsamplify>" };
                 })
             );
 
@@ -572,6 +576,8 @@ namespace Spirefrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnHit>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Shell");
+                    data.noTargetType = NoTargetType.NoTargetForStatus;
+                    data.noTargetTypeArgs = new string[] { "<sprite name=shell>" };
                 })
             );
 
@@ -582,6 +588,8 @@ namespace Spirefrost
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
+                    data.noTargetType = NoTargetType.NoTargetForStatus;
+                    data.noTargetTypeArgs = new string[] { "<sprite name=attack>" };
                 })
             );
 
@@ -903,7 +911,7 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("On Turn Apply Snow To Enemies", "On Turn Judge Enemies")
-                .WithText("Set the <keyword=health> of all enemies with <{a}> or less to <0>")
+                .WithText("Set the <keyword=health> of all enemies with <{a}> or less to 0")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Judgement");
@@ -911,6 +919,7 @@ namespace Spirefrost
                     {
                         ScriptableObject.CreateInstance<TargetConstraintHasHealth>()
                     };
+                    data.noTargetType = NoTargetType.None;
                 })
             );
 
@@ -933,6 +942,8 @@ namespace Spirefrost
                         ScriptableObject.CreateInstance<TargetConstraintDoesDamage>(),
                         ScriptableObject.CreateInstance<TargetConstraintIsItem>()
                     };
+                    data.noTargetType = NoTargetType.NoTargetForStatus;
+                    data.noTargetTypeArgs = new string[] { "<sprite name=spirefrost.stsdoubletap>" };
                 })
             );
 
@@ -981,6 +992,7 @@ namespace Spirefrost
             assets.Add(StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", "On Card Played Apply Amplify To Random Item In Hand")
                 .WithText("Apply <{a}><keyword=autumnmooncat.wildfrost.spirefrost.stsamplify> to a random <Item> in your hand")
                 .WithCanBeBoosted(true)
+                .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("STS Amplify");
@@ -989,6 +1001,8 @@ namespace Spirefrost
                         ScriptableObject.CreateInstance<TargetConstraintCanBeBoosted>(),
                         ScriptableObject.CreateInstance<TargetConstraintIsItem>()
                     };
+                    data.noTargetType = NoTargetType.NoTargetForStatus;
+                    data.noTargetTypeArgs = new string[] { "<sprite name=spirefrost.stsamplify>" };
                 })
             );
 
