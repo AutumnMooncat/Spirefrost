@@ -2536,6 +2536,7 @@ namespace Spirefrost
                 .WithTitle("Fear Potion")
                 .WithText($"Apply <2><keyword=autumnmooncat.wildfrost.spirefrost.stsvuln>")
                 .WithTier(2)
+                .SetBecomesTarget(true)
                 .SetConstraints(playsOnBoard, doesNotPlayOnSlot, doesTrigger)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -2588,6 +2589,7 @@ namespace Spirefrost
                 .WithTitle("Weak Potion")
                 .WithText($"Apply <1><keyword=autumnmooncat.wildfrost.spirefrost.stsweak>")
                 .WithTier(2)
+                .SetBecomesTarget(true)
                 .SetConstraints(playsOnBoard, doesNotPlayOnSlot, doesTrigger)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
