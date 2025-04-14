@@ -605,8 +605,8 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("When Hit Reduce Attack To Attacker", "When Hit Reduce Effect To Attacker")
-                .WithText("When hit, reduce the attacker's effects by {a}")
-                .WithCanBeBoosted(false)
+                .WithText("When hit, reduce the attacker's effects by <{a}>")
+                .WithCanBeBoosted(true)
                 .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHit>(data =>
                 {
