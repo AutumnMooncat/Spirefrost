@@ -1007,7 +1007,9 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("On Card Played Lose Health", "On Card Played Lose Health Self")
-                .WithText("Lose <{a}><keyword=health>")
+                .WithText("Lose {a}<keyword=health>")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
@@ -1018,6 +1020,8 @@ namespace Spirefrost
 
             assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectInstantLoseHealth>("Instant Lose Health")
+                .WithCanBeBoosted(true)
+                .WithStackable(true)
                 .WithText("Reduce current <keyword=health> by <{a}>")
             );
 
