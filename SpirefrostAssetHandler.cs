@@ -597,7 +597,9 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("When Hit Reduce Attack To Attacker", "When Hit Reduce Effect To Attacker")
-                .WithText("When hit, reduce the attacker's effects by <{a}>")
+                .WithText("When hit, reduce the attacker's effects by {a}")
+                .WithCanBeBoosted(false)
+                .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHit>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Reduce Effects");
@@ -787,7 +789,9 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("While Active Reduce Attack To Enemies (No Ping, No Desc)", "While Active Reduce Attack To Enemies (With Desc)")
-                .WithText("While active, reduce <keyword=attack> of all enemies by <{a}>")
+                .WithStackable(true)
+                .WithCanBeBoosted(false)
+                .WithText("While active, reduce <keyword=attack> of all enemies by {a}")
             );
 
             assets.Add(StatusCopy("Increase Effects", "Increase Effects (With Desc)")
