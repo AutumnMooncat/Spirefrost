@@ -78,7 +78,7 @@ namespace Spirefrost
 
         public override bool RunHitEvent(Hit hit)
         {
-            if (hit.attacker == target && hit.countsAsHit)
+            if (hit.attacker == target && hit.countsAsHit && hit.damage > 0)
             {
                 return true;
             }
