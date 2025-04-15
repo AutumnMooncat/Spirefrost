@@ -2299,6 +2299,7 @@ namespace Spirefrost
                 .SetSprites("Items/ChemX.png", "Items/ChemXBG.png")
                 .WithValue(50)
                 .SetTraits(TStack("Consume", 1))
+                .CanPlayOnHand(true)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
