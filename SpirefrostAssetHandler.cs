@@ -1799,7 +1799,7 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("MultiHit", 2),
-                        SStack("When Deployed Apply Flight To Self", 1)
+                        SStack("When Deployed Apply Flight To Self", 3)
                     };
                 })
             );
