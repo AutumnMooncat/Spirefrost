@@ -1050,13 +1050,15 @@ namespace Spirefrost
             );
 
             assets.Add(StatusCopy("When Enemy Deployed Ink To Target", "When Enemy Deployed Count Down")
-                .WithText("When an enemy is deployed, count down <keyword=counter> by {a}")
-                .WithCanBeBoosted(false)
+                .WithText("When an ally is deployed, count down <keyword=counter> by <{a}>")
+                .WithCanBeBoosted(true)
                 .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDeployed>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("Reduce Counter");
+                    data.whenEnemyDeployed = false;
+                    data.whenAllyDeployed = true;
                 })
             );
         }
@@ -2627,14 +2629,14 @@ namespace Spirefrost
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/MiracleCharm.png")
                 .WithTitle("Bottled Miracle")
-                .WithText($"When an enemy is deployed, count down <keyword=counter> by 1")
+                .WithText($"When an ally is deployed, count down <keyword=counter> by 1")
                 .WithTier(2)
                 .SetConstraints(hasCounter)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("When Enemy Deployed Count Down", 1)
+                        SStack("When Ally Deployed Count Down", 1)
                     };
                 })
             );
