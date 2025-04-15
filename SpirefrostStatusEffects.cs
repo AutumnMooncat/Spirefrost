@@ -66,7 +66,7 @@ namespace Spirefrost
 
         public StatusEffectSTSWeakness()
         {
-            eventPriority = -999999;
+            eventPriority = 1;
             removeOnDiscard = true;
         }
 
