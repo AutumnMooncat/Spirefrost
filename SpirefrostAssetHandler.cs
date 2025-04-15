@@ -1049,7 +1049,7 @@ namespace Spirefrost
                 })
             );
 
-            assets.Add(StatusCopy("When Enemy Deployed Ink To Target", "When Enemy Deployed Count Down")
+            assets.Add(StatusCopy("When Enemy Deployed Ink To Target", "When Ally Deployed Count Down")
                 .WithText("When an ally is deployed, count down <keyword=counter> by <{a}>")
                 .WithCanBeBoosted(true)
                 .WithStackable(true)
