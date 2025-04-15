@@ -472,6 +472,21 @@ namespace Spirefrost
             return base.TargetSilenced();
         }
 
+        public override int GetAmount()
+        {
+            if (!target || (target.silenced) && !ignoreSilence)
+            {
+                return 0;
+            }
+
+            if (!canBeBoosted)
+            {
+                return count;
+            }
+
+            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
+        }
+
         public override bool RunTurnEndEvent(Entity entity)
         {
             if (primed && target.enabled && Battle.IsOnBoard(target))
