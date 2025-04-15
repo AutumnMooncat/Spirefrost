@@ -428,6 +428,39 @@ namespace Spirefrost
         }
     }
 
+    public class StatusEffectApplyXWhenRedrawHitButIgnoreInk : StatusEffectApplyXWhenRedrawHit
+    {
+        public override bool TargetSilenced()
+        {
+            return false;
+        }
+
+        public override int GetAmount()
+        {
+            if (!target)
+            {
+                return 0;
+            }
+
+            if (!canBeBoosted)
+            {
+                return count;
+            }
+
+            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
+        }
+
+        public override bool CanTrigger()
+        {
+            if (target.enabled)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public class StatusEffectApplyXAfterTurnAndDecay : StatusEffectApplyX
     {
         public bool subbed;
@@ -523,9 +556,35 @@ namespace Spirefrost
 
     public class StatusEffectApplyXWhenHitOnce : StatusEffectApplyXWhenHit
     {
+        public bool ignoreSilence = true;
+
         public override void Init()
         {
             base.PostHit += RemoveMe;
+        }
+
+        public override bool TargetSilenced()
+        {
+            if (ignoreSilence)
+            {
+                return false;
+            }
+            return base.TargetSilenced();
+        }
+
+        public override int GetAmount()
+        {
+            if (!target || (target.silenced) && !ignoreSilence)
+            {
+                return 0;
+            }
+
+            if (!canBeBoosted)
+            {
+                return count;
+            }
+
+            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
         }
 
         public IEnumerator RemoveMe(Hit hit)

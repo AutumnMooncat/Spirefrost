@@ -251,15 +251,15 @@ namespace Spirefrost
                 .Subscribe_WithStatusIcon("STS Mark Icon")
             );
 
-            assets.Add(StatusCopy("When Redraw Hit Apply Attack & Health To Self", "STS Ritual")
+            assets.Add(new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectApplyXWhenRedrawHitButIgnoreInk>("STS Ritual")
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
                 .WithIsKeyword(true)
-                //.WithType("damage up")
-                //.WithKeyword("<keyword=autumnmooncat.wildfrost.spirefrost.stsritual>")
-                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenRedrawHit>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenRedrawHitButIgnoreInk>(data =>
                 {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
                     data.targetConstraints = new TargetConstraint[]
                     {
