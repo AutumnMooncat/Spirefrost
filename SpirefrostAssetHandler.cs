@@ -798,8 +798,8 @@ namespace Spirefrost
 
             assets.Add(StatusCopy("While Active Reduce Attack To Enemies (No Ping, No Desc)", "While Active Reduce Attack To Enemies (With Desc)")
                 .WithStackable(true)
-                .WithCanBeBoosted(false)
-                .WithText("While active, reduce <keyword=attack> of all enemies by {a}")
+                .WithCanBeBoosted(true)
+                .WithText("While active, reduce <keyword=attack> of all enemies by <{a}>")
             );
 
             assets.Add(StatusCopy("Increase Effects", "Increase Effects (With Desc)")
@@ -2049,7 +2049,7 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack("While Active Reduce Attack To Enemies (With Desc)", 2)
+                        SStack("While Active Reduce Attack To Enemies (With Desc)", 1)
                     };
                 })
             );
