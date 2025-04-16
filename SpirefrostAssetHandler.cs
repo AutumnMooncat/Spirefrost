@@ -1061,6 +1061,39 @@ namespace Spirefrost
                     data.whenAllyDeployed = true;
                 })
             );
+
+            assets.Add(StatusCopy("Temporary Pigheaded", "Temporary Explode")
+                .WithStackable(true)
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectTemporaryTrait>(data =>
+                {
+                    data.trait = TryGet<TraitData>("Explode");
+                })
+            );
+
+            assets.Add(StatusCopy("While Active Pigheaded To Enemies", "While Active Explode To Allies")
+                .WithText("While active, add <{a}> <keyword=explode> to all allies")
+                .WithStackable(true)
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data => {
+                    data.effectToApply = TryGet<StatusEffectData>("Temporary Explode");
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Allies;
+                })
+            );
+
+            assets.Add(StatusCopy("While Active Increase Effects To FrontAlly", "While Active Reduce Effects To FrontEnemy")
+                .WithText("While active, reduce the effects of the front enemy by <{a}>")
+                .WithStackable(true)
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data => {
+                    data.effectToApply = TryGet<StatusEffectData>("Ongoing Reduce Effects");
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.EnemiesInRow;
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        ScriptableObject.CreateInstance<TargetConstraintFrontUnit>(),
+                    };
+                })
+            );
         }
 
         private static void CreateKeywords()
@@ -1960,16 +1993,16 @@ namespace Spirefrost
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateUnit("exploder", "Exploder")
                 .SetSprites("Units/Exploder.png", "Units/ExploderBG.png")
-                .SetStats(null, null, 3)
+                .SetStats(null, null, 0)
                 .WithCardType("Clunker")
                 .WithValue(50)
-                .SetTraits(TStack("Explode", 8))
+                .SetTraits(TStack("Explode", 4))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack("Destroy Self After Turn", 1)
+                        SStack("While Active Explode To Allies", 4)
                     };
                 })
             );
@@ -1985,7 +2018,7 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack("When Hit Reduce Effect To Attacker", 1)
+                        SStack("While Active Reduce Effects To FrontEnemy", 1)
                     };
                 })
             );

@@ -58,6 +58,26 @@ namespace Spirefrost
         }
     }
 
+    public class TargetConstraintFrontUnit : TargetConstraint
+    {
+        public override bool Check(Entity target)
+        {
+            foreach (CardContainer row in Battle.instance.GetRows(target.owner))
+            {
+                if (target == row.GetTop())
+                {
+                    return !not;
+                }
+            }
+            return not;
+        }
+
+        public override bool Check(CardData targetData)
+        {
+            return false;
+        }
+    }
+
     public class ScriptableSkillsInHand : ScriptableAmount
     {
         public override int Get(Entity entity)
