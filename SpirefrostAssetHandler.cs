@@ -1094,6 +1094,14 @@ namespace Spirefrost
                     };
                 })
             );
+
+            assets.Add(StatusCopy("When Destroyed Trigger To Allies", "When Destroyed Trigger To AllyBehind")
+                .WithText("When destroyed, trigger ally behind")
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDestroyed>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.AllyBehind;
+                })
+            );
         }
 
         private static void CreateKeywords()
@@ -1985,7 +1993,7 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack("When Hit Increase Attacker Counter", 1)
+                        SStack("When Destroyed Trigger To AllyBehind", 1)
                     };
                 })
             );
