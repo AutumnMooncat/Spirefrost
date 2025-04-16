@@ -120,7 +120,7 @@ namespace Spirefrost
                         RewardPool charmPool = CreateRewardPool("SpireCharmPool", "Charms", DataList<CardUpgradeData>(
                             "CultistPotionCharm", "FearPotionCharm", "DuplicationPotionCharm", // StrengthPotionCharm
                             "FairyPotionCharm", "WeakPotionCharm", "MiraclePotionCharm",
-                            "IronPotionCharm", "CardUpgradeScrap"));
+                            "IronPotionCharm", "CardUpgradeScrap", "EntropicBrewCharm"));
 
                         data.rewardPools = new RewardPool[]
                         {
