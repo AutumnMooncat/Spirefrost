@@ -1615,7 +1615,7 @@ namespace Spirefrost
                                 card.SetRandomHealth(8, 10);
                                 card.SetRandomDamage(4, 6);
                                 card.SetRandomCounter(3, 4);
-                                card.SetRandomPassive("Lesson Learned", 1, 1);
+                                card.SetRandomPassive("Lesson Learned", 2, 2);
                                 break;
 
                             // Judgement
