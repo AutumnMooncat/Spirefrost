@@ -66,30 +66,12 @@ namespace Spirefrost
                 SpirefrostAssetHandler.CreateAssets();
                 preLoaded = true;
 
-                entropicOverlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
-                {
-                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmOverlay.png"))
-                };
-                entropicOverlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmOverlay.png")));
-
-                entropicUnderlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
-                {
-                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/EntropicCharmUnderlay.png"))
-                };
-                entropicUnderlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/EntropicCharmUnderlay.png")));
-
-                duplicationOverlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
-                {
-                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/DuplicationCharmOverlay.png"))
-                };
-                duplicationOverlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/DuplicationCharmOverlay.png")));
-
-                duplicationUnderlay = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
-                {
-                    name = Path.GetFileNameWithoutExtension(ImagePath("Charms/DuplicationCharmUnderlay.png"))
-                };
-                duplicationUnderlay.LoadImage(File.ReadAllBytes(ImagePath("Charms/DuplicationCharmUnderlay.png")));
+                entropicOverlay = "Charms/EntropicCharmOverlay.png".ToNamedTex();
+                entropicUnderlay = "Charms/EntropicCharmUnderlay.png".ToNamedTex();
+                duplicationOverlay = "Charms/DuplicationCharmOverlay.png".ToNamedTex();
+                duplicationUnderlay = "Charms/DuplicationCharmUnderlay.png".ToNamedTex();
             }
+
             // Let our sprites automatically show up for icon descriptions
             SpriteAsset.RegisterSpriteAsset();
             base.Load();

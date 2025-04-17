@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,6 +125,25 @@ namespace Spirefrost
             self.offsetMin = target.offsetMin;
             self.pivot = target.pivot;
             self.sizeDelta = target.sizeDelta;
+        }
+    }
+
+    internal static class StringExtensions
+    {
+        internal static Texture2D ToNamedTex(this String self)
+        {
+            Texture2D tex = new Texture2D(0, 0, TextureFormat.RGBA32, mipChain: false)
+            {
+                name = Path.GetFileNameWithoutExtension(MainModFile.instance.ImagePath(self)) + "Texture2D"
+            };
+            tex.LoadImage(File.ReadAllBytes(MainModFile.instance.ImagePath(self)));
+            return tex;
+        }
+        internal static Sprite ToNamedSprite(this String self)
+        {
+            Sprite sprite = ToNamedSprite(self);
+            sprite.name = Path.GetFileNameWithoutExtension(MainModFile.instance.ImagePath(self)) + "Sprite";
+            return sprite;
         }
     }
 }
