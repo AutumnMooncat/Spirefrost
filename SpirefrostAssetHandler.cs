@@ -94,7 +94,7 @@ namespace Spirefrost
                         gameObject.name = "Player (Spirefrost.Spire)";                                   //For comparison, the snowdweller character is named "Player (Basic)"
                         data.characterPrefab = gameObject.GetComponent<Character>();                     //Set the characterPrefab to our new prefab
                         data.id = "Spirefrost.Spire";                                                    //Used to track win/loss statistics for the tribe. Not displayed anywhere though :/
-
+                        data.name = gameObject.name;
                         data.leaders = DataList<CardData>("ironclad", "silent", "defect", "watcher");
 
                         Inventory inventory = ScriptableObject.CreateInstance<Inventory>();
