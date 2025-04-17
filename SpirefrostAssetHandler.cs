@@ -2502,7 +2502,7 @@ namespace Spirefrost
 
             assets.Add(new CardDataBuilder(MainModFile.instance)
                 .CreateItem("cultistmask", "Cultist Mask")
-                .SetSprites("Items/CultistMask.png", "Items/BlueCandleBG.png")
+                .SetSprites("Items/CultistMask.png", "Items/CultistMaskBG.png")
                 .WithValue(60)
                 .SetTraits(TStack("Consume", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
