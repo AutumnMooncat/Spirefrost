@@ -11,18 +11,6 @@ namespace Spirefrost
 {
     internal class SpirefrostUtils
     {
-        internal static event UnityAction<Entity> OnMovedByDiscarder;
-
-        internal static void InvokeMovedByDiscarder(Entity entity)
-        {
-            UnityAction<Entity> onMovedByDiscarder = OnMovedByDiscarder;
-            if (onMovedByDiscarder == null)
-            {
-                return;
-            }
-            onMovedByDiscarder(entity);
-        }
-
         internal class ArbitraryExecution : PlayAction
         {
             public readonly Routine routine;

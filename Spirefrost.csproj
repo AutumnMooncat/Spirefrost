@@ -450,6 +450,7 @@
     <Compile Include="SpirefrostCardScripts.cs" />
     <Compile Include="SpirefrostCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpirefrostEvents.cs" />
     <Compile Include="SpirefrostExtensions.cs" />
     <Compile Include="SpirefrostStatusEffects.cs" />
     <Compile Include="SpirefrostStrings.cs" />

@@ -139,12 +139,12 @@ namespace Spirefrost
         public override void Init()
         {
             base.OnActionPerformed += ActionPerformed;
-            SpirefrostUtils.OnMovedByDiscarder += DiscardCheck;
+            SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
         }
 
         public void OnDestroy()
         {
-            SpirefrostUtils.OnMovedByDiscarder -= DiscardCheck;
+            SpirefrostEvents.OnMovedByDiscarder -= DiscardCheck;
         }
 
         private void DiscardCheck(Entity entity)
@@ -239,12 +239,12 @@ namespace Spirefrost
             base.OnActionPerformed += ActionPerformed;
             base.OnStack += StackRoutine;
             base.OnEnd += EndRoutine;
-            SpirefrostUtils.OnMovedByDiscarder += DiscardCheck;
+            SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
         }
 
         public void OnDestroy()
         {
-            SpirefrostUtils.OnMovedByDiscarder -= DiscardCheck;
+            SpirefrostEvents.OnMovedByDiscarder -= DiscardCheck;
         }
 
         private void DiscardCheck(Entity entity)
@@ -960,12 +960,12 @@ namespace Spirefrost
         {
             base.PreTrigger += EntityPreTrigger;
             base.OnActionPerformed += ActionPerformed;
-            SpirefrostUtils.OnMovedByDiscarder += DiscardCheck;
+            SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
         }
 
         public void OnDestroy()
         {
-            SpirefrostUtils.OnMovedByDiscarder -= DiscardCheck;
+            SpirefrostEvents.OnMovedByDiscarder -= DiscardCheck;
         }
 
         private void DiscardCheck(Entity entity)

@@ -182,7 +182,7 @@ namespace Spirefrost
     {
         static void Prefix(Discarder __instance, Entity entity)
         {
-            SpirefrostUtils.InvokeMovedByDiscarder(entity);
+            SpirefrostEvents.InvokeMovedByDiscarder(entity);
         }
     }
 
