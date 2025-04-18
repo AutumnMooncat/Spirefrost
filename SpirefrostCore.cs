@@ -60,7 +60,7 @@ namespace Spirefrost
         public override void Load()
         {
             if (!preLoaded)
-            { 
+            {
                 // The spriteAsset has to be defined before any icons are made!
                 spriteAsset = HopeUtils.CreateSpriteAsset(Title);
                 SpirefrostAssetHandler.CreateAssets();

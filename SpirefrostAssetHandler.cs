@@ -61,9 +61,9 @@ namespace Spirefrost
         {
             CreateTribes();
 
-            CreateStatusEffects();
+            //CreateStatusEffects();
 
-            CreateLeaders();
+            //CreateLeaders();
 
             CreateCompanions();
 
@@ -1614,7 +1614,7 @@ namespace Spirefrost
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("MultiHit", 1),
-                        SStack("On Turn Apply Amplify AllyBehind", 1)
+                        SStack("On Turn Apply Amplify To AllyBehind", 1)
                     };
                 })
             );
@@ -2206,7 +2206,7 @@ namespace Spirefrost
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Reduce Attack (With Text)", 2)
+                        SStack("Reduce Attack With Text", 2)
                     };
                 })
             );
