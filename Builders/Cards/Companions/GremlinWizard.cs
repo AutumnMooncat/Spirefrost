@@ -1,7 +1,10 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using static Spirefrost.MainModFile;
+using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
+    [ToPoolList(PoolListType.Units)]
     internal class GremlinWizard : SpirefrostBuilder
     {
         internal static string ID => "gremlinwizard";

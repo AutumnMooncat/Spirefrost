@@ -1,8 +1,11 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.StatusEffects;
+using static Spirefrost.MainModFile;
+using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Clunkers
 {
+    [ToPoolList(PoolListType.Items)]
     internal class Exploder : SpirefrostBuilder
     {
         internal static string ID => "exploder";

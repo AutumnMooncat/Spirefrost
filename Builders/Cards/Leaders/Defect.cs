@@ -1,9 +1,12 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.StatusEffects;
 using UnityEngine;
+using static Spirefrost.MainModFile;
+using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Leaders
 {
+    [ToPoolList(PoolListType.Leaders)]
     internal class Defect : SpirefrostBuilder
     {
         internal static string ID => "defect";

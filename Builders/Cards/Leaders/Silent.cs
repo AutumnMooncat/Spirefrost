@@ -2,9 +2,12 @@
 using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using UnityEngine;
+using static Spirefrost.MainModFile;
+using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Leaders
 {
+    [ToPoolList(PoolListType.Leaders)]
     internal class Silent : SpirefrostBuilder
     {
         internal static string ID => "silent";

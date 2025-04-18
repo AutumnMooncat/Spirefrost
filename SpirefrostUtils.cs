@@ -9,11 +9,61 @@ namespace Spirefrost
 {
     internal class SpirefrostUtils
     {
+        internal class WeightedString : IComparable<WeightedString>
+        {
+            public WeightedString(string str, int weight)
+            {
+                this.str = str;
+                this.weight = weight;
+            }
+
+            public string str;
+            public int weight;
+
+            public int CompareTo(WeightedString other)
+            {
+                int comp = weight.CompareTo(other.weight);
+                if (comp != 0)
+                {
+                    return comp;
+                }
+                return str.CompareTo(other.str);
+            }
+        }
+
         internal class AutoAdd
         {
 
             [AttributeUsage(AttributeTargets.Class)]
             internal class Ignore : Attribute { }
+
+            [AttributeUsage(AttributeTargets.Class)]
+            internal class ToPoolList : Attribute 
+            {
+                public ToPoolList(MainModFile.PoolListType type) : this(type, 1, 0) { }
+
+                public ToPoolList(MainModFile.PoolListType type, int copies, int weight)
+                {
+                    this.type = type;
+                    this.copies = copies;
+                    this.weight = weight;
+                }
+
+                public MainModFile.PoolListType type;
+                public int copies;
+                public int weight;
+
+                public void Process(string id)
+                {
+                    List<WeightedString> pool = MainModFile.instance.poolData.GetValueOrDefault(type, new List<WeightedString>());
+                    for (int i = 0; i < copies; i++)
+                    {
+                        pool.Add(new WeightedString(id, weight));
+                    }
+                    pool.Sort();
+                    MainModFile.instance.poolData[type] = pool;
+                }
+            }
 
             private IEnumerable<Type> GetAll(Type type)
             {
@@ -22,13 +72,26 @@ namespace Spirefrost
                     .Where(t => t.IsSubclassOf(type) && !Attribute.IsDefined(t, typeof(Ignore)));
             }
 
-            internal List<object> Process(Type type, string methodName)
+            internal List<object> Process(Type type, string methodName, string fieldName)
             {
                 List<object> result = new List<object>();
                 foreach (Type t in GetAll(type))
                 {
-                    object obj = (t.GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, null)) ?? throw new Exception($"AutoAdd Error: Type {t} does not define static method {methodName}");
+                    object obj = (t.GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, null)) 
+                        ?? throw new Exception($"AutoAdd Error: Type {t} does not define static method {methodName}");
                     result.Add(obj);
+
+                    string id = (string)(t.GetProperty(fieldName, BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null)) 
+                        ?? throw new Exception($"AutoAdd Error: Type {t} does not define static property {fieldName}");
+
+                    Attribute[] attributes = Attribute.GetCustomAttributes(t);
+                    foreach (Attribute attr in attributes)
+                    {
+                        if (attr is ToPoolList toList)
+                        {
+                            toList.Process(id);
+                        }
+                    }
                 }
                 return result;
             }

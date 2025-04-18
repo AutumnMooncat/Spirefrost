@@ -473,9 +473,32 @@
     <Compile Include="Builders\Cards\Companions\Slaver.cs" />
     <Compile Include="Builders\Cards\Companions\SneakyGremlin.cs" />
     <Compile Include="Builders\Cards\Companions\SpikeSlimes.cs" />
+    <Compile Include="Builders\Cards\Items\Anchor.cs" />
+    <Compile Include="Builders\Cards\Items\Bandages.cs" />
+    <Compile Include="Builders\Cards\Items\Battery.cs" />
     <Compile Include="Builders\Cards\Items\BlueCandle.cs" />
+    <Compile Include="Builders\Cards\Items\Boot.cs" />
+    <Compile Include="Builders\Cards\Items\CallingBell.cs" />
+    <Compile Include="Builders\Cards\Items\ChemX.cs" />
+    <Compile Include="Builders\Cards\Items\CultistMask.cs" />
+    <Compile Include="Builders\Cards\Items\FusionHammer.cs" />
+    <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
+    <Compile Include="Builders\Cards\Items\HandDrill.cs" />
     <Compile Include="Builders\Cards\Items\HolyWater.cs" />
+    <Compile Include="Builders\Cards\Items\IceCream.cs" />
+    <Compile Include="Builders\Cards\Items\Kunai.cs" />
+    <Compile Include="Builders\Cards\Items\Lantern.cs" />
+    <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
+    <Compile Include="Builders\Cards\Items\Medkit.cs" />
+    <Compile Include="Builders\Cards\Items\PocketWatch.cs" />
     <Compile Include="Builders\Cards\Items\Shiv.cs" />
+    <Compile Include="Builders\Cards\Items\Shovel.cs" />
+    <Compile Include="Builders\Cards\Items\Shuriken.cs" />
+    <Compile Include="Builders\Cards\Items\Sundial.cs" />
+    <Compile Include="Builders\Cards\Items\Toolbox.cs" />
+    <Compile Include="Builders\Cards\Items\Whetstone.cs" />
+    <Compile Include="Builders\Cards\Items\WingBoots.cs" />
+    <Compile Include="Builders\Cards\Items\WristBlade.cs" />
     <Compile Include="Builders\Cards\Leaders\Defect.cs" />
     <Compile Include="Builders\Cards\Leaders\Ironclad.cs" />
     <Compile Include="Builders\Cards\Leaders\Silent.cs" />
@@ -484,6 +507,14 @@
     <Compile Include="Builders\Cards\Summons\FrostOrb.cs" />
     <Compile Include="Builders\Cards\Summons\LightningOrb.cs" />
     <Compile Include="Builders\Cards\Summons\PlasmaOrb.cs" />
+    <Compile Include="Builders\CardUpgrades\CultistPotion.cs" />
+    <Compile Include="Builders\CardUpgrades\DuplicationPotion.cs" />
+    <Compile Include="Builders\CardUpgrades\EntropicPotion.cs" />
+    <Compile Include="Builders\CardUpgrades\FairyPotion.cs" />
+    <Compile Include="Builders\CardUpgrades\FearPotion.cs" />
+    <Compile Include="Builders\CardUpgrades\IronPotion.cs" />
+    <Compile Include="Builders\CardUpgrades\MiraclePotion.cs" />
+    <Compile Include="Builders\CardUpgrades\WeakPotion.cs" />
     <Compile Include="Builders\Icons\AmplifyIcon.cs" />
     <Compile Include="Builders\Icons\DoubleTapIcon.cs" />
     <Compile Include="Builders\Icons\FlightIcon.cs" />
@@ -566,6 +597,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveReduceAttackToEnemiesWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveReduceEffectsToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
+    <Compile Include="Builders\Tribes\SpireTribe.cs" />
     <Compile Include="SpirefrostAssetHandler.cs" />
     <Compile Include="SpirefrostBehaviours.cs" />
     <Compile Include="SpirefrostBuilder.cs" />
@@ -579,9 +611,6 @@
     <Compile Include="SpirefrostScriptableObjects.cs" />
     <Compile Include="SpirefrostUtils.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Builders\CardUpgrades\" />
-    <Folder Include="Builders\Tribes\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

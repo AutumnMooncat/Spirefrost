@@ -3,9 +3,12 @@ using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using System.Collections.Generic;
 using UnityEngine;
+using static Spirefrost.MainModFile;
+using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Leaders
 {
+    [ToPoolList(PoolListType.Leaders)]
     internal class Watcher : SpirefrostBuilder
     {
         internal static string ID => "watcher";

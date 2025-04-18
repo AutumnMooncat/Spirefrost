@@ -59,7 +59,7 @@ namespace Spirefrost
 
         internal static void CreateAssets()
         {
-            CreateTribes();
+            //CreateTribes();
 
             //CreateStatusEffects();
 
@@ -69,11 +69,11 @@ namespace Spirefrost
 
             //CreateSummons();
 
-            CreateItems();
+            //CreateItems();
 
-            CreateCharms();
+            //CreateCharms();
 
-            assets.AddRange(new SpirefrostUtils.AutoAdd().Process(typeof(SpirefrostBuilder), "GetBuilder"));
+            assets.AddRange(new SpirefrostUtils.AutoAdd().Process(typeof(SpirefrostBuilder), "GetBuilder", "ID"));
         }
 
         private static void CreateTribes()

@@ -17,6 +17,10 @@ using UnityEngine.Rendering;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
+using static Spirefrost.SpirefrostUtils;
+using Spirefrost.Builders.Cards.Leaders;
+using Spirefrost.Builders.CardUpgrades;
+using static Spirefrost.MainModFile;
 
 
 namespace Spirefrost
@@ -46,6 +50,29 @@ namespace Spirefrost
 
         internal Dictionary<string, Sprite> maskedSpries = new Dictionary<string, Sprite>();
         internal Dictionary<string, Predicate<object>> predicateReferences = new Dictionary<string, Predicate<object>>();
+
+        internal Dictionary<PoolListType, List<WeightedString>> poolData = new Dictionary<PoolListType, List<WeightedString>>();
+
+        public enum PoolListType
+        {
+            Leaders,
+            StarterItems,
+            IroncladStarterItems,
+            SilentStarterItems,
+            DefectStarterItems,
+            WatcherStarterItems,
+            Items,
+            IroncladItems,
+            SilentItems,
+            DefectItems,
+            WatcherItems,
+            Units,
+            Charms,
+            IroncladCharms,
+            SilentCharms,
+            DefectCharms,
+            WatcherCharms
+        }
 
         public MainModFile(string modDirectory) : base(modDirectory)
         { 
@@ -175,6 +202,75 @@ namespace Spirefrost
                 card.mainImage.gameObject.SetActive(true);               //And this line turns them on
             }
         }
+
+        internal static string[] PoolToIDs(PoolListType type)
+        {
+            return instance.poolData.GetValueOrDefault(type, new List<WeightedString>()).Select(ws => ws.str).ToArray();
+        }
+    }
+
+    [HarmonyPatch(typeof(CharacterRewards), "Populate")]
+    internal static class LeaderSpecificPools
+    {
+        private static string PoolName(PoolListType type)
+        {
+            switch (type)
+            {
+                case PoolListType.IroncladItems:
+                case PoolListType.SilentItems:
+                case PoolListType.DefectItems:
+                case PoolListType.WatcherItems:
+                    return "Items";
+
+                case PoolListType.IroncladCharms:
+                case PoolListType.SilentCharms:
+                case PoolListType.DefectCharms:
+                case PoolListType.WatcherCharms:
+                    return "Charms";
+            }
+
+            throw new Exception($"Attempting to create reward pool of non character specific reward type {type}");
+        }
+
+        private static RewardPool PoolToReward(PoolListType type)
+        {
+            RewardPool pool = ScriptableObject.CreateInstance<RewardPool>();
+            pool.name = type.ToString();
+            pool.type = PoolName(type);
+            if (pool.type == "Items")
+            {
+                pool.list = PoolToIDs(type).Select(s => MainModFile.instance.TryGet<CardData>(s)).Cast<DataFile>().ToList();
+            }
+            else if (pool.type == "Charms")
+            {
+                pool.list = PoolToIDs(type).Select(s => MainModFile.instance.TryGet<CardUpgradeData>(s)).Cast<DataFile>().ToList();
+            }
+            return pool;
+        }
+
+        static void Postfix(CharacterRewards __instance, ClassData classData)
+        {
+            if (References.LeaderData.name == Ironclad.FullID)
+            {
+                __instance.Add(PoolToReward(PoolListType.IroncladItems));
+                __instance.Add(PoolToReward(PoolListType.IroncladCharms));
+            }
+            else if (References.LeaderData.name == Silent.FullID)
+            {
+                __instance.Add(PoolToReward(PoolListType.SilentItems));
+                __instance.Add(PoolToReward(PoolListType.SilentCharms));
+            }
+            else if (References.LeaderData.name == Defect.FullID)
+            {
+                __instance.Add(PoolToReward(PoolListType.DefectItems));
+                __instance.Add(PoolToReward(PoolListType.DefectCharms));
+            }
+            else if (References.LeaderData.name == Watcher.FullID)
+            {
+                __instance.Add(PoolToReward(PoolListType.WatcherItems));
+                __instance.Add(PoolToReward(PoolListType.WatcherCharms));
+            }
+        }
     }
 
     [HarmonyPatch(typeof(Discarder), "ClearStatusEffects")]
@@ -235,12 +331,12 @@ namespace Spirefrost
 
         static void Postfix(UpgradeDisplay __instance, CardUpgradeData data)
         {
-            if (data.name.Equals("autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm")) {
+            if (data.name.Equals(EntropicPotion.FullID)) {
                 Image overlayImage = CreateAndAlignOverlay(__instance.image);
                 overlayImage.sprite = MainModFile.instance.entropicOverlay.ToSprite();
                 __instance.image.sprite = MainModFile.instance.entropicUnderlay.ToSprite();
             } 
-            else if (data.name.Equals("autumnmooncat.wildfrost.spirefrost.DuplicationCharm"))
+            else if (data.name.Equals(DuplicationPotion.FullID))
             {
                 Image overlayImage = CreateAndAlignOverlay(__instance.image);
                 overlayImage.sprite = MainModFile.instance.duplicationOverlay.ToSprite();
@@ -254,8 +350,8 @@ namespace Spirefrost
     {
         static readonly List<String> rainbowEnabled = new List<String>()
         {
-            "autumnmooncat.wildfrost.spirefrost.EntropicBrewCharm",
-            "autumnmooncat.wildfrost.spirefrost.DuplicationCharm"
+            EntropicPotion.FullID,
+            DuplicationPotion.FullID
         };
 
         static float ToRadians(float degrees)
@@ -311,7 +407,7 @@ namespace Spirefrost
     [HarmonyPatch(typeof(TribeHutSequence), "SetupFlags")]
     internal static class PatchTribeHut
     {
-        static string TribeName = "Spire";
+        static readonly string TribeName = "Spire";
         static void Postfix(TribeHutSequence __instance)
         {
             GameObject gameObject = GameObject.Instantiate(__instance.flags[0].gameObject);
@@ -340,12 +436,12 @@ namespace Spirefrost
             gameObject2.transform.GetChild(0).GetComponent<ImageSprite>().SetSprite(tribe.flag);
 
             //1: Left (ImageSprite)
-            Sprite needle = MainModFile.instance.TryGet<CardData>("ironclad").mainSprite;
-            gameObject2.transform.GetChild(1).GetComponent<ImageSprite>().SetSprite(needle);
+            Sprite ironclad = MainModFile.instance.TryGet<CardData>(Ironclad.ID).mainSprite;
+            gameObject2.transform.GetChild(1).GetComponent<ImageSprite>().SetSprite(ironclad);
 
             //2: Right (ImageSprite)
-            Sprite muncher = MainModFile.instance.TryGet<CardData>("silent").mainSprite;
-            gameObject2.transform.GetChild(2).GetComponent<ImageSprite>().SetSprite(muncher);
+            Sprite silent = MainModFile.instance.TryGet<CardData>(Silent.ID).mainSprite;
+            gameObject2.transform.GetChild(2).GetComponent<ImageSprite>().SetSprite(silent);
             gameObject2.transform.GetChild(2).localScale *= 1.2f;
 
             //3: Textbox (Image)
