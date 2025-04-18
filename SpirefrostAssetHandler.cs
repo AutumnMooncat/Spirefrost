@@ -65,9 +65,9 @@ namespace Spirefrost
 
             //CreateLeaders();
 
-            CreateCompanions();
+            //CreateCompanions();
 
-            CreateSummons();
+            //CreateSummons();
 
             CreateItems();
 
@@ -100,7 +100,7 @@ namespace Spirefrost
                         data.startingInventory = inventory;
 
                         RewardPool unitPool = CreateRewardPool("SpireUnitPool", "Units", DataList<CardData>(
-                            "centurion", "mystic", "looter", "nob", "cultist", "fungi",
+                            "centurion", "mystic", "looter", "nob", "lagavulin", "cultist", "fungi",
                             "jawworm", "slaver", "byrd", "chosen", "spikeslime", "fatgremlin",
                             "madgremlin", "shieldgremlin", "sneakygremlin", "gremlinwizard"));
 

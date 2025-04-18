@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Cards.Companions;
 
 namespace Spirefrost.Builders.StatusEffects
 {
@@ -17,13 +18,13 @@ namespace Spirefrost.Builders.StatusEffects
                     data.profiles = new StatusEffectInstantSplit.Profile[] {
                         new StatusEffectInstantSplit.Profile()
                         {
-                            cardName = "autumnmooncat.wildfrost.spirefrost.spikeslime",
-                            changeToCardName = "autumnmooncat.wildfrost.spirefrost.spikeslime2"
+                            cardName = SpikeSlime.FullID,
+                            changeToCardName = SpikeSlime2.FullID
                         },
                         new StatusEffectInstantSplit.Profile()
                         {
-                            cardName = "autumnmooncat.wildfrost.spirefrost.spikeslime2",
-                            changeToCardName = "autumnmooncat.wildfrost.spirefrost.spikeslime3"
+                            cardName = SpikeSlime2.FullID,
+                            changeToCardName = SpikeSlime3.FullID
                         }
                     };
                 });

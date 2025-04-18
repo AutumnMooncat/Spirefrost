@@ -445,6 +445,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
+    <Compile Include="Builders\Cards\Clunkers\BronzeOrb.cs" />
+    <Compile Include="Builders\Cards\Clunkers\Exploder.cs" />
+    <Compile Include="Builders\Cards\Clunkers\OrbWalker.cs" />
+    <Compile Include="Builders\Cards\Clunkers\Repulser.cs" />
+    <Compile Include="Builders\Cards\Clunkers\Sentry.cs" />
+    <Compile Include="Builders\Cards\Clunkers\SphericGuardian.cs" />
+    <Compile Include="Builders\Cards\Clunkers\Spiker.cs" />
+    <Compile Include="Builders\Cards\Clunkers\SpireShield.cs" />
+    <Compile Include="Builders\Cards\Clunkers\SpireSpear.cs" />
+    <Compile Include="Builders\Cards\Companions\Byrd.cs" />
+    <Compile Include="Builders\Cards\Companions\Centurion.cs" />
+    <Compile Include="Builders\Cards\Companions\Chosen.cs" />
+    <Compile Include="Builders\Cards\Companions\Cultist.cs" />
+    <Compile Include="Builders\Cards\Companions\FatGremlin.cs" />
+    <Compile Include="Builders\Cards\Companions\FungiBeast.cs" />
+    <Compile Include="Builders\Cards\Companions\GremlinWizard.cs" />
+    <Compile Include="Builders\Cards\Companions\JawWorm.cs" />
+    <Compile Include="Builders\Cards\Companions\Lagavulin.cs" />
+    <Compile Include="Builders\Cards\Companions\Looter.cs" />
+    <Compile Include="Builders\Cards\Companions\Lousie.cs" />
+    <Compile Include="Builders\Cards\Companions\MadGremlin.cs" />
+    <Compile Include="Builders\Cards\Companions\Mystic.cs" />
+    <Compile Include="Builders\Cards\Companions\Nob.cs" />
+    <Compile Include="Builders\Cards\Companions\ShieldGremlin.cs" />
+    <Compile Include="Builders\Cards\Companions\Slaver.cs" />
+    <Compile Include="Builders\Cards\Companions\SneakyGremlin.cs" />
+    <Compile Include="Builders\Cards\Companions\SpikeSlimes.cs" />
     <Compile Include="Builders\Cards\Items\BlueCandle.cs" />
     <Compile Include="Builders\Cards\Items\HolyWater.cs" />
     <Compile Include="Builders\Cards\Items\Shiv.cs" />
@@ -552,8 +580,6 @@
     <Compile Include="SpirefrostUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Builders\Cards\Clunkers\" />
-    <Folder Include="Builders\Cards\Companions\" />
     <Folder Include="Builders\CardUpgrades\" />
     <Folder Include="Builders\Tribes\" />
   </ItemGroup>
