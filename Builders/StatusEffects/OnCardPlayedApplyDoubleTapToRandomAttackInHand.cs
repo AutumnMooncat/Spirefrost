@@ -15,7 +15,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", ID)
-                .WithText($"Apply <{{a}}>{DoubleTapKeyword.FullID} to a random <Item> with <keyword=attack> in your hand")
+                .WithText($"Apply <{{a}}>{MakeKeywordInsert(DoubleTapKeyword.FullID)} to a random <Item> with <keyword=attack> in your hand")
                 .WithCanBeBoosted(true)
                 .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
