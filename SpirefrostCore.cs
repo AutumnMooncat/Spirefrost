@@ -209,6 +209,41 @@ namespace Spirefrost
         }
     }
 
+    [HarmonyPatch(typeof(Character), "Assign")]
+    internal static class LeaderSpecificStarterDeck
+    {
+        static void Postfix(Character __instance)
+        {
+            List<CardData> extraStarters = new List<CardData>();
+            if (References.LeaderData.name == Ironclad.FullID)
+            {
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.IroncladStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
+            }
+            else if (References.LeaderData.name == Silent.FullID)
+            {
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.SilentStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
+            }
+            else if (References.LeaderData.name == Defect.FullID)
+            {
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.DefectStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
+            }
+            else if (References.LeaderData.name == Watcher.FullID)
+            {
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.WatcherStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
+            }
+
+            //Debug.Log($"LeaderSpecificStarterDeck - {References.LeaderData.name} has {extraStarters.Count} additional cards");
+            foreach (CardData item in extraStarters)
+            {
+                __instance.data.inventory.deck.Add(item);
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(CharacterRewards), "Populate")]
     internal static class LeaderSpecificPools
     {

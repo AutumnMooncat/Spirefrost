@@ -37,7 +37,7 @@ namespace Spirefrost
             [AttributeUsage(AttributeTargets.Class)]
             internal class Ignore : Attribute { }
 
-            [AttributeUsage(AttributeTargets.Class)]
+            [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
             internal class ToPoolList : Attribute 
             {
                 public ToPoolList(MainModFile.PoolListType type) : this(type, 1, 0) { }
