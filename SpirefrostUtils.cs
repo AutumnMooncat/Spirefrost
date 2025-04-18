@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Cards;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,6 +14,31 @@ namespace Spirefrost
 {
     internal class SpirefrostUtils
     {
+        internal class AutoAdd
+        {
+
+            [AttributeUsage(AttributeTargets.Class)]
+            internal class Ignore : Attribute { }
+
+            private IEnumerable<Type> GetAll(Type type)
+            {
+                return AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(assembly => assembly.GetTypes())
+                    .Where(t => t.IsSubclassOf(type) && !Attribute.IsDefined(t, typeof(Ignore)));
+            }
+
+            internal List<object> Process(Type type, string methodName)
+            {
+                List<object> result = new List<object>();
+                foreach (Type t in GetAll(type))
+                {
+                    object obj = (t.GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, null)) ?? throw new Exception($"AutoAdd Error: Type {t} does not define static method {methodName}");
+                    result.Add(obj);
+                }
+                return result;
+            }
+        }
+
         internal class ArbitraryExecution : PlayAction
         {
             public readonly Routine routine;

@@ -78,6 +78,8 @@ namespace Spirefrost
             CreateItems();
 
             CreateCharms();
+
+            assets.AddRange(new SpirefrostUtils.AutoAdd().Process(typeof(SpirefrostBuilder), "GetBuilder"));
         }
 
         private static void CreateTribes()
