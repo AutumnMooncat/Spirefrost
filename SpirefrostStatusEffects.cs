@@ -12,7 +12,7 @@ namespace Spirefrost
 {
     public class StatusEffectSTSVulnerable : StatusEffectData
     {
-        public int amountToClear;
+        public bool cardPlayed;
 
         public StatusEffectSTSVulnerable()
         {
@@ -21,6 +21,7 @@ namespace Spirefrost
 
         public override void Init()
         {
+            base.OnActionPerformed += ActionPerformed;
             base.OnHit += MultiplyHit;
         }
 
@@ -36,26 +37,42 @@ namespace Spirefrost
 
         public IEnumerator MultiplyHit(Hit hit)
         {
-            amountToClear = GetAmount();
-            hit.damage = Mathf.CeilToInt(hit.damage * (1 + (amountToClear * 0.5f)));
-            ActionQueue.Stack(new ActionSequence(Clear(amountToClear))
-            {
-                fixedPosition = true,
-                note = "Clear Vulnerable"
-            });
+            hit.damage = Mathf.CeilToInt(hit.damage * 1.5f);
             yield break;
         }
 
-        public IEnumerator Clear(int clearMe)
+        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
         {
-            if ((bool)this && (bool)target && target.alive)
+            if (!cardPlayed && entity == target && count > 0)
             {
-                int amount = clearMe;
-                Events.InvokeStatusEffectCountDown(this, ref amount);
-                if (amount != 0)
-                {
-                    yield return CountDown(target, amount);
-                }
+                cardPlayed = true;
+            }
+
+            return false;
+        }
+
+        public override bool RunActionPerformedEvent(PlayAction action)
+        {
+            if (cardPlayed)
+            {
+                return ActionQueue.Empty;
+            }
+
+            return false;
+        }
+
+        public IEnumerator ActionPerformed(PlayAction action)
+        {
+            cardPlayed = false;
+            yield return Clear(1);
+        }
+
+        public IEnumerator Clear(int amount)
+        {
+            Events.InvokeStatusEffectCountDown(this, ref amount);
+            if (amount != 0)
+            {
+                yield return CountDown(target, amount);
             }
         }
     }

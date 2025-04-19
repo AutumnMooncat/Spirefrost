@@ -14,7 +14,7 @@ namespace Spirefrost.Builders.Keywords
             return new KeywordDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithTitle("Vulnerable")
-                .WithDescription("Increases damage taken by 50% for each Vulnerable | Clears after taking damage")
+                .WithDescription("Increases damage taken by 50% | Counts down after triggering")
                 .WithTitleColour(new Color(0.8f, 0.4f, 0.4f))
                 .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
                 .WithNoteColour(new Color(0.79f, 0.39f, 0.39f))
