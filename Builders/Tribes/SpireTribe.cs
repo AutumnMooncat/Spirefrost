@@ -32,8 +32,7 @@ namespace Spirefrost.Builders.Tribes
                         // Used to track win/loss statistics for the tribe. Not displayed anywhere though :/
                         data.id = "Spirefrost.Spire";
 
-                        // Set name
-                        data.name = gameObject.name;
+                        // Set title
                         data.characterPrefab.title = gameObject.name;
 
                         // Setup data
