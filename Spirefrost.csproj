@@ -529,6 +529,7 @@
     <Compile Include="Builders\Keywords\FlightKeyword.cs" />
     <Compile Include="Builders\Keywords\MarkKeyword.cs" />
     <Compile Include="Builders\Keywords\RegenKeyword.cs" />
+    <Compile Include="Builders\Keywords\RetainKeyword.cs" />
     <Compile Include="Builders\Keywords\RitualKeyword.cs" />
     <Compile Include="Builders\Keywords\RollUpKeyword.cs" />
     <Compile Include="Builders\Keywords\VulnerableKeyword.cs" />
@@ -579,6 +580,7 @@
     <Compile Include="Builders\StatusEffects\ShivSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\STSSplitEffects.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryExplodeEffects.cs" />
+    <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedReduceCounter.cs" />
@@ -597,6 +599,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveReduceAttackToEnemiesWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveReduceEffectsToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
+    <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
     <Compile Include="SpirefrostAssetHandler.cs" />
     <Compile Include="SpirefrostBehaviours.cs" />

@@ -21,6 +21,7 @@ using static Spirefrost.SpirefrostUtils;
 using Spirefrost.Builders.Cards.Leaders;
 using Spirefrost.Builders.CardUpgrades;
 using static Spirefrost.MainModFile;
+using Spirefrost.Builders.Tribes;
 
 
 namespace Spirefrost
@@ -104,7 +105,7 @@ namespace Spirefrost
             base.Load();
             SpirefrostStrings.CreateLocalizedStrings();
             GameMode gameMode = TryGet<GameMode>("GameModeNormal"); //GameModeNormal is the standard game mode. 
-            gameMode.classes = gameMode.classes.Append(TryGet<ClassData>("Spire")).ToArray();
+            gameMode.classes = gameMode.classes.Append(TryGet<ClassData>(SpireTribe.ID)).ToArray();
             Events.OnEntityCreated += FixImage;
             Events.PostBattle += CleanUpBattleEnd;
             Events.OnBackToMainMenu += CleanUpTemp;
@@ -209,43 +210,38 @@ namespace Spirefrost
         }
     }
 
-    [HarmonyPatch(typeof(Character), "Assign")]
-    internal static class LeaderSpecificStarterDeck
+    [HarmonyPatch(typeof(ActionRedraw), "DiscardAll")]
+    internal static class RetainPatches
     {
-        static void Postfix(Character __instance)
+        private static readonly List<Entity> retainedCards = new List<Entity>();
+
+        static void Prefix()
         {
-            List<CardData> extraStarters = new List<CardData>();
-            if (References.LeaderData.name == Ironclad.FullID)
+            retainedCards.Clear();
+            foreach (Entity item in References.Player.handContainer)
             {
-                extraStarters.AddRange(
-                    PoolToIDs(PoolListType.IroncladStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
-            }
-            else if (References.LeaderData.name == Silent.FullID)
-            {
-                extraStarters.AddRange(
-                    PoolToIDs(PoolListType.SilentStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
-            }
-            else if (References.LeaderData.name == Defect.FullID)
-            {
-                extraStarters.AddRange(
-                    PoolToIDs(PoolListType.DefectStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
-            }
-            else if (References.LeaderData.name == Watcher.FullID)
-            {
-                extraStarters.AddRange(
-                    PoolToIDs(PoolListType.WatcherStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
+                if (item.statusEffects.Exists(effect => effect is StatusEffectRetain))
+                {
+                    retainedCards.Add(item);
+                }
             }
 
-            //Debug.Log($"LeaderSpecificStarterDeck - {References.LeaderData.name} has {extraStarters.Count} additional cards");
-            foreach (CardData item in extraStarters)
+            References.Player.handContainer.RemoveMany(retainedCards);
+        }
+
+        static void Postfix()
+        {
+            foreach (Entity item in retainedCards)
             {
-                __instance.data.inventory.deck.Add(item);
+                References.Player.handContainer.Add(item);
             }
+
+            SpirefrostEvents.InvokeCardsRetained(retainedCards);
         }
     }
 
     [HarmonyPatch(typeof(CharacterRewards), "Populate")]
-    internal static class LeaderSpecificPools
+    internal static class LeaderSpecificCards
     {
         private static string PoolName(PoolListType type)
         {
@@ -285,25 +281,42 @@ namespace Spirefrost
 
         static void Postfix(CharacterRewards __instance, ClassData classData)
         {
+            List<CardData> extraStarters = new List<CardData>();
+
             if (References.LeaderData.name == Ironclad.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.IroncladItems));
                 __instance.Add(PoolToReward(PoolListType.IroncladCharms));
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.IroncladStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
             }
             else if (References.LeaderData.name == Silent.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.SilentItems));
                 __instance.Add(PoolToReward(PoolListType.SilentCharms));
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.SilentStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
             }
             else if (References.LeaderData.name == Defect.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.DefectItems));
                 __instance.Add(PoolToReward(PoolListType.DefectCharms));
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.DefectStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
             }
             else if (References.LeaderData.name == Watcher.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.WatcherItems));
                 __instance.Add(PoolToReward(PoolListType.WatcherCharms));
+                extraStarters.AddRange(
+                    PoolToIDs(PoolListType.WatcherStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
+            }
+
+            
+            //Debug.Log($"LeaderSpecificCards - {References.LeaderData.name} has {extraStarters.Count} additional cards");
+            foreach (CardData item in extraStarters)
+            {
+                References.PlayerData.inventory.deck.Add(item);
             }
         }
     }

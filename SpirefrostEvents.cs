@@ -23,5 +23,17 @@ namespace Spirefrost
             }
             onMovedByDiscarder(entity);
         }
+
+        internal static event UnityAction<List<Entity>> OnCardsRetained;
+
+        internal static void InvokeCardsRetained(List<Entity> entities)
+        {
+            UnityAction<List<Entity>> onCardsRetained = OnCardsRetained;
+            if (onCardsRetained == null)
+            {
+                return;
+            }
+            onCardsRetained(entities);
+        }
     }
 }

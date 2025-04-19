@@ -1230,6 +1230,11 @@ namespace Spirefrost
         }
     }
 
+    public class StatusEffectRetain : StatusEffectData
+    {
+        // Maybe we want some stuff later like 1 time retain
+    }
+
     // Thank you AbsentAbigail!
     public class StatusEffectDiscovery : StatusEffectInstant
     {
