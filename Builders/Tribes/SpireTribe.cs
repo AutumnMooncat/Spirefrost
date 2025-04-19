@@ -34,6 +34,7 @@ namespace Spirefrost.Builders.Tribes
 
                         // Set name
                         data.name = gameObject.name;
+                        data.characterPrefab.title = gameObject.name;
 
                         // Setup data
                         data.leaders = DataList<CardData>(MainModFile.PoolToIDs(MainModFile.PoolListType.Leaders));
@@ -48,7 +49,7 @@ namespace Spirefrost.Builders.Tribes
                         RewardPool itemPool = CreateRewardPool("SpireItemPool", "Items", DataList<CardData>(
                             MainModFile.PoolToIDs(MainModFile.PoolListType.Items)));
 
-                        //Dont forget Scrap Charm
+                        // Dont forget Scrap Charm
                         RewardPool charmPool = CreateRewardPool("SpireCharmPool", "Charms", DataList<CardUpgradeData>(
                             MainModFile.PoolToIDs(MainModFile.PoolListType.Charms).With("CardUpgradeScrap")));
 
@@ -61,9 +62,10 @@ namespace Spirefrost.Builders.Tribes
                             Extensions.GetRewardPool("GeneralItemPool"),
                             Extensions.GetRewardPool("GeneralCharmPool"),
                             Extensions.GetRewardPool("GeneralModifierPool"),
-                            Extensions.GetRewardPool("SnowUnitPool"),         //
-                            Extensions.GetRewardPool("SnowItemPool"),         //The snow pools are not Snowdwellers, there are general snow units/cards/charms.
-                            Extensions.GetRewardPool("SnowCharmPool"),        //
+                            // The snow pools are not Snowdwellers, there are general snow units/cards/charms
+                            Extensions.GetRewardPool("SnowUnitPool"),
+                            Extensions.GetRewardPool("SnowItemPool"),
+                            Extensions.GetRewardPool("SnowCharmPool"),
                         };
                     });
         }
