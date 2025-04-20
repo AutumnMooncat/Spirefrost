@@ -601,6 +601,14 @@
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
+    <Compile Include="Patches\ClassesGetterPatch.cs" />
+    <Compile Include="Patches\RainbowCharmPatches.cs" />
+    <Compile Include="Patches\DiscoveryPatches.cs" />
+    <Compile Include="Patches\DiscarderPatch.cs" />
+    <Compile Include="Patches\LeaderSpecificCards.cs" />
+    <Compile Include="Patches\RetainPatches.cs" />
+    <Compile Include="Patches\PetFlagPatch.cs" />
+    <Compile Include="Patches\TribeHutPatch.cs" />
     <Compile Include="SpirefrostAssetHandler.cs" />
     <Compile Include="SpirefrostBehaviours.cs" />
     <Compile Include="SpirefrostBuilder.cs" />
