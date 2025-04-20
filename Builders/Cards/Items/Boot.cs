@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Items
 {
-    [ToPoolList(PoolListType.Items)]
+    [SpirefrostUtils.AutoAdd.Ignore]
     internal class Boot : SpirefrostBuilder
     {
         internal static string ID => "boot";
