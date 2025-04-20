@@ -43,8 +43,8 @@ namespace Spirefrost.Builders.Cards.Leaders
                             case 1:
                                 card.SetRandomHealth(6, 8);
                                 card.SetRandomDamage(2, 3);
-                                card.SetRandomCounter(4, 4);
-                                card.SetRandomPassive("On Turn Apply Attack To Self", 1, 1);
+                                card.SetRandomCounter(5, 5);
+                                card.SetRandomPassive("On Turn Apply Attack To Self", 2, 2);
                                 break;
 
                             // Bash
