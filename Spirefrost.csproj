@@ -518,6 +518,7 @@
     <Compile Include="Builders\Icons\AmplifyIcon.cs" />
     <Compile Include="Builders\Icons\DoubleTapIcon.cs" />
     <Compile Include="Builders\Icons\FlightIcon.cs" />
+    <Compile Include="Builders\Icons\LightningIcon.cs" />
     <Compile Include="Builders\Icons\MarkIcon.cs" />
     <Compile Include="Builders\Icons\RegenIcon.cs" />
     <Compile Include="Builders\Icons\RitualIcon.cs" />
@@ -527,6 +528,7 @@
     <Compile Include="Builders\Keywords\AmplifyKeyword.cs" />
     <Compile Include="Builders\Keywords\DoubleTapKeyword.cs" />
     <Compile Include="Builders\Keywords\FlightKeyword.cs" />
+    <Compile Include="Builders\Keywords\LightningKeyword.cs" />
     <Compile Include="Builders\Keywords\MarkKeyword.cs" />
     <Compile Include="Builders\Keywords\RegenKeyword.cs" />
     <Compile Include="Builders\Keywords\RetainKeyword.cs" />
@@ -545,6 +547,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Amplify.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\DoubleTap.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Flight.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\Lightning.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Mark.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regen.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Ritual.cs" />
