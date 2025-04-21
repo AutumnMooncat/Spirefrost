@@ -1385,6 +1385,19 @@ namespace Spirefrost
                 foreach (Entity entity in container)
                 {
                     yield return entity.GetCard().UpdateData();
+                    foreach (StatusEffectData data in entity.statusEffects)
+                    {
+                        if (data is StatusEffectFreeAction free)
+                        {
+                            // RunBeginEvent fails to create pet, do it manually
+                            free.hasEffect = true;
+                            if (entity.display is Card card)
+                            {
+                                card.itemHolderPet?.Create(free.petPrefab);
+                                Events.InvokeNoomlinShow(entity);
+                            }
+                        }
+                    }
                 }
             }
 
