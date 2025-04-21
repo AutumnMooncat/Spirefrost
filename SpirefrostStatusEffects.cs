@@ -1231,6 +1231,119 @@ namespace Spirefrost
         }
     }
 
+    public class StatusEffectOrb : StatusEffectApplyX
+    {
+        public bool cardPlayed;
+
+        public bool subbed;
+
+        public bool primed;
+
+        public bool ignoreSilence = true;
+
+        public override void Init()
+        {
+            base.OnTurnEnd += PostTurn;
+            base.OnActionPerformed += ActionPerformed;
+            Events.OnPostProcessUnits += Prime;
+            subbed = true;
+        }
+
+        public void OnDestroy()
+        {
+            Unsub();
+        }
+
+        public void Unsub()
+        {
+            if (subbed)
+            {
+                Events.OnPostProcessUnits -= Prime;
+                subbed = false;
+            }
+        }
+
+        public void Prime(Character character)
+        {
+            primed = true;
+            Unsub();
+        }
+
+        public override bool TargetSilenced()
+        {
+            if (ignoreSilence)
+            {
+                return false;
+            }
+            return base.TargetSilenced();
+        }
+
+        public override int GetAmount()
+        {
+            if (!target || (target.silenced) && !ignoreSilence)
+            {
+                return 0;
+            }
+
+            if (!canBeBoosted)
+            {
+                return count;
+            }
+
+            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
+        }
+
+        public override bool RunTurnEndEvent(Entity entity)
+        {
+            if (primed && target.enabled && Battle.IsOnBoard(target))
+            {
+                return entity == target;
+            }
+
+            return false;
+        }
+
+        public IEnumerator PostTurn(Entity entity)
+        {
+            yield return Run(GetTargets());
+        }
+
+        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        {
+            if (!cardPlayed && entity == target && count > 0)
+            {
+                cardPlayed = true;
+            }
+
+            return false;
+        }
+
+        public override bool RunActionPerformedEvent(PlayAction action)
+        {
+            if (cardPlayed)
+            {
+                return ActionQueue.Empty;
+            }
+
+            return false;
+        }
+
+        public IEnumerator ActionPerformed(PlayAction action)
+        {
+            cardPlayed = false;
+            yield return Clear(GetAmount());
+        }
+
+        public IEnumerator Clear(int amount)
+        {
+            Events.InvokeStatusEffectCountDown(this, ref amount);
+            if (amount != 0)
+            {
+                yield return CountDown(target, amount);
+            }
+        }
+    }
+
     public class StatusEffectRetain : StatusEffectData
     {
         // Maybe we want some stuff later like 1 time retain

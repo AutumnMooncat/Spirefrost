@@ -602,6 +602,7 @@
     <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
     <Compile Include="Patches\ClassesGetterPatch.cs" />
+    <Compile Include="Patches\OrbPatches.cs" />
     <Compile Include="Patches\RainbowCharmPatches.cs" />
     <Compile Include="Patches\DiscoveryPatches.cs" />
     <Compile Include="Patches\DiscarderPatch.cs" />

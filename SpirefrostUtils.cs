@@ -1,8 +1,13 @@
-﻿using System;
+﻿using HarmonyLib;
+using Mono.Cecil;
+using MonoMod.Cil;
+using MonoMod.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using UnityEngine;
 
 namespace Spirefrost
@@ -122,6 +127,62 @@ namespace Spirefrost
                     yield return null;
                 }
             }
+        }
+
+        // HarmonyX logic
+        internal static MethodBase FindEnumeratorMethod(MethodBase enumerator, ref Type foundType)
+        {
+            if (enumerator is null)
+            {
+                Debug.Log($"FindEnumeratorMethod - enumerator is null");
+                return null;
+            }
+
+            ILContext ctx = new ILContext(new DynamicMethodDefinition(enumerator).Definition);
+            ILCursor il = new ILCursor(ctx);
+
+            Type enumeratorType;
+            if (ctx.Method.ReturnType.Name.StartsWith("UniTask"))
+            {
+                TypeReference firstVar = ctx.Body.Variables.FirstOrDefault()?.VariableType;
+                if (firstVar is object && !firstVar.Name.Contains(enumerator.Name))
+                {
+                    Debug.Log($"FindEnumeratorMethod - Unexpected type name {firstVar.Name}, should contain {enumerator.Name}");
+                    return null;
+                }
+
+                enumeratorType = firstVar.ResolveReflection();
+            }
+            else
+            {
+                MethodReference enumeratorCtor = null;
+                il.GotoNext(i => i.MatchNewobj(out enumeratorCtor));
+                if (enumeratorCtor is null)
+                {
+                    Debug.Log($"FindEnumeratorMethod - {enumerator.FullDescription()} does not create enumerators");
+                    return null;
+                }
+
+                if (enumeratorCtor.Name != ".ctor")
+                {
+                    Debug.Log($"FindEnumeratorMethod - {enumerator.FullDescription()} does not create an enumerator (got {enumeratorCtor.GetID(simple: true)})");
+                    return null;
+                }
+
+                enumeratorType = enumeratorCtor.DeclaringType.ResolveReflection();
+                Debug.Log($"FindEnumeratorMethod - Found Type: {enumeratorType}");
+                foundType = enumeratorType;
+            }
+
+            MethodInfo moveNext = enumeratorType.GetMethod(nameof(IEnumerator.MoveNext), AccessTools.all);
+            if (moveNext is null)
+            {
+                Debug.Log($"FindEnumeratorMethod - {enumerator.FullDescription()} creates an object {enumeratorType.FullDescription()} but it doesn't have MoveNext");
+                return null;
+            }
+
+            Debug.Log($"FindEnumeratorMethod - Found Method: {moveNext}");
+            return moveNext;
         }
 
         internal static IEnumerator DuplicationLogic(CardUpgradeData dupeData, CardData cardData)
