@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Cards.Items;
 using UnityEngine;
 
 namespace Spirefrost.Builders.StatusEffects
@@ -34,7 +35,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectDiscovery>(data =>
                 {
-                    MainModFile.instance.predicateReferences.Add(data.name, obj => obj is CardData cardData && cardData.IsItem);
+                    MainModFile.instance.predicateReferences.Add(data.name, obj => obj is CardData cardData && cardData.IsItem && cardData.name != Toolbox.FullID);
                     data.source = StatusEffectDiscovery.CardSource.Custom;
                     data.title = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English).GetString(SpirefrostStrings.ToolboxTitle);
                 });
