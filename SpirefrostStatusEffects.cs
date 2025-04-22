@@ -1305,12 +1305,12 @@ namespace Spirefrost
         {
             if (!triggerOnRemove)
             {
-                Debug.Log($"Passive effect for {this} triggered");
+                //Debug.Log($"Passive effect for {this} triggered");
                 yield return Run(GetTargets());
             }
             if (perTurnIncrease != 0)
             {
-                Debug.Log($"Scale effect for {this} triggered");
+                //Debug.Log($"Scale effect for {this} triggered");
                 count += perTurnIncrease;
                 target.PromptUpdate();
             }
@@ -1320,7 +1320,7 @@ namespace Spirefrost
         {
             if (!cardPlayed && entity == target)
             {
-                Debug.Log($"{target} with {this} played, primed to remove");
+                //Debug.Log($"{target} with {this} played, primed to remove");
                 cardPlayed = true;
             }
 
@@ -1331,7 +1331,7 @@ namespace Spirefrost
         {
             if (cardPlayed)
             {
-                Debug.Log($"{target} with {this} performed action, can we remove yet? {ActionQueue.Empty}");
+                //Debug.Log($"{target} with {this} performed action, can we remove yet? {ActionQueue.Empty}");
                 return ActionQueue.Empty;
             }
 
@@ -1343,22 +1343,22 @@ namespace Spirefrost
             cardPlayed = false;
             if (triggerOnRemove)
             {
-                Debug.Log($"Triggering evoke effect for {this}");
+                //Debug.Log($"Triggering evoke effect for {this}");
                 yield return Run(GetTargets());
             }
-            Debug.Log($"Calling clear for {this}");
+            //Debug.Log($"Calling clear for {this}");
             yield return Clear(count);
         }
 
         public IEnumerator Clear(int amount)
         {
-            Debug.Log($"Clear {amount} called for {this}");
+            //Debug.Log($"Clear {amount} called for {this}");
             // Still remove Dark at 0
             if (amount == 0) { amount++; }
             Events.InvokeStatusEffectCountDown(this, ref amount);
             if (amount != 0)
             {
-                Debug.Log($"Counting Down {this} by {amount}, it currently has {count} stacks");
+                //Debug.Log($"Counting Down {this} by {amount}, it currently has {count} stacks");
                 yield return CountDown(target, amount);
             }
         }
