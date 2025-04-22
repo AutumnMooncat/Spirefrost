@@ -5,7 +5,7 @@ using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.StatusEffects.IconEffects
 {
-    internal class Lightning : SpirefrostBuilder
+    internal class LightningOrb : SpirefrostBuilder
     {
         internal static string ID => "STS Lightning";
 

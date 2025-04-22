@@ -548,6 +548,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\DoubleTap.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Flight.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Lightning.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\LightningOrb.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Mark.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regen.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Ritual.cs" />
