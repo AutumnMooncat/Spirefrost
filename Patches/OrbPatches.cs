@@ -1,16 +1,11 @@
 ﻿using HarmonyLib;
-using Mono.Cecil;
-using MonoMod.Cil;
 using MonoMod.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
-using static Building;
 
 namespace Spirefrost.Patches
 {
@@ -289,9 +284,11 @@ namespace Spirefrost.Patches
 
         public override void CheckRemove()
         {
-            if (!persistent && !target.statusEffects.Contains(linkedData))
+            if (linkedData == null || (!persistent && !target.statusEffects.Contains(linkedData)))
             {
+                MainModFile.Print($"Status not found, we should remove");
                 SetValue(default);
+                Destroy();
             }
         }
     }

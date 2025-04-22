@@ -8,14 +8,7 @@ using TMPro;                  // Declares TMP_SpriteAsset
 using WildfrostHopeMod.Utils; // Creates TMP_SpriteAsset
 using WildfrostHopeMod.VFX;   // Declares StatusIconBuilder
 using Extensions = Deadpan.Enums.Engine.Components.Modding.Extensions;
-using System.Collections;
-using System.IO;
-using UnityEngine.Rendering;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.AddressableAssets;
-using UnityEngine.SceneManagement;
 using static Spirefrost.SpirefrostUtils;
-using Spirefrost.Builders.CardUpgrades;
 using Spirefrost.Builders.Tribes;
 
 
@@ -202,6 +195,11 @@ namespace Spirefrost
         internal static string[] PoolToIDs(PoolListType type)
         {
             return instance.poolData.GetValueOrDefault(type, new List<WeightedString>()).Select(ws => ws.str).ToArray();
+        }
+
+        internal static void Print(string str)
+        {
+            System.Console.WriteLine("[Spirefrost] "+str);
         }
     }
 }
