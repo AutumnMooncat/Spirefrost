@@ -15,7 +15,7 @@ namespace Spirefrost.Builders.Keywords
             return new KeywordDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithTitle("Dark Orb")
-                .WithDescription($"Stores {DarkOrb.ScaleAmount} damage every turn\n\nAfter triggering, deals stored damage to all enemies in the row | Clears after triggering")
+                .WithDescription($"Stores {DarkOrb.ScaleAmount} damage every turn\n\nAfter triggering, damages all enemies in the row | Clears after triggering")
                 .WithTitleColour(new Color(0.50f, 0.40f, 0.80f))
                 .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
                 .WithNoteColour(new Color(0.49f, 0.39f, 0.79f))
