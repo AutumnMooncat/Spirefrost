@@ -78,6 +78,91 @@ namespace Spirefrost
         }
     }
 
+    public abstract class OwnerRelevantTargetConstraint : TargetConstraint
+    {
+        public Entity relevantEntity;
+    }
+
+    public class TargetConstraintPseudoBarrage : OwnerRelevantTargetConstraint
+    {
+        public override bool Check(Entity target)
+        {
+            if (relevantEntity == null)
+            {
+                MainModFile.Print($"OwnerRelevantTargetConstraint owner was null");
+                return false;
+            }
+
+            CardContainer[] relevantRows = relevantEntity.containers;
+            int[] relevantIndices = relevantRows.Select(cont => References.Battle.GetRowIndex(cont)).ToArray();
+            bool targetingEmptyRow = relevantIndices.Select(i => relevantEntity.GetEnemiesInRow(i)).All(enemies => enemies.Count == 0);
+
+            foreach (CardContainer row in Battle.instance.GetRows(target.owner))
+            {
+                if (relevantIndices.Contains(References.Battle.GetRowIndex(row)))
+                {
+                    return !not;
+                }
+                else
+                {
+                    if (targetingEmptyRow)
+                    {
+                        return !not;
+                    }
+                }
+            }
+
+            return not;
+        }
+
+        public override bool Check(CardData targetData)
+        {
+            return false;
+        }
+    }
+
+    public class TargetConstraintPseudoFrontEnemy : OwnerRelevantTargetConstraint
+    {
+        public override bool Check(Entity target)
+        {
+            if (relevantEntity == null)
+            {
+                MainModFile.Print($"OwnerRelevantTargetConstraint owner was null");
+                return false;
+            }
+
+            CardContainer[] relevantRows = relevantEntity.containers;
+            int[] relevantIndices = relevantRows.Select(cont => References.Battle.GetRowIndex(cont)).ToArray();
+            bool targetingEmptyRow = relevantIndices.Select(i => relevantEntity.GetEnemiesInRow(i)).All(enemies => enemies.Count == 0);
+
+            foreach (CardContainer row in Battle.instance.GetRows(target.owner))
+            {
+                if (target == row.GetTop())
+                {
+                    if (relevantIndices.Contains(References.Battle.GetRowIndex(row)))
+                    {
+                        return !not;
+                    }
+                    else
+                    {
+                        if (targetingEmptyRow)
+                        {
+                            return !not;
+                        }
+                    }
+                }
+                    
+            }
+            
+            return not;
+        }
+
+        public override bool Check(CardData targetData)
+        {
+            return false;
+        }
+    }
+
     public class ScriptableSkillsInHand : ScriptableAmount
     {
         public override int Get(Entity entity)

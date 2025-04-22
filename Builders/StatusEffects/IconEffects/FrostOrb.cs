@@ -23,7 +23,11 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectOrb>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Frost");
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.FrontEnemy;
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        MakeConstraint<TargetConstraintPseudoFrontEnemy>()
+                    };
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>

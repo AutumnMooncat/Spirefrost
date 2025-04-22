@@ -23,6 +23,9 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectOrb>(data =>
                 {
                     data.dealDamage = true;
+                    data.doesDamage = true;
+                    data.countsAsHit = true;
+                    data.canRetaliate = false;
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.RandomEnemy;
                     data.targetConstraints = new TargetConstraint[]
                     {

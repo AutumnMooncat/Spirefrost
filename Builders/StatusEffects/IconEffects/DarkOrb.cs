@@ -26,7 +26,14 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     data.perTurnIncrease = ScaleAmount;
                     data.triggerOnRemove = true;
                     data.dealDamage = true;
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.EnemiesInRow;
+                    data.doesDamage = true;
+                    data.countsAsHit = true;
+                    data.canRetaliate = false;
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
+                    data.applyConstraints = new TargetConstraint[]
+                    {
+                        MakeConstraint<TargetConstraintPseudoBarrage>()
+                    };
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>
