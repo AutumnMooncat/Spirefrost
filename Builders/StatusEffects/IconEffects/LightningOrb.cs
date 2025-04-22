@@ -24,7 +24,6 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.RandomEnemy;
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        ScriptableObject.CreateInstance<TargetConstraintCanBeBoosted>(),
                         MakeConstraint<TargetConstraintOr>(or =>
                         {
                             or.constraints = new TargetConstraint[]
