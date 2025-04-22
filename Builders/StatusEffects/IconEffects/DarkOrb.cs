@@ -1,17 +1,18 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Icons;
-using UnityEngine;
 using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.StatusEffects.IconEffects
 {
-    internal class LightningOrb : SpirefrostBuilder
+    internal class DarkOrb : SpirefrostBuilder
     {
-        internal static string ID => "STS Lightning";
+        internal static string ID => "STS Dark";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int ApplyAmount => 2;
+        internal static int ApplyAmount => 0;
+
+        internal static int ScaleAmount => 1;
 
         internal static object GetBuilder()
         {
@@ -22,8 +23,10 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .WithIsStatus(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectOrb>(data =>
                 {
+                    data.perTurnIncrease = ScaleAmount;
+                    data.triggerOnRemove = true;
                     data.dealDamage = true;
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.RandomEnemy;
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.EnemiesInRow;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>
@@ -36,7 +39,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                         })
                     };
                 })
-                .Subscribe_WithStatusIcon(LightningIcon.ID);
+                .Subscribe_WithStatusIcon(DarkIcon.ID);
         }
     }
 }

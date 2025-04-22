@@ -1239,7 +1239,9 @@ namespace Spirefrost
 
         public bool primed;
 
-        public bool ignoreSilence = true;
+        public int perTurnIncrease;
+
+        public bool triggerOnRemove;
 
         public override void Init()
         {
@@ -1271,16 +1273,12 @@ namespace Spirefrost
 
         public override bool TargetSilenced()
         {
-            if (ignoreSilence)
-            {
-                return false;
-            }
-            return base.TargetSilenced();
+            return false;
         }
 
         public override int GetAmount()
         {
-            if (!target || (target.silenced) && !ignoreSilence)
+            if (!target)
             {
                 return 0;
             }
@@ -1305,13 +1303,24 @@ namespace Spirefrost
 
         public IEnumerator PostTurn(Entity entity)
         {
-            yield return Run(GetTargets());
+            if (!triggerOnRemove)
+            {
+                Debug.Log($"Passive effect for {this} triggered");
+                yield return Run(GetTargets());
+            }
+            if (perTurnIncrease != 0)
+            {
+                Debug.Log($"Scale effect for {this} triggered");
+                count += perTurnIncrease;
+                target.PromptUpdate();
+            }
         }
 
         public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
         {
-            if (!cardPlayed && entity == target && count > 0)
+            if (!cardPlayed && entity == target)
             {
+                Debug.Log($"{target} with {this} played, primed to remove");
                 cardPlayed = true;
             }
 
@@ -1322,6 +1331,7 @@ namespace Spirefrost
         {
             if (cardPlayed)
             {
+                Debug.Log($"{target} with {this} performed action, can we remove yet? {ActionQueue.Empty}");
                 return ActionQueue.Empty;
             }
 
@@ -1331,14 +1341,24 @@ namespace Spirefrost
         public IEnumerator ActionPerformed(PlayAction action)
         {
             cardPlayed = false;
-            yield return Clear(GetAmount());
+            if (triggerOnRemove)
+            {
+                Debug.Log($"Triggering evoke effect for {this}");
+                yield return Run(GetTargets());
+            }
+            Debug.Log($"Calling clear for {this}");
+            yield return Clear(count);
         }
 
         public IEnumerator Clear(int amount)
         {
+            Debug.Log($"Clear {amount} called for {this}");
+            // Still remove Dark at 0
+            if (amount == 0) { amount++; }
             Events.InvokeStatusEffectCountDown(this, ref amount);
             if (amount != 0)
             {
+                Debug.Log($"Counting Down {this} by {amount}, it currently has {count} stacks");
                 yield return CountDown(target, amount);
             }
         }

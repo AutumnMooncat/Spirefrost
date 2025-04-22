@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="DeadExtensions">
       <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\DeadExtensions.dll</HintPath>
+      <Aliases>global</Aliases>
     </Reference>
     <Reference Include="DeadRandom">
       <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\DeadRandom.dll</HintPath>
@@ -516,20 +517,26 @@
     <Compile Include="Builders\CardUpgrades\MiraclePotion.cs" />
     <Compile Include="Builders\CardUpgrades\WeakPotion.cs" />
     <Compile Include="Builders\Icons\AmplifyIcon.cs" />
+    <Compile Include="Builders\Icons\DarkIcon.cs" />
     <Compile Include="Builders\Icons\DoubleTapIcon.cs" />
     <Compile Include="Builders\Icons\FlightIcon.cs" />
+    <Compile Include="Builders\Icons\FrostIcon.cs" />
     <Compile Include="Builders\Icons\LightningIcon.cs" />
     <Compile Include="Builders\Icons\MarkIcon.cs" />
+    <Compile Include="Builders\Icons\PlasmaIcon.cs" />
     <Compile Include="Builders\Icons\RegenIcon.cs" />
     <Compile Include="Builders\Icons\RitualIcon.cs" />
     <Compile Include="Builders\Icons\RollUpIcon.cs" />
     <Compile Include="Builders\Icons\VulnerableIcon.cs" />
     <Compile Include="Builders\Icons\WeakIcon.cs" />
     <Compile Include="Builders\Keywords\AmplifyKeyword.cs" />
+    <Compile Include="Builders\Keywords\DarkKeyword.cs" />
     <Compile Include="Builders\Keywords\DoubleTapKeyword.cs" />
     <Compile Include="Builders\Keywords\FlightKeyword.cs" />
+    <Compile Include="Builders\Keywords\FrostKeyword.cs" />
     <Compile Include="Builders\Keywords\LightningKeyword.cs" />
     <Compile Include="Builders\Keywords\MarkKeyword.cs" />
+    <Compile Include="Builders\Keywords\PlasmaKeyword.cs" />
     <Compile Include="Builders\Keywords\RegenKeyword.cs" />
     <Compile Include="Builders\Keywords\RetainKeyword.cs" />
     <Compile Include="Builders\Keywords\RitualKeyword.cs" />
@@ -538,6 +545,8 @@
     <Compile Include="Builders\Keywords\WeakKeyword.cs" />
     <Compile Include="Builders\StatusEffects\AttackAboveXCountsAsFrenzy.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToSkillsInHand.cs" />
+    <Compile Include="Builders\StatusEffects\ChannelOrbEffects.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\DarkOrb.cs" />
     <Compile Include="Builders\StatusEffects\DarkOrbSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\DiscoveryEffects.cs" />
     <Compile Include="Builders\StatusEffects\EquipMask.cs" />
@@ -547,7 +556,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Amplify.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\DoubleTap.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Flight.cs" />
-    <Compile Include="Builders\StatusEffects\IconEffects\Lightning.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\FrostOrb.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\LightningOrb.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Mark.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regen.cs" />
@@ -578,6 +587,7 @@
     <Compile Include="Builders\StatusEffects\OnTurnApplyAmplifyToAllyBehind.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnApplyRegenToAllies.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnCleanseSelf.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\PlasmaOrb.cs" />
     <Compile Include="Builders\StatusEffects\PlasmaOrbSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\ReduceAttackWithText.cs" />
     <Compile Include="Builders\StatusEffects\SetAttackOfCardInHand.cs" />
@@ -627,6 +637,5 @@
     <Compile Include="SpirefrostScriptableObjects.cs" />
     <Compile Include="SpirefrostUtils.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

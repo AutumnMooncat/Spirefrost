@@ -5,13 +5,13 @@ using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.StatusEffects.IconEffects
 {
-    internal class LightningOrb : SpirefrostBuilder
+    internal class FrostOrb : SpirefrostBuilder
     {
-        internal static string ID => "STS Lightning";
+        internal static string ID => "STS Frost";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int ApplyAmount => 2;
+        internal static int ApplyAmount => 1;
 
         internal static object GetBuilder()
         {
@@ -22,8 +22,8 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .WithIsStatus(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectOrb>(data =>
                 {
-                    data.dealDamage = true;
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.RandomEnemy;
+                    data.effectToApply = TryGet<StatusEffectData>("Frost");
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.FrontEnemy;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>
@@ -36,7 +36,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                         })
                     };
                 })
-                .Subscribe_WithStatusIcon(LightningIcon.ID);
+                .Subscribe_WithStatusIcon(FrostIcon.ID);
         }
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Spirefrost.Builders.Keywords
 {
-    internal class LightningKeyword : SpirefrostBuilder
+    internal class PlasmaKeyword : SpirefrostBuilder
     {
-        internal static string ID => "stslightning";
+        internal static string ID => "stsplasma";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
@@ -14,11 +14,11 @@ namespace Spirefrost.Builders.Keywords
         {
             return new KeywordDataBuilder(MainModFile.instance)
                 .Create(ID)
-                .WithTitle("Lightning Orb")
-                .WithDescription($"Deals {LightningOrb.ApplyAmount} damage to a random enemy every turn | Clears after triggering")
-                .WithTitleColour(new Color(0.95f, 0.95f, 0.05f))
+                .WithTitle("Plasma Orb")
+                .WithDescription($"Counts down <keyword=counter> by {PlasmaOrb.ApplyAmount} every turn | Clears after triggering")
+                .WithTitleColour(new Color(0.60f, 1.00f, 0.90f))
                 .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
-                .WithNoteColour(new Color(0.94f, 0.94f, 0.04f))
+                .WithNoteColour(new Color(0.59f, 0.99f, 0.99f))
                 .WithCanStack(false);
         }
     }
