@@ -96,6 +96,26 @@ namespace Spirefrost.Patches
         }
     }
 
+    [HarmonyPatch(typeof(InspectSystem), "CreateIconPopups")]
+    internal static class OrbPopups
+    {
+        static void Postfix(InspectSystem __instance, RectTransform iconLayoutGroup, Transform popGroup)
+        {
+            if (iconLayoutGroup == __instance.inspect.display.damageLayoutGroup && popGroup == __instance.rightPopGroup)
+            {
+                CardPopUpTarget[] componentsInChildren = __instance.inspect.display.iconGroups[LayoutPatch.orbIconGroup].GetComponentsInChildren<CardPopUpTarget>();
+                for (int i = 0; i < componentsInChildren.Length; i++)
+                {
+                    KeywordData[] keywords = componentsInChildren[i].keywords;
+                    foreach (KeywordData keyword in keywords)
+                    {
+                        __instance.Popup(keyword, popGroup);
+                    }
+                }
+            }
+        }
+    }
+
     internal class CircularLayoutGroup : LayoutGroup
     {
         public float spacing;
