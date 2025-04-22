@@ -525,7 +525,7 @@ namespace Spirefrost
 
         public override int GetAmount()
         {
-            if (!target || (target.silenced) && !ignoreSilence)
+            if (!target || (target.silenced && !ignoreSilence))
             {
                 return 0;
             }
@@ -592,7 +592,7 @@ namespace Spirefrost
 
         public override int GetAmount()
         {
-            if (!target || (target.silenced) && !ignoreSilence)
+            if (!target || (target.silenced && !ignoreSilence))
             {
                 return 0;
             }
