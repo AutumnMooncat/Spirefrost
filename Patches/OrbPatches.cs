@@ -116,6 +116,47 @@ namespace Spirefrost.Patches
         }
     }
 
+    [HarmonyPatch]
+    internal static class StopRemovingMyStuff
+    {
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            List<MethodInfo> methods = new List<MethodInfo>();
+            Type statusPredicate = Type.GetType("WildfrostHopeMod.CommandsConsole.ConsoleCustom+CommandAddStatus+<>c,Commands Console");
+            MethodInfo statusPredicateMethod = statusPredicate?.FindMethod("<Routine>b__6_2");
+            if (statusPredicateMethod != null)
+            {
+                MainModFile.Print($"Patching add status command");
+                methods.Add(statusPredicateMethod);
+            }
+            Type effectPredicate = Type.GetType("WildfrostHopeMod.CommandsConsole.ConsoleCustom+CommandAddEffect+<>c,Commands Console");
+            MethodInfo effectPredicateMethod = effectPredicate?.FindMethod("<Routine>b__6_2");
+            if (effectPredicateMethod != null)
+            {
+                MainModFile.Print($"Patching add effect command");
+                methods.Add(effectPredicateMethod);
+            }
+            return methods;
+        }
+
+        public static void Postfix(StatusEffectData s, ref bool __result)
+        {
+            if (s is StatusEffectOrb)
+            {
+                __result = false;
+            }
+        }
+
+        public static Exception Cleanup(MethodBase original, Exception exception)
+        {
+            if (exception != null)
+            {
+                MainModFile.Print($"Console not patched");
+            }
+            return null;
+        }
+    }
+
     internal class CircularLayoutGroup : LayoutGroup
     {
         public float spacing;
