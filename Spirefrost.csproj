@@ -477,8 +477,6 @@
     <Compile Include="Builders\Cards\Items\Anchor.cs" />
     <Compile Include="Builders\Cards\Items\Bandages.cs" />
     <Compile Include="Builders\Cards\Items\Battery.cs" />
-    <Compile Include="Builders\Cards\Items\BlueCandle.cs" />
-    <Compile Include="Builders\Cards\Items\Boot.cs" />
     <Compile Include="Builders\Cards\Items\CallingBell.cs" />
     <Compile Include="Builders\Cards\Items\ChemX.cs" />
     <Compile Include="Builders\Cards\Items\CultistMask.cs" />
@@ -504,10 +502,6 @@
     <Compile Include="Builders\Cards\Leaders\Ironclad.cs" />
     <Compile Include="Builders\Cards\Leaders\Silent.cs" />
     <Compile Include="Builders\Cards\Leaders\Watcher.cs" />
-    <Compile Include="Builders\Cards\Summons\DarkOrb.cs" />
-    <Compile Include="Builders\Cards\Summons\FrostOrb.cs" />
-    <Compile Include="Builders\Cards\Summons\LightningOrb.cs" />
-    <Compile Include="Builders\Cards\Summons\PlasmaOrb.cs" />
     <Compile Include="Builders\CardUpgrades\CultistPotion.cs" />
     <Compile Include="Builders\CardUpgrades\DuplicationPotion.cs" />
     <Compile Include="Builders\CardUpgrades\EntropicPotion.cs" />
@@ -547,10 +541,8 @@
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToSkillsInHand.cs" />
     <Compile Include="Builders\StatusEffects\ChannelOrbEffects.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\DarkOrb.cs" />
-    <Compile Include="Builders\StatusEffects\DarkOrbSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\DiscoveryEffects.cs" />
     <Compile Include="Builders\StatusEffects\EquipMask.cs" />
-    <Compile Include="Builders\StatusEffects\FrostOrbSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\GainExplodeEffects.cs" />
     <Compile Include="Builders\StatusEffects\HolyWaterSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Amplify.cs" />
@@ -568,7 +560,6 @@
     <Compile Include="Builders\StatusEffects\IncreaseEffectsWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\JudgementEffects.cs" />
     <Compile Include="Builders\StatusEffects\LessonLearned.cs" />
-    <Compile Include="Builders\StatusEffects\LightningOrbSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\OnCardPlayedAddAttackToCardsInHand.cs" />
     <Compile Include="Builders\StatusEffects\OnCardPlayedAddZoomlinToRandomAttackInHand.cs" />
     <Compile Include="Builders\StatusEffects\OnCardPlayedApplyAmplifyToRandomItemInHand.cs" />
@@ -588,7 +579,6 @@
     <Compile Include="Builders\StatusEffects\OnTurnApplyRegenToAllies.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnCleanseSelf.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\PlasmaOrb.cs" />
-    <Compile Include="Builders\StatusEffects\PlasmaOrbSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\ReduceAttackWithText.cs" />
     <Compile Include="Builders\StatusEffects\SetAttackOfCardInHand.cs" />
     <Compile Include="Builders\StatusEffects\ShivSummonEffects.cs" />
@@ -638,6 +628,9 @@
     <Compile Include="SpirefrostStrings.cs" />
     <Compile Include="SpirefrostScriptableObjects.cs" />
     <Compile Include="SpirefrostUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Builders\Cards\Summons\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
