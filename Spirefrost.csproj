@@ -615,6 +615,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
+    <Compile Include="Patches\CanPlayOnPatch.cs" />
     <Compile Include="Patches\ClassesGetterPatch.cs" />
     <Compile Include="Patches\OrbPatches.cs" />
     <Compile Include="Patches\OwnerRelevantTargetConstraintPatches.cs" />
