@@ -603,6 +603,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveReduceAttackToEnemiesWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveReduceEffectsToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
+    <Compile Include="Builders\StatusEffects\WhileActiveTeethToSelfAndAllies.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
     <Compile Include="Patches\CanPlayOnPatch.cs" />

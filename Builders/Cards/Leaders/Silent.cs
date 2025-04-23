@@ -74,9 +74,9 @@ namespace Spirefrost.Builders.Cards.Leaders
                             // Caltrops
                             case 4:
                                 card.SetRandomHealth(8, 10);
-                                card.SetRandomDamage(2, 3);
+                                card.SetRandomDamage(3, 4);
                                 card.SetRandomCounter(3, 4);
-                                card.SetRandomPassive("Teeth", 2, 3);
+                                card.SetRandomPassive(WhileActiveTeethToSelfAndAllies.ID, 1, 1);
                                 break;
 
                             // Flechettes
