@@ -34,6 +34,8 @@ namespace Spirefrost
         internal GameObject managedObjects;
         internal GameObject tempObjects;
 
+        internal Entity dummyEntity;
+
         internal bool updated;
         internal bool looping;
 
@@ -101,6 +103,10 @@ namespace Spirefrost
             managedObjects = new GameObject(Title+".ManagedObjects");
             UnityEngine.Object.DontDestroyOnLoad(managedObjects);
             managedObjects.AddComponent<UpdateManager>();
+            GameObject dummyRef = new GameObject("Dummy Entity", typeof(RectTransform), typeof(Entity));
+            dummyRef.transform.SetParent(managedObjects.transform);
+            dummyEntity = dummyRef.GetComponent<Entity>();
+            dummyEntity.statusEffects = new List<StatusEffectData>();
 
             tempObjects = new GameObject(Title + ".TempObjects");
             UnityEngine.Object.DontDestroyOnLoad(tempObjects);
