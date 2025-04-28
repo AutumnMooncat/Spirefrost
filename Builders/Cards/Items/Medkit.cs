@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Items
 {
-    [ToPoolList(PoolListType.StarterItems, 1, 3)]
+    [ToPoolList(PoolListType.Items)]
     internal class Medkit : SpirefrostBuilder
     {
         internal static string ID => "medkit";
@@ -17,12 +17,12 @@ namespace Spirefrost.Builders.Cards.Items
             return new CardDataBuilder(MainModFile.instance)
                 .CreateItem(ID, "Medical Kit")
                 .SetSprites("Items/MedicalKit.png", "Items/MedicalKitBG.png")
-                .WithValue(25)
+                .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Regen.ID, 2)
+                        SStack(Regen.ID, 3)
                     };
                 });
         }
