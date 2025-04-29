@@ -477,8 +477,10 @@
     <Compile Include="Builders\Cards\Items\Anchor.cs" />
     <Compile Include="Builders\Cards\Items\Bandages.cs" />
     <Compile Include="Builders\Cards\Items\Battery.cs" />
+    <Compile Include="Builders\Cards\Items\BurningBlood.cs" />
     <Compile Include="Builders\Cards\Items\CallingBell.cs" />
     <Compile Include="Builders\Cards\Items\ChemX.cs" />
+    <Compile Include="Builders\Cards\Items\CrackedCore.cs" />
     <Compile Include="Builders\Cards\Items\CultistMask.cs" />
     <Compile Include="Builders\Cards\Items\FusionHammer.cs" />
     <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
@@ -490,9 +492,11 @@
     <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
     <Compile Include="Builders\Cards\Items\Medkit.cs" />
     <Compile Include="Builders\Cards\Items\PocketWatch.cs" />
+    <Compile Include="Builders\Cards\Items\PureWater.cs" />
     <Compile Include="Builders\Cards\Items\Shiv.cs" />
     <Compile Include="Builders\Cards\Items\Shovel.cs" />
     <Compile Include="Builders\Cards\Items\Shuriken.cs" />
+    <Compile Include="Builders\Cards\Items\SnakeRing.cs" />
     <Compile Include="Builders\Cards\Items\Sundial.cs" />
     <Compile Include="Builders\Cards\Items\Toolbox.cs" />
     <Compile Include="Builders\Cards\Items\Whetstone.cs" />
@@ -592,6 +596,7 @@
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedGainShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenDeployedApplyFlightToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhenDestroyedTriggerToAllyBehind.cs" />
+    <Compile Include="Builders\StatusEffects\WhenDrawnDraw.cs" />
     <Compile Include="Builders\StatusEffects\WhenEnemyIsHitByItemApplyShroomToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenEnemyIsHitByItemReduceTheirHealth.cs" />
     <Compile Include="Builders\StatusEffects\WhenHealedReduceCounter.cs" />
