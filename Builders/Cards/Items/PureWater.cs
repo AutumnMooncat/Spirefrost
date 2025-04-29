@@ -1,6 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects.IconEffects;
-using Spirefrost.Builders.StatusEffects.TraitEffects;
+using Spirefrost.Builders.Traits;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
@@ -24,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Items
                 {
                     data.traits = new System.Collections.Generic.List<CardData.TraitStacks>
                     {
-                        TStack(RetainEffect.ID, 1)
+                        TStack(RetainTrait.ID, 1)
                     };
                 });
         }
