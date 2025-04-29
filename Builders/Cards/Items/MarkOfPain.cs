@@ -1,11 +1,10 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Items
 {
-    [ToPoolList(PoolListType.Items)]
+    [ToPoolList(PoolListType.IroncladItems)]
     internal class MarkOfPain : SpirefrostBuilder
     {
         internal static string ID => "markofpain";
@@ -15,18 +14,11 @@ namespace Spirefrost.Builders.Cards.Items
         internal static object GetBuilder()
         {
             return new CardDataBuilder(MainModFile.instance)
-                .CreateItem(ID, "Mark Of Pain")
+                .CreateItem(ID, "Mark of Pain")
                 .SetSprites("Items/MarkOfPain.png", "Items/MarkOfPainBG.png")
-                .WithValue(50)
-                .SetDamage(0)
-                .SetTraits(TStack("Barrage", 1))
-                .SubscribeToAfterAllBuildEvent(data =>
-                {
-                    data.attackEffects = new CardData.StatusEffectStacks[]
-                    {
-                        SStack(Vulnerable.ID, 1)
-                    };
-                });
+                .WithValue(55)
+                .SetTraits(TStack("Consume", 1))
+                .SetAttackEffect(SStack("Reduce Max Counter", 1), SStack("Reduce Max Health", 3));
         }
     }
 }

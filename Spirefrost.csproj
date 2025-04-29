@@ -487,6 +487,7 @@
     <Compile Include="Builders\Cards\Items\HolyWater.cs" />
     <Compile Include="Builders\Cards\Items\IceCream.cs" />
     <Compile Include="Builders\Cards\Items\Kunai.cs" />
+    <Compile Include="Builders\Cards\Items\Marbles.cs" />
     <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
     <Compile Include="Builders\Cards\Items\Medkit.cs" />
     <Compile Include="Builders\Cards\Items\PureWater.cs" />
