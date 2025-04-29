@@ -823,10 +823,9 @@ namespace Spirefrost
                 {
                     if (item.Key == null)
                     {
-                        applicationMap.Remove(item.Key);
                         continue;
                     }
-                    amountsToRemove.Add(item.Key, item.Value);
+                    amountsToRemove[item.Key] = item.Value;
                 }
                 applicationMap.Clear();
             }
@@ -857,14 +856,14 @@ namespace Spirefrost
 
             if (targetPlayedCard)
             {
-                applicationMap.Add(entity, GetAmount() + applicationMap.GetValueOrDefault(entity, 0));
+                applicationMap[entity] = GetAmount() + applicationMap.GetValueOrDefault(entity, 0);
                 return Run(new List<Entity>() { entity });
             }
             else
             {
                 foreach (var item in GetTargets(null, GetWasInRows(entity, targets), null, targets))
                 {
-                    applicationMap.Add(item, GetAmount() + applicationMap.GetValueOrDefault(item, 0));
+                    applicationMap[item] = GetAmount() + applicationMap.GetValueOrDefault(item, 0);
                 }
                 return Run(GetTargets(null, GetWasInRows(entity, targets), null, targets));
             }
