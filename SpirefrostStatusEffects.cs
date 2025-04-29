@@ -1,4 +1,5 @@
 ﻿using FMOD;
+using NexPlugin;
 using Spirefrost.Patches;
 using System;
 using System.Collections;
@@ -1188,6 +1189,54 @@ namespace Spirefrost
             }
             effectAmountAdded = 0;
             yield break;
+        }
+    }
+
+    public class StatusEffectCopyAttackEffectsPreTrigger : StatusEffectData
+    {
+        public override void Init()
+        {
+            base.PreTrigger += EntityPreTrigger;
+        }
+
+        public override bool RunPreTriggerEvent(Trigger trigger)
+        {
+            return CheckTrigger(trigger);
+        }
+
+        private bool CheckTrigger(Trigger trigger)
+        {
+            if (!target.enabled || trigger.entity != target || target.silenced)
+            {
+                return false;
+            }
+
+            if (trigger.targets.Count() == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private IEnumerator EntityPreTrigger(Trigger trigger)
+        {
+            foreach (var item in trigger.targets)
+            {
+                foreach (var effect in item.attackEffects)
+                {
+                    CardData.StatusEffectStacks toApply = target.attackEffects.Find((CardData.StatusEffectStacks a) => a.data.name == effect.data.name);
+                    if (toApply != null)
+                    {
+                        toApply.count += effect.count;
+                    } 
+                    else
+                    {
+                        target.attackEffects.Add(effect.Clone()); 
+                    }
+                }
+            }
+            yield return CountDown(target, GetAmount());
         }
     }
 

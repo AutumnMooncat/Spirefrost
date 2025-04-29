@@ -492,6 +492,7 @@
     <Compile Include="Builders\Cards\Items\Marbles.cs" />
     <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
     <Compile Include="Builders\Cards\Items\Medkit.cs" />
+    <Compile Include="Builders\Cards\Items\Mirror.cs" />
     <Compile Include="Builders\Cards\Items\PureWater.cs" />
     <Compile Include="Builders\Cards\Items\Shiv.cs" />
     <Compile Include="Builders\Cards\Items\Shovel.cs" />
@@ -585,6 +586,7 @@
     <Compile Include="Builders\StatusEffects\OnTurnApplyRegenToAllies.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnCleanseSelf.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\PlasmaOrb.cs" />
+    <Compile Include="Builders\StatusEffects\PreTriggerCopyTargetAttackEffects.cs" />
     <Compile Include="Builders\StatusEffects\ReduceAttackWithText.cs" />
     <Compile Include="Builders\StatusEffects\SetAttackOfCardInHand.cs" />
     <Compile Include="Builders\StatusEffects\ShivSummonEffects.cs" />
