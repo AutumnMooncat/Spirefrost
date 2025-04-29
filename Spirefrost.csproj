@@ -482,6 +482,7 @@
     <Compile Include="Builders\Cards\Items\ChemX.cs" />
     <Compile Include="Builders\Cards\Items\CrackedCore.cs" />
     <Compile Include="Builders\Cards\Items\CultistMask.cs" />
+    <Compile Include="Builders\Cards\Items\FrozenCore.cs" />
     <Compile Include="Builders\Cards\Items\FusionHammer.cs" />
     <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
     <Compile Include="Builders\Cards\Items\HandDrill.cs" />
@@ -498,7 +499,9 @@
     <Compile Include="Builders\Cards\Items\Shuriken.cs" />
     <Compile Include="Builders\Cards\Items\SnakeRing.cs" />
     <Compile Include="Builders\Cards\Items\Sundial.cs" />
+    <Compile Include="Builders\Cards\Items\SymbioticVirus.cs" />
     <Compile Include="Builders\Cards\Items\Toolbox.cs" />
+    <Compile Include="Builders\Cards\Items\WarPaint.cs" />
     <Compile Include="Builders\Cards\Items\Whetstone.cs" />
     <Compile Include="Builders\Cards\Items\WingBoots.cs" />
     <Compile Include="Builders\Cards\Items\WristBlade.cs" />
