@@ -475,7 +475,6 @@
     <Compile Include="Builders\Cards\Companions\SneakyGremlin.cs" />
     <Compile Include="Builders\Cards\Companions\SpikeSlimes.cs" />
     <Compile Include="Builders\Cards\Items\Anchor.cs" />
-    <Compile Include="Builders\Cards\Items\Bandages.cs" />
     <Compile Include="Builders\Cards\Items\Battery.cs" />
     <Compile Include="Builders\Cards\Items\BurningBlood.cs" />
     <Compile Include="Builders\Cards\Items\CallingBell.cs" />
