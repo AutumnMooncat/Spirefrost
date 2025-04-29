@@ -485,6 +485,7 @@
     <Compile Include="Builders\Cards\Items\FrozenCore.cs" />
     <Compile Include="Builders\Cards\Items\FusionHammer.cs" />
     <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
+    <Compile Include="Builders\Cards\Items\GremlinVisage.cs" />
     <Compile Include="Builders\Cards\Items\HandDrill.cs" />
     <Compile Include="Builders\Cards\Items\HolyWater.cs" />
     <Compile Include="Builders\Cards\Items\IceCream.cs" />
@@ -612,6 +613,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveReduceEffectsToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveTeethToSelfAndAllies.cs" />
+    <Compile Include="Builders\StatusEffects\WhileInHandIncreaseItemDamage.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
     <Compile Include="Patches\CanPlayOnPatch.cs" />
