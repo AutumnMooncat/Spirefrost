@@ -15,7 +15,7 @@ namespace Spirefrost.Builders.Cards.Items
         internal static object GetBuilder()
         {
             return new CardDataBuilder(MainModFile.instance)
-                .CreateItem(ID, "Snake Ring")
+                .CreateItem(ID, "Ring of the Snake")
                 .SetSprites("Items/SnakeRing.png", "Items/SnakeRingBG.png")
                 .WithValue(25)
                 .CanPlayOnBoard(false)
