@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization;
 using WildfrostHopeMod.Utils;
+using static Steamworks.InventoryItem;
 using Debug = UnityEngine.Debug;
 
 namespace Spirefrost
@@ -735,20 +736,47 @@ namespace Spirefrost
 
         public bool targetPlayedCard;
 
+        public bool worksInHand;
+
+        public bool worksAnywhere;
+
+        public bool undoAppliedAfterTrigger;
+
         private bool primed;
 
         private Entity entityRef;
 
         private Entity[] targetsRef;
 
+        private bool cardPlayed;
+
+        private readonly Dictionary<Entity, int> amountsToRemove = new Dictionary<Entity, int>();
+
+        private readonly Dictionary<Entity, int> applicationMap = new Dictionary<Entity, int>();
+
         public override void Init()
         {
+            base.OnActionPerformed += ActionPerformed;
+            SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
             Events.OnActionPerform += CheckAction;
         }
 
         public void OnDestroy()
         {
             Events.OnActionPerform -= CheckAction;
+            SpirefrostEvents.OnMovedByDiscarder -= DiscardCheck;
+        }
+
+        private void DiscardCheck(Entity entity)
+        {
+            if (entity == target && cardPlayed && amountsToRemove.Count != 0)
+            {
+                cardPlayed = false;
+                ActionQueue.Stack(new ActionSequence(UndoApplication(amountsToRemove))
+                {
+                    note = "Clear Temporary StatusEffectApplyXWhenAnyCardIsPlayed"
+                }, fixedPosition: true);
+            }
         }
 
         private void CheckAction(PlayAction playAction)
@@ -787,7 +815,22 @@ namespace Spirefrost
 
         public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
         {
-            if (target.enabled && !primed)
+            if (!cardPlayed && entity == target && applicationMap.Count != 0)
+            {
+                cardPlayed = true;
+                foreach (var item in applicationMap)
+                {
+                    if (item.Key == null)
+                    {
+                        applicationMap.Remove(item.Key);
+                        continue;
+                    }
+                    amountsToRemove.Add(item.Key, item.Value);
+                }
+                applicationMap.Clear();
+            }
+
+            if (target.enabled && !primed && (worksAnywhere || (worksInHand && References.Player.handContainer.Contains(target)) || Battle.IsOnBoard(target)))
             {
                 foreach (TargetConstraint triggerConstraint in triggerConstraints)
                 {
@@ -813,12 +856,62 @@ namespace Spirefrost
 
             if (targetPlayedCard)
             {
+                applicationMap.Add(entity, GetAmount() + applicationMap.GetValueOrDefault(entity, 0));
                 return Run(new List<Entity>() { entity });
             }
             else
             {
+                foreach (var item in GetTargets(null, GetWasInRows(entity, targets), null, targets))
+                {
+                    applicationMap.Add(item, GetAmount() + applicationMap.GetValueOrDefault(item, 0));
+                }
                 return Run(GetTargets(null, GetWasInRows(entity, targets), null, targets));
             }
+        }
+
+        public override bool RunActionPerformedEvent(PlayAction action)
+        {
+            if (cardPlayed)
+            {
+                return ActionQueue.Empty;
+            }
+
+            return false;
+        }
+
+        public IEnumerator ActionPerformed(PlayAction action)
+        {
+            cardPlayed = false;
+            yield return UndoApplication(amountsToRemove);
+        }
+
+        public IEnumerator UndoApplication(Dictionary<Entity, int> toRemove)
+        {
+            foreach (var item in toRemove)
+            {
+                Entity key = item.Key;
+                int value = item.Value;
+
+                if (key == null)
+                {
+                    continue;
+                }
+
+                StatusEffectData addedEffect = key.statusEffects.Find((StatusEffectData a) => a.name.Equals(effectToApply.name));
+                if (addedEffect == null)
+                {
+                    continue;
+                }
+
+                Events.InvokeStatusEffectCountDown(addedEffect, ref value);
+                if (value != 0)
+                {
+                    key.PromptUpdate();
+                    key.curveAnimator.Ping();
+                    yield return addedEffect?.RemoveStacks(value, removeTemporary: false);
+                }
+            }
+            toRemove.Clear();
         }
     }
 

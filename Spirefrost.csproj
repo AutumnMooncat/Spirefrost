@@ -480,6 +480,7 @@
     <Compile Include="Builders\Cards\Items\ChemX.cs" />
     <Compile Include="Builders\Cards\Items\CrackedCore.cs" />
     <Compile Include="Builders\Cards\Items\CultistMask.cs" />
+    <Compile Include="Builders\Cards\Items\Fan.cs" />
     <Compile Include="Builders\Cards\Items\FrozenCore.cs" />
     <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
     <Compile Include="Builders\Cards\Items\GremlinVisage.cs" />
@@ -592,6 +593,7 @@
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedReduceCounter.cs" />
+    <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedTemporaryIncreaseEffects.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedDraw.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedGainShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenDeployedApplyFlightToSelf.cs" />
