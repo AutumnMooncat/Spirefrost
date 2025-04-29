@@ -21,7 +21,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetTraits(TStack("Smackback", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    MainModFile.instance.maskedSpries.Add(data.name, MainModFile.instance.ImagePath("Units/LagavulinMask.png").ToSprite());
+                    MainModFile.instance.maskedSpries[data.name] = MainModFile.instance.ImagePath("Units/LagavulinMask.png").ToSprite();
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Shell", 4),

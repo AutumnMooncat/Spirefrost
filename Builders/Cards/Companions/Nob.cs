@@ -21,7 +21,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    MainModFile.instance.maskedSpries.Add(data.name, MainModFile.instance.ImagePath("Units/NobMask.png").ToSprite());
+                    MainModFile.instance.maskedSpries[data.name] = MainModFile.instance.ImagePath("Units/NobMask.png").ToSprite();
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack(Vulnerable.ID, 2)
