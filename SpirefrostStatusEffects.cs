@@ -1,6 +1,4 @@
-﻿using FMOD;
-using NexPlugin;
-using Spirefrost.Patches;
+﻿using Spirefrost.Patches;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +6,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization;
 using WildfrostHopeMod.Utils;
-using static Steamworks.InventoryItem;
 using Debug = UnityEngine.Debug;
 
 namespace Spirefrost
@@ -1284,6 +1281,21 @@ namespace Spirefrost
             target.ResetWhenHealthLostEffects();
             target.PromptUpdate();
             return base.Process();
+        }
+    }
+
+    public class StatusEffectInstanceCleanseAndApplyForEachRemoved : StatusEffectInstantCleanse
+    {
+        public StatusEffectData effectToApply;
+
+        public override IEnumerator Process()
+        {
+            int num = target.statusEffects.Select(status => status.IsNegativeStatusEffect() ? 1 : 0).Sum();
+            yield return base.Process();
+            if (num > 0)
+            {
+                yield return StatusEffectSystem.Apply(target, applier, effectToApply, num * GetAmount());
+            }
         }
     }
 
