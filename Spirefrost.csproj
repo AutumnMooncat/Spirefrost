@@ -500,6 +500,7 @@
     <Compile Include="Builders\Cards\Items\SnakeRing.cs" />
     <Compile Include="Builders\Cards\Items\Sundial.cs" />
     <Compile Include="Builders\Cards\Items\SymbioticVirus.cs" />
+    <Compile Include="Builders\Cards\Items\ThreadNeedle.cs" />
     <Compile Include="Builders\Cards\Items\Toolbox.cs" />
     <Compile Include="Builders\Cards\Items\WarPaint.cs" />
     <Compile Include="Builders\Cards\Items\Whetstone.cs" />
