@@ -1546,6 +1546,18 @@ namespace Spirefrost
         }
     }
 
+    public class StatusEffectAffectAllXAppliedWhileInHand : StatusEffectAffectAllXApplied
+    {
+        public override bool RunApplyStatusEvent(StatusEffectApply apply)
+        {
+            if (!References.Player.handContainer.Contains(target))
+            {
+                return false;
+            }
+            return base.RunApplyStatusEvent(apply);
+        }
+    }
+
     public class StatusEffectRetain : StatusEffectData
     {
         // Maybe we want some stuff later like 1 time retain

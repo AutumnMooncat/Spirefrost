@@ -485,6 +485,7 @@
     <Compile Include="Builders\Cards\Items\CultistMask.cs" />
     <Compile Include="Builders\Cards\Items\Fan.cs" />
     <Compile Include="Builders\Cards\Items\FrozenCore.cs" />
+    <Compile Include="Builders\Cards\Items\Funnel.cs" />
     <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
     <Compile Include="Builders\Cards\Items\GremlinVisage.cs" />
     <Compile Include="Builders\Cards\Items\HandDrill.cs" />
@@ -495,11 +496,13 @@
     <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
     <Compile Include="Builders\Cards\Items\Medkit.cs" />
     <Compile Include="Builders\Cards\Items\Mirror.cs" />
+    <Compile Include="Builders\Cards\Items\NinjaScroll.cs" />
     <Compile Include="Builders\Cards\Items\PureWater.cs" />
     <Compile Include="Builders\Cards\Items\Shiv.cs" />
     <Compile Include="Builders\Cards\Items\Shovel.cs" />
     <Compile Include="Builders\Cards\Items\Shuriken.cs" />
     <Compile Include="Builders\Cards\Items\SnakeRing.cs" />
+    <Compile Include="Builders\Cards\Items\SneckoSkull.cs" />
     <Compile Include="Builders\Cards\Items\Spoon.cs" />
     <Compile Include="Builders\Cards\Items\Sundial.cs" />
     <Compile Include="Builders\Cards\Items\SymbioticVirus.cs" />
@@ -598,6 +601,7 @@
     <Compile Include="Builders\StatusEffects\ShivSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\STSSplitEffects.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryExplodeEffects.cs" />
+    <Compile Include="Builders\StatusEffects\OnHitEqualShroomToTarget.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
@@ -620,6 +624,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveReduceEffectsToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveTeethToSelfAndAllies.cs" />
+    <Compile Include="Builders\StatusEffects\WhileInHandIncreaseAllShroomApplied.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseItemDamage.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandRedirectConsume.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
