@@ -28,6 +28,12 @@ namespace Spirefrost.Patches
                 case PoolListType.DefectCharms:
                 case PoolListType.WatcherCharms:
                     return "Charms";
+
+                case PoolListType.IroncladUnits:
+                case PoolListType.SilentUnits:
+                case PoolListType.DefectUnits:
+                case PoolListType.WatcherUnits:
+                    return "Units";
             }
 
             throw new Exception($"Attempting to create reward pool of non character specific reward type {type}");
@@ -38,7 +44,7 @@ namespace Spirefrost.Patches
             RewardPool pool = ScriptableObject.CreateInstance<RewardPool>();
             pool.name = type.ToString();
             pool.type = PoolName(type);
-            if (pool.type == "Items")
+            if (pool.type == "Items" || pool.type == "Units")
             {
                 pool.list = PoolToIDs(type).Select(s => MainModFile.instance.TryGet<CardData>(s)).Cast<DataFile>().ToList();
             }
@@ -56,6 +62,7 @@ namespace Spirefrost.Patches
             if (References.LeaderData.name == Ironclad.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.IroncladItems));
+                __instance.Add(PoolToReward(PoolListType.IroncladUnits));
                 __instance.Add(PoolToReward(PoolListType.IroncladCharms));
                 extraStarters.AddRange(
                     PoolToIDs(PoolListType.IroncladStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
@@ -63,6 +70,7 @@ namespace Spirefrost.Patches
             else if (References.LeaderData.name == Silent.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.SilentItems));
+                __instance.Add(PoolToReward(PoolListType.SilentUnits));
                 __instance.Add(PoolToReward(PoolListType.SilentCharms));
                 extraStarters.AddRange(
                     PoolToIDs(PoolListType.SilentStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
@@ -70,6 +78,7 @@ namespace Spirefrost.Patches
             else if (References.LeaderData.name == Defect.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.DefectItems));
+                __instance.Add(PoolToReward(PoolListType.DefectUnits));
                 __instance.Add(PoolToReward(PoolListType.DefectCharms));
                 extraStarters.AddRange(
                     PoolToIDs(PoolListType.DefectStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
@@ -77,6 +86,7 @@ namespace Spirefrost.Patches
             else if (References.LeaderData.name == Watcher.FullID)
             {
                 __instance.Add(PoolToReward(PoolListType.WatcherItems));
+                __instance.Add(PoolToReward(PoolListType.WatcherUnits));
                 __instance.Add(PoolToReward(PoolListType.WatcherCharms));
                 extraStarters.AddRange(
                     PoolToIDs(PoolListType.WatcherStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
