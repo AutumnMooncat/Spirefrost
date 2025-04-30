@@ -1551,6 +1551,11 @@ namespace Spirefrost
         // Maybe we want some stuff later like 1 time retain
     }
 
+    public class StatusEffectRedirectConsume : StatusEffectData
+    {
+        // Handled via patch
+    }
+
     // Thank you AbsentAbigail!
     public class StatusEffectDiscovery : StatusEffectInstant
     {
