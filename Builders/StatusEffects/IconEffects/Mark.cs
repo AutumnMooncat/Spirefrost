@@ -18,6 +18,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
+                .WithOffensive(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectSTSMark>(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
