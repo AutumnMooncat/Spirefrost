@@ -1284,7 +1284,7 @@ namespace Spirefrost
         }
     }
 
-    public class StatusEffectInstanceCleanseAndApplyForEachRemoved : StatusEffectInstantCleanse
+    public class StatusEffectInstantCleanseAndApplyForEachRemoved : StatusEffectInstantCleanse
     {
         public StatusEffectData effectToApply;
 

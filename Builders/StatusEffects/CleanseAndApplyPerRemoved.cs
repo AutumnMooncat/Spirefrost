@@ -12,10 +12,10 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectInstanceCleanseAndApplyForEachRemoved>(ID)
+                .Create<StatusEffectInstantCleanseAndApplyForEachRemoved>(ID)
                 .WithText("<keyword=cleanse> and increase <keyword=attack> by <{a}> for each negative status removed")
                 .WithCanBeBoosted(true)
-                .SubscribeToAfterAllBuildEvent<StatusEffectInstanceCleanseAndApplyForEachRemoved>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantCleanseAndApplyForEachRemoved>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
                 });
