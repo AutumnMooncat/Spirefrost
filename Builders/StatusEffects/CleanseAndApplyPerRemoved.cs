@@ -5,7 +5,7 @@ namespace Spirefrost.Builders.StatusEffects
 {
     internal class InstantCleanseAndApplyAttackPerRemoved : SpirefrostBuilder
     {
-        internal static string ID => null;
+        internal static string ID => "Instant Cleanse And Apply Attack Per Removed";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
