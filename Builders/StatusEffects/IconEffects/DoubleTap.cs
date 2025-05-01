@@ -13,11 +13,11 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectDoubleTap>(ID)
+                .Create<StatusEffectSTSDoubleTap>(ID)
                 .WithCanBeBoosted(false)
                 .WithStackable(true)
                 .WithIsStatus(true)
-                .SubscribeToAfterAllBuildEvent<StatusEffectDoubleTap>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectSTSDoubleTap>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("MultiHit");
                 })

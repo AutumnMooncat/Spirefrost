@@ -241,7 +241,7 @@ namespace Spirefrost
         }
     }
 
-    public class StatusEffectDoubleTap : StatusEffectData
+    public class StatusEffectSTSDoubleTap : StatusEffectData
     {
         public bool cardPlayed;
 
