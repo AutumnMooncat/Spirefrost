@@ -19,6 +19,7 @@ namespace Spirefrost.Builders.Cards.Items
                 .SetSprites("Items/RedSkull.png", "Items/RedSkullBG.png")
                 .WithValue(60)
                 .SetTraits(TStack("Consume", 1))
+                .CanPlayOnHand(true)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
