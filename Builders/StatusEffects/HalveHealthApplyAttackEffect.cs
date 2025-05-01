@@ -5,7 +5,7 @@ namespace Spirefrost.Builders.StatusEffects
 {
     internal class HalveHealthApplyAttackEffect : SpirefrostBuilder
     {
-        internal static string ID => null;
+        internal static string ID => "Halve Health Apply Attack Effect";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
