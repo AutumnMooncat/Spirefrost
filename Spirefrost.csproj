@@ -498,6 +498,7 @@
     <Compile Include="Builders\Cards\Items\Mirror.cs" />
     <Compile Include="Builders\Cards\Items\NinjaScroll.cs" />
     <Compile Include="Builders\Cards\Items\PureWater.cs" />
+    <Compile Include="Builders\Cards\Items\RedSkull.cs" />
     <Compile Include="Builders\Cards\Items\Shiv.cs" />
     <Compile Include="Builders\Cards\Items\Shovel.cs" />
     <Compile Include="Builders\Cards\Items\Shuriken.cs" />
@@ -555,6 +556,7 @@
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToSkillsInHand.cs" />
     <Compile Include="Builders\StatusEffects\ChannelOrbEffects.cs" />
     <Compile Include="Builders\StatusEffects\CleanseAndApplyPerRemoved.cs" />
+    <Compile Include="Builders\StatusEffects\HalveHealthApplyAttackEffect.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\DarkOrb.cs" />
     <Compile Include="Builders\StatusEffects\DiscoveryEffects.cs" />
     <Compile Include="Builders\StatusEffects\EquipMask.cs" />
