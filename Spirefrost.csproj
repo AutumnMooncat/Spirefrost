@@ -528,6 +528,7 @@
     <Compile Include="Builders\Icons\AmplifyIcon.cs" />
     <Compile Include="Builders\Icons\DarkIcon.cs" />
     <Compile Include="Builders\Icons\DoubleTapIcon.cs" />
+    <Compile Include="Builders\Icons\EnergizedIcon.cs" />
     <Compile Include="Builders\Icons\FlightIcon.cs" />
     <Compile Include="Builders\Icons\FrostIcon.cs" />
     <Compile Include="Builders\Icons\LightningIcon.cs" />
@@ -541,6 +542,7 @@
     <Compile Include="Builders\Keywords\AmplifyKeyword.cs" />
     <Compile Include="Builders\Keywords\DarkKeyword.cs" />
     <Compile Include="Builders\Keywords\DoubleTapKeyword.cs" />
+    <Compile Include="Builders\Keywords\EnergizedKeyword.cs" />
     <Compile Include="Builders\Keywords\FlightKeyword.cs" />
     <Compile Include="Builders\Keywords\FrostKeyword.cs" />
     <Compile Include="Builders\Keywords\LightningKeyword.cs" />
@@ -564,6 +566,7 @@
     <Compile Include="Builders\StatusEffects\HolyWaterSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Amplify.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\DoubleTap.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\Energized.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Flight.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\FrostOrb.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\LightningOrb.cs" />
@@ -634,6 +637,7 @@
     <Compile Include="Patches\CanPlayOnPatch.cs" />
     <Compile Include="Patches\ClassesGetterPatch.cs" />
     <Compile Include="Patches\ConsumePatch.cs" />
+    <Compile Include="Patches\CounterResetPatches.cs" />
     <Compile Include="Patches\HarmonyInsertPatch.cs" />
     <Compile Include="Patches\InsertTestPatch.cs" />
     <Compile Include="Patches\OrbPatches.cs" />

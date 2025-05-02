@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.StatusEffects;
+using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
@@ -23,11 +24,7 @@ namespace Spirefrost.Builders.Cards.Items
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Reduce Counter", 1),
-
-                    };
-                    data.startWithEffects = new CardData.StatusEffectStacks[]
-                    {
-                        SStack(OnCardPlayedIncreaseCounterToRandomEnemy.ID, 1)
+                        SStack(Energized.ID, 1)
                     };
                 });
         }

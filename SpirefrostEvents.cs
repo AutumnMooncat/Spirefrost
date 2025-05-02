@@ -35,5 +35,17 @@ namespace Spirefrost
             }
             onCardsRetained(entities);
         }
+
+        internal static event UnityAction<Entity> OnCounterReset;
+
+        internal static void InvokeCounterReset(Entity entity)
+        {
+            UnityAction<Entity> onCounterReset = OnCounterReset;
+            if (onCounterReset == null)
+            {
+                return;
+            }
+            onCounterReset(entity);
+        }
     }
 }
