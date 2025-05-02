@@ -38,56 +38,6 @@ namespace Spirefrost.Patches
 
         static MemberInfo lastSeen;
 
-        static MemberInfo DebugPrinter(MemberInfo member)
-        {
-            Debug.Log($"DebugPrinter - Got MemberInfo {member} with module {member.Module}");
-            Module mod = member.Module;
-            try
-            {
-                Assembly ass = mod.Assembly;
-                Debug.Log($"MemberInfo.Module got Assembly: {ass}, dumping info:");
-                Debug.Log($"MemberInfo Name: {member.Name}");
-                Debug.Log($"MemberInfo Type: {member.GetType()}");
-                Debug.Log($"MemberInfo MemberType {member.MemberType}");
-                Debug.Log($"MemberInfo DeclaringType {member.DeclaringType}");
-                Debug.Log($"Module Name: {mod.Name}");
-                Debug.Log($"Module Type: {mod.GetType()}");
-            }
-            catch (Exception)
-            {
-                Debug.Log($"MemberInfo.Module failed to get Assembly, dumping info:");
-                Debug.Log($"MemberInfo Name: {member.Name}");
-                Debug.Log($"MemberInfo Type: {member.GetType()}");
-                Debug.Log($"MemberInfo MemberType {member.MemberType}");
-                Debug.Log($"MemberInfo DeclaringType {member.DeclaringType}");
-                Debug.Log($"Module Name: {mod.Name}");
-                Debug.Log($"Module Type: {mod.GetType()}");
-            }
-            lastSeen = member;
-            return member;
-        }
-
-        static Module DebugPrinter2(Module module)
-        {
-            Debug.Log($"DebugPrinter2 - Got module {module}");
-            Debug.Log($"Last seen MemberInfo was {lastSeen} with module {lastSeen.Module}");
-            Debug.Log($"Are these the same module? {lastSeen.Module == module}");
-            try
-            {
-                Assembly ass = module.Assembly;
-                Debug.Log($"Module got Assembly: {ass}");
-                Debug.Log($"Module Name: {module.Name}");
-                Debug.Log($"Module Type: {module.GetType()}");
-            }
-            catch (Exception)
-            {
-                Debug.Log($"Module failed to get Assembly, dumping info:");
-                Debug.Log($"Module Name: {module.Name}");
-                Debug.Log($"Module Type: {module.GetType()}");
-            }
-            return module;
-        }
-
         static Assembly AssemblyRedirection(Module module)
         {
             try
