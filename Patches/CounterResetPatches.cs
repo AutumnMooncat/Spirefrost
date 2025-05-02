@@ -42,6 +42,14 @@ namespace Spirefrost.Patches
         {
             try
             {
+                // Do RuntimeModule cast and return that
+                Type runtimeModuleType = Type.GetType("System.Reflection.RuntimeModule,mscorlib");
+                if (module.GetType() == runtimeModuleType)
+                {
+                    return (Assembly)AccessTools.PropertyGetter(runtimeModuleType, "Assembly").Invoke(module, null);
+                }
+                
+                // Attempt a normal return, which could throw if it uses the same logic as MonoMod
                 Assembly ass = module.Assembly;
                 return ass;
             }
