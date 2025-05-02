@@ -36,8 +36,6 @@ namespace Spirefrost.Patches
             yield return AccessTools.Method(typeof(Module), "get_Assembly");
         }
 
-        static MemberInfo lastSeen;
-
         static Assembly AssemblyRedirection(Module module)
         {
             try
