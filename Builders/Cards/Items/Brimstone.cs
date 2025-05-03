@@ -18,6 +18,8 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Brimstone")
                 .SetSprites("Items/Brimstone.png", "Items/BrimstoneBG.png")
                 .WithValue(50)
+                .CanPlayOnHand(true)
+                .NeedsTarget(false)
                 .SetTraits(TStack("Consume", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
