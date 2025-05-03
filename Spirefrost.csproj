@@ -488,12 +488,12 @@
     <Compile Include="Builders\Cards\Items\Fan.cs" />
     <Compile Include="Builders\Cards\Items\FrozenCore.cs" />
     <Compile Include="Builders\Cards\Items\Funnel.cs" />
+    <Compile Include="Builders\Cards\Items\Girya.cs" />
     <Compile Include="Builders\Cards\Items\GoldenEye.cs" />
     <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
     <Compile Include="Builders\Cards\Items\GremlinVisage.cs" />
     <Compile Include="Builders\Cards\Items\HandDrill.cs" />
     <Compile Include="Builders\Cards\Items\HolyWater.cs" />
-    <Compile Include="Builders\Cards\Items\IceCream.cs" />
     <Compile Include="Builders\Cards\Items\Kunai.cs" />
     <Compile Include="Builders\Cards\Items\Marbles.cs" />
     <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
@@ -501,6 +501,7 @@
     <Compile Include="Builders\Cards\Items\Melange.cs" />
     <Compile Include="Builders\Cards\Items\Mirror.cs" />
     <Compile Include="Builders\Cards\Items\NinjaScroll.cs" />
+    <Compile Include="Builders\Cards\Items\Pellets.cs" />
     <Compile Include="Builders\Cards\Items\PureWater.cs" />
     <Compile Include="Builders\Cards\Items\RedSkull.cs" />
     <Compile Include="Builders\Cards\Items\Shiv.cs" />
@@ -601,6 +602,7 @@
     <Compile Include="Builders\StatusEffects\OnHitDamageIfDrawPileEmpty.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualShellToFrontAlly.cs" />
     <Compile Include="Builders\StatusEffects\OnHitIncreaseCounter.cs" />
+    <Compile Include="Builders\StatusEffects\OnKillApplyAttackToAllies.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelf.cs" />
     <Compile Include="Builders\StatusEffects\OnKillReduceMaxCounter.cs" />
     <Compile Include="Builders\StatusEffects\OnKillTriggerAgain.cs" />
