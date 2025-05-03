@@ -483,6 +483,7 @@
     <Compile Include="Builders\Cards\Items\ChemX.cs" />
     <Compile Include="Builders\Cards\Items\CrackedCore.cs" />
     <Compile Include="Builders\Cards\Items\CultistMask.cs" />
+    <Compile Include="Builders\Cards\Items\DataDisk.cs" />
     <Compile Include="Builders\Cards\Items\Duality.cs" />
     <Compile Include="Builders\Cards\Items\Fan.cs" />
     <Compile Include="Builders\Cards\Items\FrozenCore.cs" />
@@ -614,6 +615,7 @@
     <Compile Include="Builders\StatusEffects\STSSplitEffects.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryExplodeEffects.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualShroomToTarget.cs" />
+    <Compile Include="Builders\StatusEffects\TemporaryFocus.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\FocusEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
