@@ -18,6 +18,10 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Charon's Ashes")
                 .SetSprites("Items/Ashes.png", "Items/AshesBG.png")
                 .WithValue(50)
+                .CanPlayOnBoard(false)
+                .CanPlayOnEnemy(false)
+                .CanPlayOnFriendly(true)
+                .CanPlayOnHand(true)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
