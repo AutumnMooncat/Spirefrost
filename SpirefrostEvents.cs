@@ -1,4 +1,5 @@
-﻿using Spirefrost;
+﻿using Dead;
+using Spirefrost;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,6 +47,20 @@ namespace Spirefrost
                 return;
             }
             onCounterReset(entity);
+        }
+
+        internal delegate void StatusReductionEvent(StatusEffectData status, ref int amount, bool temporary);
+
+        internal static event StatusReductionEvent OnPreStatusReduction;
+
+        internal static void InvokePreStatusReduction(StatusEffectData status, ref int amount, bool temporary)
+        {
+            StatusReductionEvent onPreStatusReduction = OnPreStatusReduction;
+            if (onPreStatusReduction == null)
+            {
+                return;
+            }
+            onPreStatusReduction(status, ref amount, temporary);
         }
     }
 }

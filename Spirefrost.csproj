@@ -548,6 +548,7 @@
     <Compile Include="Builders\Keywords\DoubleTapKeyword.cs" />
     <Compile Include="Builders\Keywords\EnergizedKeyword.cs" />
     <Compile Include="Builders\Keywords\FlightKeyword.cs" />
+    <Compile Include="Builders\Keywords\FocusKeyword.cs" />
     <Compile Include="Builders\Keywords\FrostKeyword.cs" />
     <Compile Include="Builders\Keywords\LightningKeyword.cs" />
     <Compile Include="Builders\Keywords\MarkKeyword.cs" />
@@ -612,6 +613,7 @@
     <Compile Include="Builders\StatusEffects\STSSplitEffects.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryExplodeEffects.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualShroomToTarget.cs" />
+    <Compile Include="Builders\StatusEffects\TraitEffects\FocusEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
@@ -637,12 +639,14 @@
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseAllShroomApplied.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseItemDamage.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandRedirectConsume.cs" />
+    <Compile Include="Builders\Traits\FocusTrait.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
     <Compile Include="Patches\CanPlayOnPatch.cs" />
     <Compile Include="Patches\ClassesGetterPatch.cs" />
     <Compile Include="Patches\ConsumePatch.cs" />
     <Compile Include="Patches\CounterResetPatches.cs" />
+    <Compile Include="Patches\FocusPatches.cs" />
     <Compile Include="Patches\HarmonyInsertPatch.cs" />
     <Compile Include="Patches\InsertTestPatch.cs" />
     <Compile Include="Patches\OrbPatches.cs" />
