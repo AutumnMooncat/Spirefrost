@@ -16,6 +16,7 @@ namespace Spirefrost
         public static string TribeDescKey => MainModFile.instance.GUID + ".TribeDesc";
 
         public static string ToolboxTitle => MainModFile.instance.GUID + ".ToolboxTitle";
+        public static string GoldenEyeTitle => MainModFile.instance.GUID + ".GoldenEyeTitle";
 
         //Call this method in Load()
         internal static void CreateLocalizedStrings()
@@ -26,6 +27,7 @@ namespace Spirefrost
                 "\n\n" +
                 "Well versed in defending themselves, they whittle their enemies down to win the war of attrition."); //Create the description.
             uiText.SetString(ToolboxTitle, "Add an item into your hand");
+            uiText.SetString(GoldenEyeTitle, "Draw a card");
         }
     }
 }

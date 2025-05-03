@@ -1399,6 +1399,35 @@ namespace Spirefrost
         }
     }
 
+    public class StatusEffectInstanceEqualize : StatusEffectInstant
+    {
+        public StatusEffectData[] effectsToEqualize;
+
+        public override IEnumerator Process()
+        {
+            int max = 0;
+            foreach (var status in target.statusEffects)
+            {
+                if (effectsToEqualize.Select(ete => ete.name).Contains(status.name))
+                {
+                    if (status.count > max)
+                    {
+                        max = status.count;
+                    }
+                }
+            }
+            foreach (var status in effectsToEqualize)
+            {
+                int toApply = max - target.statusEffects.Where(s => s.name == status.name).Select(s => s.count).FirstOrDefault();
+                if (toApply > 0)
+                {
+                    yield return StatusEffectSystem.Apply(target, applier, status, toApply);
+                }
+            }
+            yield return base.Process();
+        }
+    }
+
     public class StatusEffectApplyRandomCharm : StatusEffectInstant
     {
         public bool useBanlist = false;
@@ -1653,6 +1682,7 @@ namespace Spirefrost
         public string[] customCardList;
         public int copies = 1;
         public CardData.StatusEffectStacks[] addEffectStacks;
+        public bool amountIsForApply;
         public LocalizedString title;
 
         private CardContainer constructedContainer;
@@ -1725,7 +1755,7 @@ namespace Spirefrost
 
                 foreach (CardData.StatusEffectStacks stack in addEffectStacks)
                 {
-                    ActionQueue.Stack(new ActionApplyStatus(selectedEntity, null, stack.data, stack.count));
+                    ActionQueue.Stack(new ActionApplyStatus(selectedEntity, null, stack.data, amountIsForApply ? GetAmount() : stack.count));
                 }
 
                 selectedEntity.display.promptUpdateDescription = true;

@@ -483,9 +483,11 @@
     <Compile Include="Builders\Cards\Items\ChemX.cs" />
     <Compile Include="Builders\Cards\Items\CrackedCore.cs" />
     <Compile Include="Builders\Cards\Items\CultistMask.cs" />
+    <Compile Include="Builders\Cards\Items\Duality.cs" />
     <Compile Include="Builders\Cards\Items\Fan.cs" />
     <Compile Include="Builders\Cards\Items\FrozenCore.cs" />
     <Compile Include="Builders\Cards\Items\Funnel.cs" />
+    <Compile Include="Builders\Cards\Items\GoldenEye.cs" />
     <Compile Include="Builders\Cards\Items\GremlinHorn.cs" />
     <Compile Include="Builders\Cards\Items\GremlinVisage.cs" />
     <Compile Include="Builders\Cards\Items\HandDrill.cs" />
@@ -495,6 +497,7 @@
     <Compile Include="Builders\Cards\Items\Marbles.cs" />
     <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
     <Compile Include="Builders\Cards\Items\Medkit.cs" />
+    <Compile Include="Builders\Cards\Items\Melange.cs" />
     <Compile Include="Builders\Cards\Items\Mirror.cs" />
     <Compile Include="Builders\Cards\Items\NinjaScroll.cs" />
     <Compile Include="Builders\Cards\Items\PureWater.cs" />
@@ -579,6 +582,7 @@
     <Compile Include="Builders\StatusEffects\IncreaseCounter.cs" />
     <Compile Include="Builders\StatusEffects\IncreaseEffectsWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\InstantDealCurrentAttackToEnemies.cs" />
+    <Compile Include="Builders\StatusEffects\InstantEqualizeShellSpice.cs" />
     <Compile Include="Builders\StatusEffects\JudgementEffects.cs" />
     <Compile Include="Builders\StatusEffects\LessonLearned.cs" />
     <Compile Include="Builders\StatusEffects\OnCardPlayedAddAttack.cs" />

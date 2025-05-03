@@ -41,4 +41,42 @@ namespace Spirefrost.Builders.StatusEffects
                 });
         }
     }
+
+    internal class OnCardPlayedDoDiscoveryGoldenEye : SpirefrostBuilder
+    {
+        internal static string ID => "On Card Played Do Discovery Golden Eye";
+
+        internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
+
+        internal static object GetBuilder()
+        {
+            return StatusCopy("On Card Played Add Gearhammer To Hand", ID)
+                .WithText("Choose a card in your draw pile to draw")
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>(DiscoveryGoldenEye.ID);
+                });
+        }
+    }
+
+    internal class DiscoveryGoldenEye : SpirefrostBuilder
+    {
+        internal static string ID => "STS Discovery Golden Eye";
+
+        internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
+
+        internal static object GetBuilder()
+        {
+            return new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectDiscovery>(ID)
+                .WithText("")
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectDiscovery>(data =>
+                {
+                    data.source = StatusEffectDiscovery.CardSource.Custom;
+                    data.title = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English).GetString(SpirefrostStrings.GoldenEyeTitle);
+                });
+        }
+    }
 }
