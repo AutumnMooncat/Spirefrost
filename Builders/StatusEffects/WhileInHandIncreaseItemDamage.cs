@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("While In Hand Reduce Attack To Allies", ID)
-                .WithText("While in hand, add <+{a}><keyword=attack> to <Items> in your hand")
+                .WithText("While in hand, add <+{a}><keyword=attack> to other <Items> in your hand")
                 .SubscribeToAfterAllBuildEvent<StatusEffectWhileInHandX>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Hand;
