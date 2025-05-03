@@ -23,8 +23,8 @@ namespace Spirefrost.Builders.Cards.Items
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Spice", 2),
                         SStack("Shell", 2),
+                        SStack("Spice", 2),
                         SStack(InstantEqualizeShellSpice.ID, 1)
                     };
                 });

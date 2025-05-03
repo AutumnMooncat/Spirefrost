@@ -12,7 +12,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectInstanceEqualize>(ID)
-                .WithText("Set <keyword=Shell> and <keyword=Spice> to the higher of the two")
+                .WithText("Set <keyword=shell> and <keyword=spice> to the higher of the two")
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstanceEqualize>(data =>
                 {
