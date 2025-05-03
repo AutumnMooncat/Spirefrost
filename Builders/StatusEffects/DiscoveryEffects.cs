@@ -74,7 +74,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectDiscovery>(data =>
                 {
-                    data.source = StatusEffectDiscovery.CardSource.Custom;
+                    data.source = StatusEffectDiscovery.CardSource.Draw;
                     data.title = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English).GetString(SpirefrostStrings.GoldenEyeTitle);
                 });
         }
