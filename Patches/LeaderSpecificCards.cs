@@ -96,7 +96,7 @@ namespace Spirefrost.Patches
             //Debug.Log($"LeaderSpecificCards - {References.LeaderData.name} has {extraStarters.Count} additional cards");
             foreach (CardData item in extraStarters)
             {
-                References.PlayerData.inventory.deck.Add(item);
+                References.PlayerData.inventory.deck.Add(item.Clone());
             }
         }
     }
