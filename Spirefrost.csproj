@@ -510,6 +510,7 @@
     <Compile Include="Builders\Cards\Items\Spoon.cs" />
     <Compile Include="Builders\Cards\Items\Sundial.cs" />
     <Compile Include="Builders\Cards\Items\SymbioticVirus.cs" />
+    <Compile Include="Builders\Cards\Items\TeardropLocket.cs" />
     <Compile Include="Builders\Cards\Items\ThreadNeedle.cs" />
     <Compile Include="Builders\Cards\Items\Toolbox.cs" />
     <Compile Include="Builders\Cards\Items\WarPaint.cs" />
