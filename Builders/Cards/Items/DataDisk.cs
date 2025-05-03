@@ -24,7 +24,7 @@ namespace Spirefrost.Builders.Cards.Items
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(TemporaryFocus.ID, 1)
+                        SStack(InstantApplyTemporaryFocus.ID, 1)
                     };
                 });
         }
