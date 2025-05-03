@@ -544,6 +544,7 @@
     <Compile Include="Builders\Icons\VulnerableIcon.cs" />
     <Compile Include="Builders\Icons\WeakIcon.cs" />
     <Compile Include="Builders\Keywords\AmplifyKeyword.cs" />
+    <Compile Include="Builders\Keywords\ChannelKeyword.cs" />
     <Compile Include="Builders\Keywords\DarkKeyword.cs" />
     <Compile Include="Builders\Keywords\DoubleTapKeyword.cs" />
     <Compile Include="Builders\Keywords\EnergizedKeyword.cs" />

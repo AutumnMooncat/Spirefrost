@@ -1,5 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects.IconEffects;
+using Spirefrost.Builders.StatusEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
@@ -22,7 +22,7 @@ namespace Spirefrost.Builders.Cards.Items
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(FrostOrb.ID, FrostOrb.ApplyAmount)
+                        SStack(InstantChannelFrost.ID, 1)
                     };
                 });
         }

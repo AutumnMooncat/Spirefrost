@@ -36,7 +36,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomHealth(7, 9);
                                 card.SetRandomDamage(0, 1);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive(OnCardPlayedChannelLightning.ID, LightningOrb.ApplyAmount, LightningOrb.ApplyAmount);
+                                card.SetRandomPassive(OnCardPlayedChannelLightning.ID, 1, 1);
                                 break;
 
                             // Dark
@@ -44,7 +44,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomHealth(5, 7);
                                 card.SetRandomDamage(0, 1);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive(OnCardPlayedChannelDark.ID, DarkOrb.ApplyAmount, DarkOrb.ApplyAmount);
+                                card.SetRandomPassive(OnCardPlayedChannelDark.ID, 1, 1);
                                 break;
 
                             // Plasma
@@ -52,7 +52,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomHealth(8, 10);
                                 card.SetRandomDamage(5, 7);
                                 card.SetRandomCounter(6, 6);
-                                card.SetRandomPassive(OnCardPlayedChannelPlasma.ID, PlasmaOrb.ApplyAmount, PlasmaOrb.ApplyAmount);
+                                card.SetRandomPassive(OnCardPlayedChannelPlasma.ID, 1, 1);
                                 break;
 
                             // Frost
@@ -60,7 +60,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomHealth(6, 8);
                                 card.SetRandomDamage(3, 5);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive(OnCardPlayedChannelFrost.ID, FrostOrb.ApplyAmount, FrostOrb.ApplyAmount);
+                                card.SetRandomPassive(OnCardPlayedChannelFrost.ID, 1, 1);
                                 break;
 
                             // Claw

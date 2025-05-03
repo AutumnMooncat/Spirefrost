@@ -15,7 +15,7 @@ namespace Spirefrost.Builders.Keywords
             return new KeywordDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithTitle("Frost Orb")
-                .WithDescription($"Applies {FrostOrb.ApplyAmount}<keyword=frost> to the front enemy every turn | Clears after triggering")
+                .WithDescription($"Applies {FrostOrb.ApplyAmount}<keyword=frost> to the front enemy every turn | Retargets if row empty\n\nClears after triggering")
                 .WithTitleColour(new Color(0.50f, 0.95f, 0.95f))
                 .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
                 .WithNoteColour(new Color(0.49f, 0.94f, 0.94f))
