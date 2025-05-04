@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Items
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Vulnerable.ID, 1)
+                        SStack(Vulnerable.ID, 2)
                     };
                 });
         }
