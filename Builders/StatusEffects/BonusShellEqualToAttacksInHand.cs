@@ -1,0 +1,26 @@
+﻿using Deadpan.Enums.Engine.Components.Modding;
+using UnityEngine;
+
+namespace Spirefrost.Builders.StatusEffects
+{
+    internal class BonusShellEqualToAttacksInHand : SpirefrostBuilder
+    {
+        internal static string ID => "Bonus Shell Equal To Attacks In Hand";
+
+        internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
+
+        internal static object GetBuilder()
+        {
+            return new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectAffectAllXAppliedWhileInHand>(ID)
+                .WithText("Apply additional <keyword=shell> equal to <Items> in hand with <keyword=attack>")
+                .WithCanBeBoosted(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectAffectAllXAppliedWhileInHand>(data =>
+                {
+                    data.applierMustBeSelf = true;
+                    data.scriptableAmount = ScriptableObject.CreateInstance<ScriptableAttacksInHand>();
+                    data.effectToAffect = TryGet<StatusEffectData>("Shell");
+                });
+        }
+    }
+}

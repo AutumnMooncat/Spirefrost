@@ -26,7 +26,7 @@ namespace Spirefrost.Builders.Cards.Items
                     };
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenAttackItemPlayedTemporaryIncreaseEffects.ID, 1)
+                        SStack(BonusShellEqualToAttacksInHand.ID, 1)
                     };
                 });
         }

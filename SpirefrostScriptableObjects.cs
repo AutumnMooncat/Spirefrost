@@ -170,4 +170,12 @@ namespace Spirefrost
             return References.Player.handContainer.Where(e => e.data.IsItem && !e.data.hasAttack).Count();
         }
     }
+
+    public class ScriptableAttacksInHand : ScriptableAmount
+    {
+        public override int Get(Entity entity)
+        {
+            return References.Player.handContainer.Where(e => e.data.IsItem && e.data.hasAttack).Count();
+        }
+    }
 }

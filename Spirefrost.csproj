@@ -564,6 +564,7 @@
     <Compile Include="Builders\Keywords\WeakKeyword.cs" />
     <Compile Include="Builders\StatusEffects\AttackAboveXCountsAsFrenzy.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToSkillsInHand.cs" />
+    <Compile Include="Builders\StatusEffects\BonusShellEqualToAttacksInHand.cs" />
     <Compile Include="Builders\StatusEffects\ChannelOrbEffects.cs" />
     <Compile Include="Builders\StatusEffects\CleanseAndApplyPerRemoved.cs" />
     <Compile Include="Builders\StatusEffects\HalveHealthApplyAttackEffect.cs" />
@@ -623,7 +624,6 @@
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedReduceCounter.cs" />
-    <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedTemporaryIncreaseEffects.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedDraw.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedGainShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenDeployedApplyFlightToSelf.cs" />
