@@ -19,12 +19,15 @@ namespace Spirefrost.Builders.Cards.Items
                 .SetSprites("Items/Marbles.png", "Items/MarblesBG.png")
                 .WithValue(50)
                 .SetDamage(0)
-                .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack(Vulnerable.ID, 1)
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("Hit All Enemies", 1)
                     };
                 });
         }
