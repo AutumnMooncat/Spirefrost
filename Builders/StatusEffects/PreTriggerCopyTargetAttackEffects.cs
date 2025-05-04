@@ -13,12 +13,12 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectCopyAttackEffectsPreTrigger>(ID)
-                .WithText("Before attacking, replace this with the target's attack effects")
+                .WithText("Before attacking, copy the target's <keyword=attack> and attack effects")
                 .WithCanBeBoosted(false)
                 .WithStackable(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectCopyAttackEffectsPreTrigger>(data =>
                 {
-                    
+                    data.copyAttackValue = true;
                 });
         }
     }

@@ -1152,6 +1152,8 @@ namespace Spirefrost
 
     public class StatusEffectCopyAttackEffectsPreTrigger : StatusEffectData
     {
+        public bool copyAttackValue;
+
         public override void Init()
         {
             base.PreTrigger += EntityPreTrigger;
@@ -1181,6 +1183,11 @@ namespace Spirefrost
         {
             foreach (var item in trigger.targets)
             {
+                if (copyAttackValue)
+                {
+                    target.damage.current += item.damage.current + item.tempDamage.Value;
+                }
+
                 foreach (var effect in item.attackEffects)
                 {
                     CardData.StatusEffectStacks toApply = target.attackEffects.Find((CardData.StatusEffectStacks a) => a.data.name == effect.data.name);
@@ -1194,7 +1201,11 @@ namespace Spirefrost
                     }
                 }
             }
-            yield return CountDown(target, GetAmount());
+            if (target.display is Card card)
+            {
+                card.promptUpdateDescription = true;
+            }
+            yield return Remove();
         }
     }
 
