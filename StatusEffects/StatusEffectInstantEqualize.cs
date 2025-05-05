@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Spirefrost
 {
-    public class StatusEffectInstanceEqualize : StatusEffectInstant
+    public class StatusEffectInstantEqualize : StatusEffectInstant
     {
         public StatusEffectData[] effectsToEqualize;
 

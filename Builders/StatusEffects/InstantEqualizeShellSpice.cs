@@ -11,10 +11,10 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectInstanceEqualize>(ID)
+                .Create<StatusEffectInstantEqualize>(ID)
                 .WithText("Set <keyword=shell> and <keyword=spice> to the higher of the two")
                 .WithCanBeBoosted(false)
-                .SubscribeToAfterAllBuildEvent<StatusEffectInstanceEqualize>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantEqualize>(data =>
                 {
                     data.effectsToEqualize = new StatusEffectData[]
                     {
