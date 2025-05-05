@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.Keywords
             return new KeywordDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithTitle("Channel")
-                .WithDescription("Attach a new Orb to a card | Orbs clear after triggering")
+                .WithDescription("Attach a new Orb to a card | A unit can have multiple of the same kind of Orb")
                 .WithTitleColour()
                 .WithBodyColour()
                 .WithNoteColour()

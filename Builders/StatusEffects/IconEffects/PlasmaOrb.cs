@@ -21,8 +21,10 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .WithIsStatus(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectOrb>(data =>
                 {
-                    data.effectToApply = TryGet<StatusEffectData>("Reduce Counter");
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.passiveEffect = TryGet<StatusEffectData>("Reduce Counter");
+                    data.passiveFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.evokeEffect = TryGet<StatusEffectData>("Reduce Counter");
+                    data.evokeFlags = StatusEffectApplyX.ApplyToFlags.AlliesInRow;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>

@@ -15,7 +15,7 @@ namespace Spirefrost.Builders.Keywords
             return new KeywordDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithTitle("Plasma Orb")
-                .WithDescription($"Counts down <keyword=counter> by {PlasmaOrb.ApplyAmount} every turn | Clears after triggering")
+                .WithDescription($"Passive: Counts down <keyword=counter> by {PlasmaOrb.ApplyAmount} every turn\n\nEvoke: Counts down <keyword=counter> of allies in the row by {PlasmaOrb.ApplyAmount} | Clears and Evokes before triggering")
                 .WithTitleColour(new Color(0.60f, 1.00f, 0.90f))
                 .WithBodyColour(new Color(1.0f, 1.0f, 1.0f))
                 .WithNoteColour(new Color(0.59f, 0.99f, 0.99f))

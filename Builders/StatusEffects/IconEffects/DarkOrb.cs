@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Icons;
+using Spirefrost.StatusEffects;
 using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.StatusEffects.IconEffects
@@ -23,14 +24,10 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .WithIsStatus(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectOrb>(data =>
                 {
-                    data.perTurnIncrease = ScaleAmount;
-                    data.triggerOnRemove = true;
-                    data.dealDamage = true;
-                    data.doesDamage = true;
-                    data.countsAsHit = true;
-                    data.canRetaliate = false;
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
-                    data.applyConstraints = new TargetConstraint[]
+                    data.passiveIncrease = ScaleAmount;
+                    data.evokeEffect = TryGet<StatusEffectData>(DarkOrbDamage.ID);
+                    data.evokeFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
+                    data.evokeApplyConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintPseudoBarrage>()
                     };
@@ -47,6 +44,27 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     };
                 })
                 .Subscribe_WithStatusIcon(DarkIcon.ID);
+        }
+    }
+
+    internal class DarkOrbDamage : SpirefrostBuilder
+    {
+        internal static string ID => "Dark Orb Damage";
+
+        internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
+
+        internal static object GetBuilder()
+        {
+            return new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectInstantDamage>(ID)
+                .WithCanBeBoosted(false)
+                .WithStackable(false)
+                .SubscribeToAfterAllBuildEvent<StatusEffectInstantDamage>(data =>
+                {
+                    data.doesDamage = true;
+                    data.countsAsHit = true;
+                    data.canRetaliate = false;
+                });
         }
     }
 }

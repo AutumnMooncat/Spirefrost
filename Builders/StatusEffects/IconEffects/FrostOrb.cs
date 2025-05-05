@@ -22,9 +22,13 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .WithIsStatus(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectOrb>(data =>
                 {
-                    data.effectToApply = TryGet<StatusEffectData>("Frost");
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
-                    data.applyConstraints = new TargetConstraint[]
+                    data.passiveType = StatusEffectOrb.PassiveTriggerType.OnHit;
+                    data.passiveEffect = TryGet<StatusEffectData>("Frost");
+                    data.passiveFlags = StatusEffectApplyX.ApplyToFlags.Attacker;
+                    data.evokeFactor = 2f;
+                    data.evokeEffect = TryGet<StatusEffectData>("Frost");
+                    data.evokeFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
+                    data.evokeApplyConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintPseudoFrontEnemy>()
                     };

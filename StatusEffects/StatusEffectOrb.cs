@@ -5,20 +5,39 @@ namespace Spirefrost
 {
     public class StatusEffectOrb : StatusEffectApplyX
     {
-        public bool cardPlayed;
+        public enum PassiveTriggerType
+        {
+            PerTurn,
+            OnHit
+        }
 
-        public bool subbed;
+        private bool subbed;
 
-        public bool primed;
+        private bool primed;
 
-        public int perTurnIncrease;
+        public int passiveIncrease;
 
-        public bool triggerOnRemove;
+        public PassiveTriggerType passiveType = PassiveTriggerType.PerTurn;
+
+        public StatusEffectData passiveEffect;
+
+        public ApplyToFlags passiveFlags;
+
+        public TargetConstraint[] passiveApplyConstraints;
+
+        public float evokeFactor = 1f;
+
+        public StatusEffectData evokeEffect;
+
+        public ApplyToFlags evokeFlags;
+
+        public TargetConstraint[] evokeApplyConstraints;
 
         public override void Init()
         {
-            base.OnTurnEnd += PostTurn;
-            base.OnActionPerformed += ActionPerformed;
+            base.OnTurnEnd += PassiveTurnTrigger;
+            base.PostHit += PassiveHitTrigger;
+            base.PreTrigger += EvokeTrigger;
             Events.OnPostProcessUnits += Prime;
             subbed = true;
         }
@@ -65,74 +84,86 @@ namespace Spirefrost
 
         public override bool RunTurnEndEvent(Entity entity)
         {
-            if (primed && target.enabled && Battle.IsOnBoard(target))
+            if (primed && target.enabled && entity == target && Battle.IsOnBoard(target))
             {
-                return entity == target;
+                return passiveType == PassiveTriggerType.PerTurn;
             }
 
             return false;
         }
 
-        public IEnumerator PostTurn(Entity entity)
+        public IEnumerator PassiveTurnTrigger(Entity entity)
         {
-            if (!triggerOnRemove)
+            if (passiveEffect)
             {
-                //Debug.Log($"Passive effect for {this} triggered");
+                SetToPassive();
                 yield return Run(GetTargets());
             }
-            if (perTurnIncrease != 0)
+            if (passiveIncrease != 0)
             {
-                //Debug.Log($"Scale effect for {this} triggered");
-                count += perTurnIncrease;
+                count += passiveIncrease;
                 target.PromptUpdate();
             }
         }
 
-        public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
+        public override bool RunPostHitEvent(Hit hit)
         {
-            if (!cardPlayed && entity == target)
+            if (target.enabled && hit.target == target && hit.canRetaliate && (!targetMustBeAlive || (target.alive && Battle.IsOnBoard(target))) && hit.Offensive && hit.BasicHit)
             {
-                //Debug.Log($"{target} with {this} played, primed to remove");
-                cardPlayed = true;
+                return passiveType == PassiveTriggerType.OnHit;
             }
 
             return false;
         }
 
-        public override bool RunActionPerformedEvent(PlayAction action)
+        public IEnumerator PassiveHitTrigger(Hit hit)
         {
-            if (cardPlayed)
+            if (passiveEffect)
             {
-                //Debug.Log($"{target} with {this} performed action, can we remove yet? {ActionQueue.Empty}");
-                return ActionQueue.Empty;
+                SetToPassive();
+                yield return Run(GetTargets(hit, GetTargetContainers(), GetTargetActualContainers()));
             }
-
-            return false;
+            if (passiveIncrease != 0)
+            {
+                count += passiveIncrease;
+                target.PromptUpdate();
+            }
         }
 
-        public IEnumerator ActionPerformed(PlayAction action)
+        private IEnumerator EvokeTrigger(Trigger trigger)
         {
-            cardPlayed = false;
-            if (triggerOnRemove)
+            if (primed && trigger.entity == target && trigger.countsAsTrigger)
             {
-                //Debug.Log($"Triggering evoke effect for {this}");
-                yield return Run(GetTargets());
+                if (evokeEffect)
+                {
+                    SetToEvoke();
+                    int originalAmount = count;
+                    count = Mathf.CeilToInt(count * evokeFactor);
+                    yield return Run(GetTargets());
+                    count = originalAmount;
+                }
+                // Still remove Dark at 0
+                int amount = Mathf.Max(count, 1);
+                Events.InvokeStatusEffectCountDown(this, ref amount);
+                if (amount != 0)
+                {
+                    yield return CountDown(target, amount);
+                }
             }
-            //Debug.Log($"Calling clear for {this}");
-            yield return Clear(count);
         }
 
-        public IEnumerator Clear(int amount)
+        private void SetToPassive()
         {
-            //Debug.Log($"Clear {amount} called for {this}");
-            // Still remove Dark at 0
-            if (amount == 0) { amount++; }
-            Events.InvokeStatusEffectCountDown(this, ref amount);
-            if (amount != 0)
-            {
-                //Debug.Log($"Counting Down {this} by {amount}, it currently has {count} stacks");
-                yield return CountDown(target, amount);
-            }
+            effectToApply = passiveEffect;
+            applyToFlags = passiveFlags;
+            applyConstraints = passiveApplyConstraints;
+        }
+
+        private void SetToEvoke()
+        {
+            effectToApply = evokeEffect;
+            applyToFlags = evokeFlags;
+            applyConstraints = evokeApplyConstraints;
         }
     }
 }
