@@ -1,5 +1,4 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
@@ -7,25 +6,25 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 namespace Spirefrost.Builders.Cards.Items
 {
     [ToPoolList(PoolListType.Items)]
-    internal class GremlinVisage : SpirefrostBuilder
+    internal class RedMask : SpirefrostBuilder
     {
-        internal static string ID => "gremlinvisage";
+        internal static string ID => "redmask";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
         internal static object GetBuilder()
         {
             return new CardDataBuilder(MainModFile.instance)
-                .CreateItem(ID, "Gremlin Visage")
-                .SetSprites("Items/GremlinVisage.png", "Items/GremlinVisageBG.png")
+                .CreateItem(ID, "Red Mask")
+                .SetSprites("Items/RedMask.png", "Items/RedMaskBG.png")
                 .WithValue(55)
-                .SetDamage(1)
+                .SetDamage(0)
+                .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Weak.ID, 1),
-                        SStack(DoubleWeak.ID, 1),
+                        SStack(Weak.ID, 1)
                     };
                 });
         }
