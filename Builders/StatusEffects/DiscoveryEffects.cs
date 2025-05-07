@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Spirefrost.Builders.StatusEffects
 {
-    internal class OnCardPlayedDoDiscoveryToolbox : SpirefrostBuilder
+    /*internal class OnCardPlayedDoDiscoveryToolbox : SpirefrostBuilder
     {
         internal static string ID => "On Card Played Do Discovery Toolbox";
 
@@ -40,7 +40,7 @@ namespace Spirefrost.Builders.StatusEffects
                     data.title = LocalizationHelper.GetCollection("UI Text", SystemLanguage.English).GetString(SpirefrostStrings.ToolboxTitle);
                 });
         }
-    }
+    }*/
 
     internal class OnCardPlayedDoDiscoveryGoldenEye : SpirefrostBuilder
     {
