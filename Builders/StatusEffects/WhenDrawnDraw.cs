@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("When Drawn Apply Snow To Allies", ID)
-                .WithText("When drawn, draw <{a}>")
+                .WithText("When drawn, <keyword=draw {a}>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDrawn>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
