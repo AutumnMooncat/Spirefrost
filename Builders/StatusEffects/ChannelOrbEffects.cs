@@ -1,6 +1,7 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
 using Spirefrost.Builders.StatusEffects.IconEffects;
+using static Steamworks.InventoryItem;
 
 namespace Spirefrost.Builders.StatusEffects
 {
@@ -109,6 +110,35 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantChannelPlasma.ID);
+                    data.targetConstraints = new TargetConstraint[]
+                    {
+                        MakeConstraint<TargetConstraintOr>(or =>
+                        {
+                            or.constraints = new TargetConstraint[]
+                            {
+                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
+                                MakeConstraint<TargetConstraintHasReaction>()
+                            };
+                        })
+                    };
+                });
+        }
+    }
+
+    internal class WhenDeployedChannelDark : SpirefrostBuilder
+    {
+        internal static string ID => "When Deployed Channel Dark";
+
+        internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
+
+        internal static object GetBuilder()
+        {
+            return StatusCopy("When Deployed Apply Block To Self", ID)
+                .WithText($"When deployed, {MakeKeywordInsert(ChannelKeyword.FullID)} <{{a}}>{MakeKeywordInsert(DarkKeyword.FullID)}")
+                .WithCanBeBoosted(true)
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDeployed>(data =>
+                {
+                    data.effectToApply = TryGet<StatusEffectData>(InstantChannelDark.ID);
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>

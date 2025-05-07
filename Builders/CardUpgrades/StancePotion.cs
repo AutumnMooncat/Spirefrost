@@ -1,37 +1,41 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.CardUpgrades
 {
     [ToPoolList(PoolListType.WatcherCharms)]
-    internal class MiraclePotion : SpirefrostBuilder
+    internal class StancePotion : SpirefrostBuilder
     {
-        internal static string ID => "MiraclePotionCharm";
+        internal static string ID => "StancePotionCharm";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int Amount => 1;
+        internal static int Debuff => 1;
+
+        internal static int Effect => 3;
 
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithType(CardUpgradeData.Type.Charm)
-                .WithImage("Charms/MiracleCharm.png")
-                .WithTitle("Bottled Miracle")
-                .WithText($"When an ally is deployed, count down <keyword=counter> by <{Amount}>")
+                .WithImage("Charms/StanceCharm.png")
+                .WithTitle("Stance Potion")
+                .WithText($"<+{Effect}><keyword=attack>\nStart with <{Debuff}><keyword=demonize>")
                 .WithTier(2)
+                .ChangeDamage(Effect)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintMaxCounterMoreThan>(t => t.moreThan = 0),
+                        MakeConstraint<TargetConstraintDoesDamage>(),
+                        MakeConstraint<TargetConstraintCanBeHit>(),
+                        MakeConstraint<TargetConstraintHasHealth>()
                     };
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenAllyDeployedCountDown.ID, Amount)
+                        SStack("Demonize", Debuff)
                     };
                 });
         }

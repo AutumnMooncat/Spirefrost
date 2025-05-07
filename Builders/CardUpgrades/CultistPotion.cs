@@ -1,10 +1,8 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
 using Spirefrost.Builders.StatusEffects.IconEffects;
-using UnityEngine;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
-using static UnityEngine.UI.CanvasScaler;
 
 namespace Spirefrost.Builders.CardUpgrades
 {
@@ -15,6 +13,8 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
+        internal static int Amount => 2;
+
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
@@ -22,19 +22,18 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/CultistCharm.png")
                 .WithTitle("Cultist Potion")
-                .WithText($"Start with <1>{MakeKeywordInsert(RitualKeyword.FullID)}\nReduce <keyword=attack> by <1>")
+                .WithText($"Start with <{Amount}>{MakeKeywordInsert(RitualKeyword.FullID)}")
                 .WithTier(2)
-                .ChangeDamage(-1)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintAttackMoreThan>(t => t.value = 0),
+                        MakeConstraint<TargetConstraintDoesDamage>(),
                         MakeConstraint<TargetConstraintIsUnit>()
                     };
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Ritual.ID, 1)
+                        SStack(Ritual.ID, Amount)
                     };
                 });
         }

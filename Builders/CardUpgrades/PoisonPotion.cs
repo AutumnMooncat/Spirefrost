@@ -1,37 +1,38 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects;
+using UnityEngine;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.CardUpgrades
 {
-    [ToPoolList(PoolListType.WatcherCharms)]
-    internal class MiraclePotion : SpirefrostBuilder
+    [ToPoolList(PoolListType.SilentCharms)]
+    internal class PoisonPotion : SpirefrostBuilder
     {
-        internal static string ID => "MiraclePotionCharm";
+        internal static string ID => "PoisonPotionCharm";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
-
-        internal static int Amount => 1;
 
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithType(CardUpgradeData.Type.Charm)
-                .WithImage("Charms/MiracleCharm.png")
-                .WithTitle("Bottled Miracle")
-                .WithText($"When an ally is deployed, count down <keyword=counter> by <{Amount}>")
+                .WithImage("Charms/PoisonCharm.png")
+                .WithTitle("Poison Potion")
+                .WithText($"Replace current <keyword=attack> with apply <keyword=shroom>")
                 .WithTier(2)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintMaxCounterMoreThan>(t => t.moreThan = 0),
+                        MakeConstraint<TargetConstraintAttackMoreThan>(t => t.value = 0),
                     };
-                    data.effects = new CardData.StatusEffectStacks[]
+
+                    CardScriptReplaceAttackWithApply poisonScript = ScriptableObject.CreateInstance<CardScriptReplaceAttackWithApply>();
+                    poisonScript.effect = TryGet<StatusEffectData>("Shroom");
+                    data.scripts = new CardScript[]
                     {
-                        SStack(WhenAllyDeployedCountDown.ID, Amount)
+                        poisonScript
                     };
                 });
         }

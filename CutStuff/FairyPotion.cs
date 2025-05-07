@@ -1,37 +1,39 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects;
+using Spirefrost.Builders.Keywords;
+using Spirefrost.Builders.StatusEffects.IconEffects;
+using UnityEngine;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.CardUpgrades
 {
-    [ToPoolList(PoolListType.WatcherCharms)]
-    internal class MiraclePotion : SpirefrostBuilder
+    [ToPoolList(PoolListType.Charms)]
+    internal class FairyPotion : SpirefrostBuilder
     {
-        internal static string ID => "MiraclePotionCharm";
+        internal static string ID => "FairyPotionCharm";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int Amount => 1;
+        internal static int Amount => 2;
 
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithType(CardUpgradeData.Type.Charm)
-                .WithImage("Charms/MiracleCharm.png")
-                .WithTitle("Bottled Miracle")
-                .WithText($"When an ally is deployed, count down <keyword=counter> by <{Amount}>")
-                .WithTier(2)
+                .WithImage("Charms/FairyCharm.png")
+                .WithTitle("Fairy in a Bottle")
+                .WithText($"Start with <{Amount}>{MakeKeywordInsert(FlightKeyword.FullID)}")
+                .WithTier(1)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintMaxCounterMoreThan>(t => t.moreThan = 0),
+                        MakeConstraint<TargetConstraintCanBeHit>()
                     };
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenAllyDeployedCountDown.ID, Amount)
+                        SStack(Flight.ID, Amount)
                     };
                 });
         }

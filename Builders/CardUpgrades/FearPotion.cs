@@ -14,6 +14,8 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
+        internal static int Amount => 2;
+
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
@@ -21,7 +23,7 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/FearCharm.png")
                 .WithTitle("Fear Potion")
-                .WithText($"Apply <2>{MakeKeywordInsert(VulnerableKeyword.FullID)}")
+                .WithText($"Apply <{Amount}>{MakeKeywordInsert(VulnerableKeyword.FullID)}")
                 .WithTier(2)
                 .SetBecomesTarget(true)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -42,7 +44,7 @@ namespace Spirefrost.Builders.CardUpgrades
                     };
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Vulnerable.ID, 2)
+                        SStack(Vulnerable.ID, Amount)
                     };
                 });
         }

@@ -14,6 +14,8 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
+        internal static int Amount => 3;
+
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
@@ -21,7 +23,7 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/EntropicCharm.png")
                 .WithTitle("Entropic Brew")
-                .WithText($"Apply <3> other random <Charms> to this card\nThey do not take up charm slots")
+                .WithText($"Apply <{Amount}> other random <Charms> to this card\nThey do not take up charm slots")
                 .WithTier(2)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -36,7 +38,7 @@ namespace Spirefrost.Builders.CardUpgrades
                                 validUpgrades.Add(upgrade);
                             }
                         }
-                        int applyAmount = Math.Min(3, validUpgrades.Count);
+                        int applyAmount = Math.Min(Amount, validUpgrades.Count);
                         for (int i = 0; i < applyAmount; i++)
                         {
                             CardUpgradeData applyMe = validUpgrades.TakeRandom().Clone();

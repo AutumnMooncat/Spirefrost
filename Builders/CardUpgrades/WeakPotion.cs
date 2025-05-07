@@ -13,6 +13,8 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
+        internal static int Amount => 1;
+
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
@@ -20,7 +22,7 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/WeaknessCharm.png")
                 .WithTitle("Weak Potion")
-                .WithText($"Apply <1>{MakeKeywordInsert(WeakKeyword.FullID)}")
+                .WithText($"Apply <{Amount}>{MakeKeywordInsert(WeakKeyword.FullID)}")
                 .WithTier(2)
                 .SetBecomesTarget(true)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -41,7 +43,7 @@ namespace Spirefrost.Builders.CardUpgrades
                     };
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Weak.ID, 1)
+                        SStack(Weak.ID, Amount)
                     };
                 });
         }

@@ -21,6 +21,25 @@ namespace Spirefrost.Builders.StatusEffects
         }
     }
 
+    internal class WhenConsumedAddShivToHand : SpirefrostBuilder
+    {
+        internal static string ID => "When Consumed Add Shiv To Hand";
+
+        internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
+
+        internal static object GetBuilder()
+        {
+            return StatusCopy("When Consumed Add Health To Allies", ID)
+                .WithText("When consumed, add <{a}> {0} to your hand")
+                .WithTextInsert(MakeCardInsert(Shiv.FullID))
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDestroyed>(data =>
+                {
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.effectToApply = TryGet<StatusEffectData>(InstantSummonShivInHand.ID);
+                });
+        }
+    }
+
     internal class InstantSummonShivInHand : SpirefrostBuilder
     {
         internal static string ID => "Instant Summon Shiv In Hand";

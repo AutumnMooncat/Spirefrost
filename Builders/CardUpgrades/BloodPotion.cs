@@ -6,32 +6,40 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 namespace Spirefrost.Builders.CardUpgrades
 {
     [ToPoolList(PoolListType.IroncladCharms)]
-    internal class IronPotion : SpirefrostBuilder
+    internal class BloodPotion : SpirefrostBuilder
     {
-        internal static string ID => "IronPotionCharm";
+        internal static string ID => "BloodPotionCharm";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int Amount => 3;
+        internal static int Amount => 2;
 
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
                 .Create(ID)
                 .WithType(CardUpgradeData.Type.Charm)
-                .WithImage("Charms/HeartOfIronCharm.png")
-                .WithTitle("Heart of Iron")
-                .WithText($"When <Redraw Bell> is hit, gain <{Amount}><keyword=shell>")
+                .WithImage("Charms/BloodCharm.png")
+                .WithTitle("Blood Potion")
+                .WithText($"Restore <{Amount}><keyword=health>")
                 .WithTier(2)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintCanBeHit>()
+                        MakeConstraint<TargetConstraintHasHealth>(),
+                        MakeConstraint<TargetConstraintOr>(or =>
+                        {
+                            or.constraints = new TargetConstraint[]
+                            {
+                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
+                                MakeConstraint<TargetConstraintHasReaction>()
+                            };
+                        })
                     };
                     data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenRedrawHitApplyShellToSelf.ID, Amount)
+                        SStack(OnCardPlayedHealSelf.ID, Amount)
                     };
                 });
         }
