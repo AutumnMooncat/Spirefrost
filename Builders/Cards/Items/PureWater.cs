@@ -23,7 +23,8 @@ namespace Spirefrost.Builders.Cards.Items
                 {
                     data.traits = new System.Collections.Generic.List<CardData.TraitStacks>
                     {
-                        TStack(RetainTrait.ID, 1)
+                        TStack(RetainTrait.ID, 1),
+                        TStack(PatientTrait.ID, 1)
                     };
                 });
         }

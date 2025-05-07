@@ -21,7 +21,8 @@ namespace Spirefrost.Builders.Cards.Items
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Heal", 3)
+                        SStack("Increase Attack", 1),
+                        SStack("Heal", 2)
                     };
                 });
         }

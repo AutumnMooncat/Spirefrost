@@ -556,6 +556,7 @@
     <Compile Include="Builders\Keywords\FrostKeyword.cs" />
     <Compile Include="Builders\Keywords\LightningKeyword.cs" />
     <Compile Include="Builders\Keywords\MarkKeyword.cs" />
+    <Compile Include="Builders\Keywords\PatientKeyword.cs" />
     <Compile Include="Builders\Keywords\PlasmaKeyword.cs" />
     <Compile Include="Builders\Keywords\RegenKeyword.cs" />
     <Compile Include="Builders\Keywords\RetainKeyword.cs" />
@@ -623,6 +624,7 @@
     <Compile Include="Builders\StatusEffects\OnHitEqualShroomToTarget.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryFocus.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\FocusEffect.cs" />
+    <Compile Include="Builders\StatusEffects\TraitEffects\PatientEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
@@ -648,6 +650,7 @@
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseItemDamage.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandRedirectConsume.cs" />
     <Compile Include="Builders\Traits\FocusTrait.cs" />
+    <Compile Include="Builders\Traits\PatientTrait.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
     <Compile Include="Builders\Tribes\SpireTribe.cs" />
     <Compile Include="Patches\CanPlayOnPatch.cs" />
@@ -691,6 +694,7 @@
     <Compile Include="StatusEffects\StatusEffectInstantLoseHealth.cs" />
     <Compile Include="StatusEffects\StatusEffectJudgement.cs" />
     <Compile Include="StatusEffects\StatusEffectLessonLearned.cs" />
+    <Compile Include="StatusEffects\StatusEffectApplyXWhenRetained.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSAmplify.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSDoubleTap.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSEnergized.cs" />
