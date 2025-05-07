@@ -17,14 +17,16 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Thread and Needle")
                 .SetSprites("Items/ThreadNeedle.png", "Items/ThreadNeedleBG.png")
                 .WithValue(50)
-                .SetTraits(TStack("Consume", 1))
                 .CanPlayOnHand(true)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Instant Add Scrap", 1),
-                        SStack("Shell", 4)
+                        SStack("Instant Add Scrap", 2)
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Card Played Reduce Attack Effect 1 To Self", 1)
                     };
                 });
         }

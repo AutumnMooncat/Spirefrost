@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Traits;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
@@ -19,8 +20,15 @@ namespace Spirefrost.Builders.Cards.Items
                 .WithValue(30)
                 .SetDamage(0)
                 .SetAttackEffect(SStack("Snow", 2))
-                .SetTraits(TStack("Draw", 1))
-                .WithFlavour("Diggy diggy hole");
+                .WithFlavour("Diggy diggy hole")
+                .SubscribeToAfterAllBuildEvent(data =>
+                {
+                    data.traits = new System.Collections.Generic.List<CardData.TraitStacks>
+                    {
+                        TStack(DigTrait.ID, 1)
+                    };
+                });
+
         }
     }
 }

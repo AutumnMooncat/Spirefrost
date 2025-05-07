@@ -549,6 +549,7 @@
     <Compile Include="Builders\Keywords\AmplifyKeyword.cs" />
     <Compile Include="Builders\Keywords\ChannelKeyword.cs" />
     <Compile Include="Builders\Keywords\DarkKeyword.cs" />
+    <Compile Include="Builders\Keywords\DigKeyword.cs" />
     <Compile Include="Builders\Keywords\DoubleTapKeyword.cs" />
     <Compile Include="Builders\Keywords\EnergizedKeyword.cs" />
     <Compile Include="Builders\Keywords\FlightKeyword.cs" />
@@ -623,6 +624,7 @@
     <Compile Include="Builders\StatusEffects\TemporaryExplodeEffects.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualShroomToTarget.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryFocus.cs" />
+    <Compile Include="Builders\StatusEffects\TraitEffects\DigEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\FocusEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\PatientEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
@@ -649,6 +651,7 @@
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseAllShroomApplied.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseItemDamage.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandRedirectConsume.cs" />
+    <Compile Include="Builders\Traits\DigTrait.cs" />
     <Compile Include="Builders\Traits\FocusTrait.cs" />
     <Compile Include="Builders\Traits\PatientTrait.cs" />
     <Compile Include="Builders\Traits\RetainTrait.cs" />
@@ -660,6 +663,7 @@
     <Compile Include="Patches\FocusPatches.cs" />
     <Compile Include="Patches\HarmonyInsertPatch.cs" />
     <Compile Include="Patches\InsertTestPatch.cs" />
+    <Compile Include="Patches\NoTargetSystemPatch.cs" />
     <Compile Include="Patches\OrbPatches.cs" />
     <Compile Include="Patches\OwnerRelevantTargetConstraintPatches.cs" />
     <Compile Include="Patches\RainbowCharmPatches.cs" />
@@ -690,6 +694,7 @@
     <Compile Include="StatusEffects\StatusEffectCopyAttackEffectsPreTrigger.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantCleanseAndApplyForEachRemoved.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantDamage.cs" />
+    <Compile Include="StatusEffects\StatusEffectInstantPutIntoHand.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantIncreaseCounter.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantLoseHealth.cs" />
     <Compile Include="StatusEffects\StatusEffectJudgement.cs" />
