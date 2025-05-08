@@ -1,13 +1,11 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
-using Spirefrost.Builders.Traits;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.DefectUnits)]
+    [ToPoolList(PoolListType.Units)]
     internal class Darkling : SpirefrostBuilder
     {
         internal static string ID => "darkling";

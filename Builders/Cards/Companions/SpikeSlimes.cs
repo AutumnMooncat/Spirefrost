@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.DefectUnits)]
     internal class SpikeSlime : SpirefrostBuilder
     {
         internal static string ID => "spikeslime";
