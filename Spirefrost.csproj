@@ -446,6 +446,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\Cards\Companions\GiantHead.cs" />
     <Compile Include="Builders\Cards\Companions\Nemesis.cs" />
     <Compile Include="Builders\Cards\Companions\Reptomancer.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
@@ -460,6 +461,7 @@
     <Compile Include="Builders\StatusEffects\TriggerWhenAttackApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenReptoDaggerPlayed.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenShroomApplied.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerWhenStatusApplied.cs" />
     <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
     <Compile Include="Builders\Cards\Clunkers\BronzeOrb.cs" />
@@ -720,6 +722,7 @@
     <Compile Include="StatusEffects\StatusEffectApplyXWhenHitOnce.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenNonTempYAppliedToSelf.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenRedrawHitButIgnoreInk.cs" />
+    <Compile Include="StatusEffects\StatusEffectApplyXWhenStatusAppliedToSelf.cs" />
     <Compile Include="StatusEffects\StatusEffectConvertXToYPreTrigger.cs" />
     <Compile Include="StatusEffects\StatusEffectCopyAttackEffectsPreTrigger.cs" />
     <Compile Include="StatusEffects\StatusEffectDivision.cs" />
