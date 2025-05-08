@@ -10,6 +10,7 @@ using WildfrostHopeMod.VFX;   // Declares StatusIconBuilder
 using Extensions = Deadpan.Enums.Engine.Components.Modding.Extensions;
 using static Spirefrost.SpirefrostUtils;
 using Spirefrost.Builders.Tribes;
+using Spirefrost.Builders.StatusEffects.IconEffects;
 
 
 namespace Spirefrost
@@ -92,6 +93,13 @@ namespace Spirefrost
                 entropicUnderlay = "Charms/EntropicCharmUnderlay.png".ToNamedTex();
                 duplicationOverlay = "Charms/DuplicationCharmOverlay.png".ToNamedTex();
                 duplicationUnderlay = "Charms/DuplicationCharmUnderlay.png".ToNamedTex();
+
+                // Add prevent death effects to kill list
+                StatusEffectInstantKill kill = TryGet<StatusEffectData>("Kill") as StatusEffectInstantKill;
+                if (kill)
+                {
+                    kill.statusesToClear = kill.statusesToClear.With(Intangible.FullID);
+                }
             }
 
             // Let our sprites automatically show up for icon descriptions
