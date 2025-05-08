@@ -1,10 +1,11 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.StatusEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.IroncladUnits)]
     internal class ShieldGremlin : SpirefrostBuilder
     {
         internal static string ID => "shieldgremlin";
@@ -16,13 +17,13 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Shield Gremlin")
                 .SetSprites("Units/ShieldGremlin.png", "Units/ShieldGremlinBG.png")
-                .SetStats(3, null, 4)
+                .SetStats(3, 1, 3)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("On Turn Apply Shell To AllyInFrontOf", 2)
+                        SStack(WhenAllyAttacksApplyShellToThem.ID, 1)
                     };
                 });
         }

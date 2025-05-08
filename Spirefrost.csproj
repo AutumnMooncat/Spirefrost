@@ -629,6 +629,7 @@
     <Compile Include="Builders\StatusEffects\TraitEffects\FocusEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\PatientEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
+    <Compile Include="Builders\StatusEffects\WhenAllyAttacksApplyShellToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedReduceCounter.cs" />
@@ -683,6 +684,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpirefrostEvents.cs" />
     <Compile Include="SpirefrostExtensions.cs" />
+    <Compile Include="StatusEffects\StatusEffectApplyXWhenAlliesAttackOnBoard.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenAnyCardIsPlayed.cs" />
     <Compile Include="SpirefrostStrings.cs" />
     <Compile Include="SpirefrostScriptableObjects.cs" />
