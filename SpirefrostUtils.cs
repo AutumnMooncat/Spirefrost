@@ -102,33 +102,6 @@ namespace Spirefrost
             }
         }
 
-        internal class ArbitraryExecution : PlayAction
-        {
-            public readonly Routine routine;
-
-            public delegate void ToRun();
-
-            public ArbitraryExecution(ToRun toRun)
-            {
-                routine = new Routine(RoutineRunnable(toRun), autoStart: false);
-            }
-
-            private IEnumerator RoutineRunnable(ToRun runnable)
-            {
-                runnable();
-                yield break;
-            }
-
-            public override IEnumerator Run()
-            {
-                routine.Start();
-                while (routine.IsRunning)
-                {
-                    yield return null;
-                }
-            }
-        }
-
         // HarmonyX logic
         internal static MethodBase FindEnumeratorMethod(MethodBase enumerator, ref Type foundType)
         {

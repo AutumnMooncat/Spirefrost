@@ -446,6 +446,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\Icons\RegrowIcon.cs" />
+    <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
     <Compile Include="Builders\Cards\Clunkers\BronzeOrb.cs" />
     <Compile Include="Builders\Cards\Clunkers\Exploder.cs" />
@@ -461,6 +465,7 @@
     <Compile Include="Builders\Cards\Companions\Centurion.cs" />
     <Compile Include="Builders\Cards\Companions\Chosen.cs" />
     <Compile Include="Builders\Cards\Companions\Cultist.cs" />
+    <Compile Include="Builders\Cards\Companions\Darkling.cs" />
     <Compile Include="Builders\Cards\Companions\FatGremlin.cs" />
     <Compile Include="Builders\Cards\Companions\FungiBeast.cs" />
     <Compile Include="Builders\Cards\Companions\GremlinWizard.cs" />
@@ -673,6 +678,7 @@
     <Compile Include="Patches\FocusPatches.cs" />
     <Compile Include="Patches\HarmonyInsertPatch.cs" />
     <Compile Include="Patches\InsertTestPatch.cs" />
+    <Compile Include="Patches\LifeLinkPatch.cs" />
     <Compile Include="Patches\NoTargetSystemPatch.cs" />
     <Compile Include="Patches\OrbPatches.cs" />
     <Compile Include="Patches\OwnerRelevantTargetConstraintPatches.cs" />
@@ -717,6 +723,7 @@
     <Compile Include="StatusEffects\StatusEffectSTSDoubleTap.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSEnergized.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSFlight.cs" />
+    <Compile Include="StatusEffects\StatusEffectSTSLifeLink.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSMark.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSVulnerable.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSWeakness.cs" />
