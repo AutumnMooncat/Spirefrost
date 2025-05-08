@@ -18,15 +18,15 @@ namespace Spirefrost
         {
             if (entity == target && target.alive)
             {
-                IEnumerator logic = TriggerLogic(entity);
+                IEnumerator logic = TriggerLogic();
                 while (logic.MoveNext()) 
                 {
-                    object obj = logic.Current;
+                    object _ = logic.Current;
                 }
             }
         }
 
-        private IEnumerator TriggerLogic(Entity entity)
+        private IEnumerator TriggerLogic()
         {
             Routine.Clump clump = new Routine.Clump();
             Hit hit = new Hit(applier, target, 0)
