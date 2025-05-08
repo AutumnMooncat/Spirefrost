@@ -17,14 +17,14 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Chosen")
                 .SetSprites("Units/Chosen.png", "Units/ChosenBG.png")
-                .SetStats(11, 1, 3)
+                .SetStats(11, 2, 4)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("MultiHit", 1),
-                        SStack(OnTurnApplyAmplifyToAllyBehind.ID, 1)
+                        SStack(OnHitDamageVulnTarget.ID, 3)
                     };
                 });
         }

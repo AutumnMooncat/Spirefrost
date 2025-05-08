@@ -593,6 +593,7 @@
     <Compile Include="Builders\StatusEffects\IncreaseEffectsWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\InstantDealCurrentAttackToEnemies.cs" />
     <Compile Include="Builders\StatusEffects\InstantEqualizeShellSpice.cs" />
+    <Compile Include="Builders\StatusEffects\OnHitDamageVulnTarget.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryDraw.cs" />
     <Compile Include="Builders\StatusEffects\JudgementEffects.cs" />
     <Compile Include="Builders\StatusEffects\LessonLearned.cs" />
