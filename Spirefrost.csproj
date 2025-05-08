@@ -645,6 +645,7 @@
     <Compile Include="Builders\StatusEffects\WhenHitReduceEffectToAttacker.cs" />
     <Compile Include="Builders\StatusEffects\WhenItemPlayedIncreaseItsAttack.cs" />
     <Compile Include="Builders\StatusEffects\WhenRedrawHitApplyShellToSelf.cs" />
+    <Compile Include="Builders\StatusEffects\WhenShellAppliedToSelfGainAttack.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveReduceAttackToEnemiesWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveReduceEffectsToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />

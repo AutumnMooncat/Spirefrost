@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.IroncladUnits)]
     internal class JawWorm : SpirefrostBuilder
     {
         internal static string ID => "jawworm";
@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenHealedReduceCounter.ID, 1)
+                        SStack(WhenShellAppliedToSelfGainAttack.ID, 2)
                     };
                 });
         }
