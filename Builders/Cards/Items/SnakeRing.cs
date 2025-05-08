@@ -18,16 +18,12 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Ring of the Snake")
                 .SetSprites("Items/SnakeRing.png", "Items/SnakeRingBG.png")
                 .WithValue(25)
-                .CanPlayOnBoard(false)
                 .CanPlayOnEnemy(false)
-                .CanPlayOnFriendly(false)
-                .CanPlayOnHand(false)
-                .WithPlayType(Card.PlayType.None)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenDrawnDraw.ID, 2)
+                        SStack(InstantApplyTemporaryDrawToAlly.ID, 1)
                     };
                 });
         }
