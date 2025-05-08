@@ -447,14 +447,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\Cards\Companions\Nemesis.cs" />
+    <Compile Include="Builders\Cards\Companions\Reptomancer.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
+    <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
     <Compile Include="Builders\Icons\IntangibleIcon.cs" />
     <Compile Include="Builders\Icons\RegrowIcon.cs" />
     <Compile Include="Builders\Keywords\IntangibleKeyword.cs" />
     <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenAttackApplied.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerWhenReptoDaggerPlayed.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenShroomApplied.cs" />
     <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
