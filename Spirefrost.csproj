@@ -550,6 +550,7 @@
     <Compile Include="Builders\Keywords\ChannelKeyword.cs" />
     <Compile Include="Builders\Keywords\DarkKeyword.cs" />
     <Compile Include="Builders\Keywords\DigKeyword.cs" />
+    <Compile Include="Builders\Keywords\DivideKeyword.cs" />
     <Compile Include="Builders\Keywords\DoubleTapKeyword.cs" />
     <Compile Include="Builders\Keywords\EnergizedKeyword.cs" />
     <Compile Include="Builders\Keywords\FlightKeyword.cs" />
@@ -622,7 +623,7 @@
     <Compile Include="Builders\StatusEffects\ReduceAttackWithText.cs" />
     <Compile Include="Builders\StatusEffects\SetAttackOfCardInHand.cs" />
     <Compile Include="Builders\StatusEffects\ShivSummonEffects.cs" />
-    <Compile Include="Builders\StatusEffects\STSSplitEffects.cs" />
+    <Compile Include="Builders\StatusEffects\DivisionEffects.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryExplodeEffects.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualShroomToTarget.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryFocus.cs" />
@@ -688,6 +689,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpirefrostEvents.cs" />
     <Compile Include="SpirefrostExtensions.cs" />
+    <Compile Include="StatusEffects\StatusEffectApplyXAtHalfHealth.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenAlliesAttackOnBoard.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenAnyCardIsPlayed.cs" />
     <Compile Include="SpirefrostStrings.cs" />
@@ -700,6 +702,7 @@
     <Compile Include="StatusEffects\StatusEffectApplyXWhenRedrawHitButIgnoreInk.cs" />
     <Compile Include="StatusEffects\StatusEffectConvertXToYPreTrigger.cs" />
     <Compile Include="StatusEffects\StatusEffectCopyAttackEffectsPreTrigger.cs" />
+    <Compile Include="StatusEffects\StatusEffectDivision.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantCleanseAndApplyForEachRemoved.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantDamage.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantPutIntoHand.cs" />

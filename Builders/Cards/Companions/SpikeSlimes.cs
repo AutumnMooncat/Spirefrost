@@ -24,7 +24,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenXHealthLostSTSSplit.ID, 3)
+                        SStack(AtHalfHeathDivide.ID, 3)
                     };
                 });
         }
@@ -48,7 +48,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenXHealthLostSTSSplit.ID, 3)
+                        SStack(AtHalfHeathDivide.ID, 3)
                     };
                 });
         }
@@ -72,7 +72,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenXHealthLostSTSSplit.ID, 3)
+                        SStack(AtHalfHeathDivide.ID, 3)
                     };
                 });
         }
