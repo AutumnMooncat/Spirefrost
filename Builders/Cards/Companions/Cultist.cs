@@ -24,7 +24,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Ritual.ID, 1)
+                        SStack(Ritual.ID, 3)
                     };
                 });
         }
