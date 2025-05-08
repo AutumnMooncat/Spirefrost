@@ -24,6 +24,7 @@ namespace Spirefrost.Builders.StatusEffects
                     {
                         TryGet<StatusEffectData>("Increase Attack").type
                     };
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("Trigger (High Prio)");
                     data.eventPriority = -99;
                     data.descColorHex = "F99C61";
