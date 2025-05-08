@@ -633,6 +633,7 @@
     <Compile Include="Builders\StatusEffects\WhenAllyAttacksCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
+    <Compile Include="Builders\StatusEffects\WhenSkillItemPlayedGainAttack.cs" />
     <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedReduceCounter.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedDraw.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedGainShell.cs" />

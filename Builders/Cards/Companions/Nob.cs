@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
@@ -17,7 +18,7 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Nob")
                 .SetSprites("Units/Nob.png", "Units/NobBG.png")
-                .SetStats(12, 3, 5)
+                .SetStats(12, 2, 5)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -28,7 +29,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     };
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("When Hit Increase Attack Effects To Self", 1)
+                        SStack(WhenSkillItemPlayedGainAttack.ID, 1)
                     };
                 });
         }
