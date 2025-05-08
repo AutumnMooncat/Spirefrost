@@ -456,6 +456,7 @@
     <Compile Include="Builders\Cards\Clunkers\Spiker.cs" />
     <Compile Include="Builders\Cards\Clunkers\SpireShield.cs" />
     <Compile Include="Builders\Cards\Clunkers\SpireSpear.cs" />
+    <Compile Include="Builders\Cards\Companions\BlueSlaver.cs" />
     <Compile Include="Builders\Cards\Companions\Byrd.cs" />
     <Compile Include="Builders\Cards\Companions\Centurion.cs" />
     <Compile Include="Builders\Cards\Companions\Chosen.cs" />
@@ -473,6 +474,7 @@
     <Compile Include="Builders\Cards\Companions\ShieldGremlin.cs" />
     <Compile Include="Builders\Cards\Companions\RedSlaver.cs" />
     <Compile Include="Builders\Cards\Companions\SneakyGremlin.cs" />
+    <Compile Include="Builders\Cards\Companions\Snecko.cs" />
     <Compile Include="Builders\Cards\Companions\SpikeSlimes.cs" />
     <Compile Include="Builders\Cards\Items\Anchor.cs" />
     <Compile Include="Builders\Cards\Items\Ashes.cs" />
