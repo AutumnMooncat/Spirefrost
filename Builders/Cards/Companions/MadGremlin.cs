@@ -4,7 +4,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.WatcherUnits)]
     internal class MadGremlin : SpirefrostBuilder
     {
         internal static string ID => "madgremlin";
@@ -16,13 +16,14 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Mad Gremlin")
                 .SetSprites("Units/MadGremlin.png", "Units/MadGremlinBG.png")
-                .SetStats(5, 2, 4)
+                .SetStats(5, 1, 4)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("When Hit Gain Attack To Self (No Ping)", 1)
+                        SStack("When Hit Apply Spice To Self", 1),
+                        SStack("Halt Spice With Text", 1)
                     };
                 });
         }
