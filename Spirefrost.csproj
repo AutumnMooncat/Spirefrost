@@ -471,7 +471,7 @@
     <Compile Include="Builders\Cards\Companions\Mystic.cs" />
     <Compile Include="Builders\Cards\Companions\Nob.cs" />
     <Compile Include="Builders\Cards\Companions\ShieldGremlin.cs" />
-    <Compile Include="Builders\Cards\Companions\Slaver.cs" />
+    <Compile Include="Builders\Cards\Companions\RedSlaver.cs" />
     <Compile Include="Builders\Cards\Companions\SneakyGremlin.cs" />
     <Compile Include="Builders\Cards\Companions\SpikeSlimes.cs" />
     <Compile Include="Builders\Cards\Items\Anchor.cs" />
