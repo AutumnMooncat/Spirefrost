@@ -630,6 +630,7 @@
     <Compile Include="Builders\StatusEffects\TraitEffects\PatientEffect.cs" />
     <Compile Include="Builders\StatusEffects\TraitEffects\RetainEffect.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyAttacksApplyShellToThem.cs" />
+    <Compile Include="Builders\StatusEffects\WhenAllyAttacksCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyDeployedCountDown.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHealedApplyEqualShell.cs" />
     <Compile Include="Builders\StatusEffects\WhenAttackItemPlayedReduceCounter.cs" />

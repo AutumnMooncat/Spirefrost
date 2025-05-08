@@ -1,10 +1,12 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.StatusEffects;
+using Spirefrost.Builders.Traits;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.DefectUnits)]
     internal class GremlinWizard : SpirefrostBuilder
     {
         internal static string ID => "gremlinwizard";
@@ -16,13 +18,17 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Gremlin Wizard")
                 .SetSprites("Units/GremlinWizard.png", "Units/GremlinWizardBG.png")
-                .SetStats(5, 6, 6)
+                .SetStats(5, 10, 10)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("When Hit Reduce Counter To Self", 1)
+                        SStack(WhenAllyAttacksCountDown.ID, 1)
+                    };
+                    data.traits = new System.Collections.Generic.List<CardData.TraitStacks>
+                    {
+                        TStack(FocusTrait.ID, 2)
                     };
                 });
         }
