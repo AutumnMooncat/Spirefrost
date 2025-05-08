@@ -17,7 +17,7 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Fat Gremlin")
                 .SetSprites("Units/FatGremlin.png", "Units/FatGremlinBG.png")
-                .SetStats(3, 4, 0)
+                .SetStats(4, 3, 0)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
@@ -27,7 +27,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     };
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Trigger When Ally or Enemy Is Killed", 1)
+                        SStack("Trigger When Enemy Is Killed", 1)
                     };
                 });
         }
