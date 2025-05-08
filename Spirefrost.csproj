@@ -446,9 +446,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\Cards\Companions\Nemesis.cs" />
+    <Compile Include="Builders\Icons\IntangibleIcon.cs" />
     <Compile Include="Builders\Icons\RegrowIcon.cs" />
+    <Compile Include="Builders\Keywords\IntangibleKeyword.cs" />
     <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerWhenShroomApplied.cs" />
     <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
     <Compile Include="Builders\Cards\Clunkers\BronzeOrb.cs" />
@@ -723,6 +728,7 @@
     <Compile Include="StatusEffects\StatusEffectSTSDoubleTap.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSEnergized.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSFlight.cs" />
+    <Compile Include="StatusEffects\StatusEffectSTSIntangible.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSLifeLink.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSMark.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSVulnerable.cs" />
