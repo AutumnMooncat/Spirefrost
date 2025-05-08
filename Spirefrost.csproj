@@ -641,6 +641,7 @@
     <Compile Include="Builders\StatusEffects\WhenEnemyIsHitByItemApplyShroomToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenEnemyIsHitByItemReduceTheirHealth.cs" />
     <Compile Include="Builders\StatusEffects\WhenHealedReduceCounter.cs" />
+    <Compile Include="Builders\StatusEffects\WhenHitApplyShroomToEnemies.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitApplyVulnToFrontEnemies.cs" />
     <Compile Include="Builders\StatusEffects\IncreaseMaxCounterAdjustedEffects.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitReduceEffectToAttacker.cs" />

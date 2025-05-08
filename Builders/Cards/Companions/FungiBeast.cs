@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.SilentUnits)]
     internal class FungiBeast : SpirefrostBuilder
     {
         internal static string ID => "fungi";
@@ -17,13 +17,17 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Fungi Beast")
                 .SetSprites("Units/Fungi.png", "Units/FungiBG.png")
-                .SetStats(4, 1, 3)
+                .SetStats(4, 0, 3)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
+                    data.attackEffects = new CardData.StatusEffectStacks[] 
+                    {
+                        SStack("Shroom", 3)
+                    };
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenHitApplyVulnToFrontEnemies.ID, 1)
+                        SStack(WhenHitApplyShroomToEnemies.ID, 1)
                     };
                 });
         }
