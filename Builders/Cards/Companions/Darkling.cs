@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.IroncladUnits)]
     internal class Darkling : SpirefrostBuilder
     {
         internal static string ID => "darkling";
