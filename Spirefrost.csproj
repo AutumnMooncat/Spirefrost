@@ -459,6 +459,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerAgainstWhenVulnApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenAttackApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenReptoDaggerPlayed.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenShroomApplied.cs" />
@@ -676,7 +677,7 @@
     <Compile Include="Builders\StatusEffects\WhenShellAppliedToSelfGainAttack.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveReduceAttackToEnemiesWithDesc.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveReduceEffectsToFrontEnemy.cs" />
-    <Compile Include="Builders\StatusEffects\WhileActiveRitualToAlliesInRow.cs" />
+    <Compile Include="Builders\StatusEffects\WhileActiveRitualToAllies.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveTeethToSelfAndAllies.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseAllShroomApplied.cs" />
     <Compile Include="Builders\StatusEffects\WhileInHandIncreaseItemDamage.cs" />
