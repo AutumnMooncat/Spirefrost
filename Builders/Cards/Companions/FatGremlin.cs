@@ -17,17 +17,13 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Fat Gremlin")
                 .SetSprites("Units/FatGremlin.png", "Units/FatGremlinBG.png")
-                .SetStats(4, 3, 0)
+                .SetStats(2, 1, 2)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack(Weak.ID, 1)
-                    };
-                    data.startWithEffects = new CardData.StatusEffectStacks[]
-                    {
-                        SStack("Trigger When Enemy Is Killed", 1)
                     };
                 });
         }
