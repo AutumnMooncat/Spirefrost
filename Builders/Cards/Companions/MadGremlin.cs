@@ -1,10 +1,11 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.StatusEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.WatcherUnits)]
+    [ToPoolList(PoolListType.IroncladUnits)]
     internal class MadGremlin : SpirefrostBuilder
     {
         internal static string ID => "madgremlin";
@@ -18,12 +19,12 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/MadGremlin.png", "Units/MadGremlinBG.png")
                 .SetStats(5, 1, 4)
                 .WithValue(50)
+                .SetTraits(TStack("Fury", 2))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("When Hit Apply Spice To Self", 1),
-                        SStack("Halt Spice With Text", 1)
+                        SStack(WhenHitGainFury.ID, 2)
                     };
                 });
         }
