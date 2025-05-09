@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.IroncladUnits)]
+    [ToPoolList(PoolListType.Units)]
     internal class JawWorm : SpirefrostBuilder
     {
         internal static string ID => "jawworm";
