@@ -7,9 +7,9 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 namespace Spirefrost.Builders.Cards.Companions
 {
     [ToPoolList(PoolListType.Units)]
-    internal class Nob : SpirefrostBuilder
+    internal class GremlinNob : SpirefrostBuilder
     {
-        internal static string ID => "nob";
+        internal static string ID => "gremlinnob";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 

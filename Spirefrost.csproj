@@ -490,7 +490,7 @@
     <Compile Include="Builders\Cards\Companions\Lousie.cs" />
     <Compile Include="Builders\Cards\Companions\MadGremlin.cs" />
     <Compile Include="Builders\Cards\Companions\Mystic.cs" />
-    <Compile Include="Builders\Cards\Companions\Nob.cs" />
+    <Compile Include="Builders\Cards\Companions\GremlinNob.cs" />
     <Compile Include="Builders\Cards\Companions\ShieldGremlin.cs" />
     <Compile Include="Builders\Cards\Companions\RedSlaver.cs" />
     <Compile Include="Builders\Cards\Companions\SneakyGremlin.cs" />

@@ -26,7 +26,7 @@ namespace Spirefrost.Builders.StatusEffects
                             TryGet<CardData>(ShieldGremlin.ID),
                             TryGet<CardData>(SneakyGremlin.ID),
                             TryGet<CardData>(GremlinWizard.ID),
-                            TryGet<CardData>(Nob.ID),
+                            TryGet<CardData>(GremlinNob.ID),
                             TryGet<CardData>(GremlinLeader.ID),
                             TryGet<CardData>(GremlinHorn.ID),
                             TryGet<CardData>(GremlinVisage.ID),
