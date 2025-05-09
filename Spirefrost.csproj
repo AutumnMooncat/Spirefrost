@@ -468,6 +468,7 @@
     <Compile Include="Builders\StatusEffects\WhenAllyIsHitApplyShellToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitGainFury.cs" />
     <Compile Include="Builders\StatusEffects\WhenSpiceAppliedToSelfShellRandomAlly.cs" />
+    <Compile Include="Builders\StatusEffects\WhenWeakAppliedToAnythingApplyAttackToApplier.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToGremlins.cs" />
     <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
