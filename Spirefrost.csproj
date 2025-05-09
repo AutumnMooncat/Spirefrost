@@ -460,8 +460,9 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenVulnApplied.cs" />
-    <Compile Include="Builders\StatusEffects\TriggerWhenAttackApplied.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerWhenAttackAppliedToSelf.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenReptoDaggerPlayed.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerWhenShellAppliedToSelf.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenShroomApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenStatusApplied.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToGremlins.cs" />

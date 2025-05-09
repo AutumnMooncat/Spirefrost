@@ -17,7 +17,7 @@ namespace Spirefrost.Builders.Cards.Clunkers
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Spheric Guardian")
                 .SetSprites("Units/SphericGuardian.png", "Units/SphericGuardianBG.png")
-                .SetStats(null, null, 0)
+                .SetStats(null, 2, 0)
                 .WithCardType("Clunker")
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
@@ -25,8 +25,8 @@ namespace Spirefrost.Builders.Cards.Clunkers
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack("Shell", 4),
-                        SStack(WhenAllyIsHealedApplyEqualShell.ID, 1)
+                        SStack("MultiHit", 1),
+                        SStack(TriggerWhenAttackAppliedToSelf.ID, 1)
                     };
                 });
         }
