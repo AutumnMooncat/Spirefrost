@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.IroncladUnits)]
+    [ToPoolList(PoolListType.WatcherUnits)]
     internal class ShieldGremlin : SpirefrostBuilder
     {
         internal static string ID => "shieldgremlin";
@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenAllyAttacksApplyShellToThem.ID, 1)
+                        SStack(WhenAllyIsHitApplyShellToThem.ID, 1)
                     };
                 });
         }
