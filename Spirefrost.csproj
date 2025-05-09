@@ -447,6 +447,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\Cards\Companions\GiantHead.cs" />
+    <Compile Include="Builders\Cards\Companions\GremlinLeader.cs" />
     <Compile Include="Builders\Cards\Companions\Nemesis.cs" />
     <Compile Include="Builders\Cards\Companions\Reptomancer.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
@@ -462,6 +463,7 @@
     <Compile Include="Builders\StatusEffects\TriggerWhenReptoDaggerPlayed.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenShroomApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenStatusApplied.cs" />
+    <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToGremlins.cs" />
     <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
     <Compile Include="Builders\Cards\Clunkers\BronzeOrb.cs" />
