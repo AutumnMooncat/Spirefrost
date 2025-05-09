@@ -3,9 +3,9 @@ using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects
 {
-    internal class TriggerWhenAttackApplied : SpirefrostBuilder
+    internal class TriggerWhenAttackAppliedToSelf : SpirefrostBuilder
     {
-        internal static string ID => "Trigger When Attack Applied";
+        internal static string ID => "Trigger When Attack Applied To Self";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
