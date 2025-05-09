@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenAllyIsHitApplyShellToThem.ID, 1)
+                        SStack(WhenSpiceAppliedToSelfShellRandomAlly.ID, 1)
                     };
                 });
         }
