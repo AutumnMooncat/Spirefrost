@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.StatusEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
@@ -25,7 +26,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Shell", 4),
-                        SStack("When Hit Reduce Attack To Attacker", 1)
+                        SStack(PreTriggerGainTempFrenzyIfTargetHasWeak.ID, 1)
                     };
                 });
         }

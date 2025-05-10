@@ -458,7 +458,9 @@
     <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
+    <Compile Include="Builders\StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenVulnApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenAttackAppliedToSelf.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenReptoDaggerPlayed.cs" />
