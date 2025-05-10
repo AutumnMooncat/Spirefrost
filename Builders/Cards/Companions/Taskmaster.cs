@@ -5,7 +5,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.IroncladUnits)]
+    [ToPoolList(PoolListType.WatcherUnits)]
     internal class Taskmaster : SpirefrostBuilder
     {
         internal static string ID => "taskmaster";
@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(TriggerWhenAttackAppliedToSelf.ID, 1)
+                        SStack(TriggerWhenSpiceAppliedToSelf.ID, 1)
                     };
                 });
         }
