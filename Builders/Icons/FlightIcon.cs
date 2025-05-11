@@ -21,7 +21,9 @@ namespace Spirefrost.Builders.Icons
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
-                .WithKeywords(FlightKeyword.ID);
+                .WithKeywords(FlightKeyword.ID)
+                .WithApplyVFX(MainModFile.instance.ImagePath("VFX/Flight.png"))
+                .WithApplySFX(MainModFile.instance.ImagePath("SFX/Flight.ogg"));
         }
     }
 }
