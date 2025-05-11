@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectData>(ID)
+                .Create<StatusEffectApplyXWhenYAppliedToSelf>(ID)
                 .WithText("Trigger when <keyword=spice>'d")
                 .WithIsReaction(true)
                 .WithCanBeBoosted(false)

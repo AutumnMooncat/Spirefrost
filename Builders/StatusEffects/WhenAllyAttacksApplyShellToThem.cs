@@ -5,7 +5,7 @@ namespace Spirefrost.Builders.StatusEffects
 {
     internal class WhenAllyAttacksApplyShellToThem : SpirefrostBuilder
     {
-        internal static string ID => null;
+        internal static string ID => "When Ally Attacks Apply Shell To Them";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 

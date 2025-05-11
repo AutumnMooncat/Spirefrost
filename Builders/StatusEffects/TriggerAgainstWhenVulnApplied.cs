@@ -6,7 +6,7 @@ namespace Spirefrost.Builders.StatusEffects
 {
     internal class TriggerAgainstWhenVulnApplied : SpirefrostBuilder
     {
-        internal static string ID => null;
+        internal static string ID => "Trigger Against When Vuln Applied";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 

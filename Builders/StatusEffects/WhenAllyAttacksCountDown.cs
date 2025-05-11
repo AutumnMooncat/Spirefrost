@@ -5,7 +5,7 @@ namespace Spirefrost.Builders.StatusEffects
 {
     internal class WhenAllyAttacksCountDown : SpirefrostBuilder
     {
-        internal static string ID => null;
+        internal static string ID => "When Ally Attacks Count Down";
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 

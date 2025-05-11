@@ -17,7 +17,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithOffensive(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHit>(data =>
                 {
-                    data.effectToApply = TryGet<StatusEffectData>("shroom");
+                    data.effectToApply = TryGet<StatusEffectData>("Shroom");
                     data.applyConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintCanBeHit>()
