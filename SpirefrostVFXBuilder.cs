@@ -107,6 +107,48 @@ namespace Spirefrost
             return this;
         }
 
+        internal SpirefrostVFXBuilder WithRandomColor(Color from, Color to)
+        {
+            _color = new ParticleSystem.MinMaxGradient(from, to);
+            _hasColor = true;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder WithRandomColorGradient(Color[] from, Color[] to)
+        {
+            if (from.Length == 0)
+            {
+                from = new Color[] { Color.clear, Color.clear };
+            }
+            else if (from.Length == 1)
+            {
+                from = from.With(from[0]);
+            }
+            if (to.Length == 0)
+            {
+                to = new Color[] { Color.clear, Color.clear };
+            }
+            else if (to.Length == 1)
+            {
+                to = to.With(to[0]);
+            }
+            Gradient fromGrad = new Gradient
+            {
+                colorKeys = from.Select((color, i) => new GradientColorKey(color, ((float)i) / (from.Length - 1))).ToArray(),
+                alphaKeys = from.Select((color, i) => new GradientAlphaKey(color.a, ((float)i) / (from.Length - 1))).ToArray(),
+                mode = GradientMode.Blend
+            };
+            Gradient toGrad = new Gradient
+            {
+                colorKeys = to.Select((color, i) => new GradientColorKey(color, ((float)i) / (to.Length - 1))).ToArray(),
+                alphaKeys = to.Select((color, i) => new GradientAlphaKey(color.a, ((float)i) / (to.Length - 1))).ToArray(),
+                mode = GradientMode.Blend
+            };
+            _color = new ParticleSystem.MinMaxGradient(fromGrad, toGrad);
+            _hasColor = true;
+            return this;
+        }
+
         internal SpirefrostVFXBuilder WithVelocity(Vector3 vel)
         {
             _velX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Constant(0, 1, vel.x));
