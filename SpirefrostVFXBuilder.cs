@@ -122,7 +122,7 @@ namespace Spirefrost
 
         internal SpirefrostVFXBuilder WithVelocityGradient(Vector3 from, Vector3 to, bool smooth = false)
         {
-            if (from.x == from.y && from.y == from.z && to.x == to.y && to.y == to.z)
+            if (from == to)
             {
                 return WithVelocity(from);
             }
