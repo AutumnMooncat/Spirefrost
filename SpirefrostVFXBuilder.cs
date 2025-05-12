@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Deadpan.Enums.Engine.Components.Modding;
+using FMOD;
 using UnityEngine;
 using WildfrostHopeMod.Utils;
 using WildfrostHopeMod.VFX;
@@ -146,6 +147,20 @@ namespace Spirefrost
             return this;
         }
 
+        internal SpirefrostVFXBuilder WithRandomVelocityGradient(Vector3[] from, Vector3[] to)
+        {
+            return WithRandomVelocityGradient(false, from, to);
+        }
+
+        internal SpirefrostVFXBuilder WithRandomVelocityGradient(bool smooth, Vector3[] from, Vector3[] to)
+        {
+            _velX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.x).ToArray()), BuildCurve(smooth, to.Select(vec => vec.x).ToArray()));
+            _velY = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.y).ToArray()), BuildCurve(smooth, to.Select(vec => vec.y).ToArray()));
+            _velZ = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.z).ToArray()), BuildCurve(smooth, to.Select(vec => vec.z).ToArray()));
+            _hasVelocity = true;
+            return this;
+        }
+
         internal SpirefrostVFXBuilder WithSize(float size)
         {
             _sizeX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Constant(0, 1, size));
@@ -231,6 +246,37 @@ namespace Spirefrost
             return this;
         }
 
+        internal SpirefrostVFXBuilder WithRandomSizeGradient(float[] from, float[] to)
+        {
+            return WithRandomSizeGradient(false, from, to);
+        }
+
+        internal SpirefrostVFXBuilder WithRandomSizeGradient(bool smooth, float[] from, float[] to)
+        {
+            _sizeX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from), BuildCurve(smooth, to));
+            _hasSize = true;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder WithRandomSizeGradient(Vector3[] from, Vector3[] to)
+        {
+            return WithRandomSizeGradient(false, from, to);
+        }
+
+        internal SpirefrostVFXBuilder WithRandomSizeGradient(bool smooth, Vector3[] from, Vector3[] to)
+        {
+            if (from.All(vec => vec.x == vec.y && vec.y == vec.z) && to.All(vec => vec.x == vec.y && vec.y == vec.z))
+            {
+                return WithRandomSizeGradient(smooth, from.Select(vec => vec.x).ToArray(), to.Select(vec => vec.x).ToArray());
+            }
+            _sizeX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.x).ToArray()), BuildCurve(smooth, to.Select(vec => vec.x).ToArray()));
+            _sizeY = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.y).ToArray()), BuildCurve(smooth, to.Select(vec => vec.y).ToArray()));
+            _sizeZ = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.z).ToArray()), BuildCurve(smooth, to.Select(vec => vec.z).ToArray()));
+            _hasSize = true;
+            _hasDifferentSizes = true;
+            return this;
+        }
+
         internal SpirefrostVFXBuilder WithRotation(Vector3 rotation)
         {
             _rotX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Constant(0, 1, rotation.x));
@@ -267,6 +313,20 @@ namespace Spirefrost
             _rotX = new ParticleSystem.MinMaxCurve(from.x, to.x);
             _rotY = new ParticleSystem.MinMaxCurve(from.y, to.y);
             _rotZ = new ParticleSystem.MinMaxCurve(from.z, to.z);
+            _hasRotation = true;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder WithRandomRotationGradient(Vector3[] from, Vector3[] to)
+        {
+            return WithRandomRotationGradient(false, from, to);
+        }
+
+        internal SpirefrostVFXBuilder WithRandomRotationGradient(bool smooth, Vector3[] from, Vector3[] to)
+        {
+            _rotX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.x).ToArray()), BuildCurve(smooth, to.Select(vec => vec.x).ToArray()));
+            _rotY = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.y).ToArray()), BuildCurve(smooth, to.Select(vec => vec.y).ToArray()));
+            _rotZ = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from.Select(vec => vec.z).ToArray()), BuildCurve(smooth, to.Select(vec => vec.z).ToArray()));
             _hasRotation = true;
             return this;
         }
@@ -319,6 +379,18 @@ namespace Spirefrost
         internal SpirefrostVFXBuilder WithRandomGravity(float from, float to)
         {
             _gravity = new ParticleSystem.MinMaxCurve(from, to);
+            _hasGravity = true;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder WithRandomGravityGradient(float[] from, float[] to)
+        {
+            return WithRandomGravityGradient(false, from, to);
+        }
+
+        internal SpirefrostVFXBuilder WithRandomGravityGradient(bool smooth, float[] from, float[] to)
+        {
+            _gravity = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, from), BuildCurve(smooth, to));
             _hasGravity = true;
             return this;
         }
