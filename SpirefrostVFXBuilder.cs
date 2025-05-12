@@ -195,6 +195,27 @@ namespace Spirefrost
             return this;
         }
 
+        internal SpirefrostVFXBuilder WithRandomSize(float from, float to)
+        {
+            _sizeX = new ParticleSystem.MinMaxCurve(from, to);
+            _hasSize = true;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder WithRandomSize(Vector3 from, Vector3 to)
+        {
+            if (from.x == from.y && from.y == from.x && to.x == to.y && to.y == to.z)
+            {
+                return WithRandomSize(from.x, to.x);
+            }
+            _sizeX = new ParticleSystem.MinMaxCurve(from.x, to.x);
+            _sizeY = new ParticleSystem.MinMaxCurve(from.y, to.y);
+            _sizeZ = new ParticleSystem.MinMaxCurve(from.z, to.z);
+            _hasSize = true;
+            _hasDifferentSizes = true;
+            return this;
+        }
+
         internal SpirefrostVFXBuilder WithRotation(Vector3 rotation)
         {
             _rotX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Constant(0, 1, rotation.x));
