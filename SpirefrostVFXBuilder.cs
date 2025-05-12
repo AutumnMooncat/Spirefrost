@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Security.Policy;
+using System.Linq;
 using Deadpan.Enums.Engine.Components.Modding;
 using UnityEngine;
 using WildfrostHopeMod.Utils;
@@ -104,6 +103,27 @@ namespace Spirefrost
                     new GradientAlphaKey(from.a, 0),
                     new GradientAlphaKey(to.a, 1)
                 },
+                mode = GradientMode.Blend
+            };
+            _color = new ParticleSystem.MinMaxGradient(grad);
+            _hasColor = true;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder WithColorGradient(params Color[] colors)
+        {
+            if (colors.Length == 0)
+            {
+                return this;
+            }
+            if (colors.All(color => color == colors[0]))
+            {
+                return WithColor(colors[0]);
+            }
+            Gradient grad = new Gradient
+            {
+                colorKeys = colors.Select((color, i) => new GradientColorKey(color, ((float)i) / colors.Length)).ToArray(),
+                alphaKeys = colors.Select((color, i) => new GradientAlphaKey(color.a, ((float)i) / colors.Length)).ToArray(),
                 mode = GradientMode.Blend
             };
             _color = new ParticleSystem.MinMaxGradient(grad);
