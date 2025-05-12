@@ -115,7 +115,12 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithVelocityGradient(bool smooth = false, params Vector3[] vectors)
+        internal SpirefrostVFXBuilder WithVelocityGradient(params Vector3[] vectors)
+        {
+            return WithVelocityGradient(false, vectors);
+        }
+
+        internal SpirefrostVFXBuilder WithVelocityGradient(bool smooth, params Vector3[] vectors)
         {
             if (vectors.Length == 0)
             {
@@ -162,7 +167,12 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithSizeGradient(bool smooth = false, params float[] sizes)
+        internal SpirefrostVFXBuilder WithSizeGradient(params float[] sizes)
+        {
+            return WithSizeGradient(false, sizes);
+        }
+
+        internal SpirefrostVFXBuilder WithSizeGradient(bool smooth, params float[] sizes)
         {
             if (sizes.Length == 0)
             {
@@ -177,7 +187,12 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithSizeGradient(bool smooth = false, params Vector3[] vectors)
+        internal SpirefrostVFXBuilder WithSizeGradient(params Vector3[] vectors)
+        {
+            return WithSizeGradient(false, vectors);
+        }
+
+        internal SpirefrostVFXBuilder WithSizeGradient(bool smooth, params Vector3[] vectors)
         {
             if (vectors.Length == 0)
             {
@@ -225,7 +240,12 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithRotationGradient(bool smooth = false, params Vector3[] vectors)
+        internal SpirefrostVFXBuilder WithRotationGradient(params Vector3[] vectors)
+        {
+            return WithRotationGradient(false, vectors);
+        }
+
+        internal SpirefrostVFXBuilder WithRotationGradient(bool smooth, params Vector3[] vectors)
         {
             if (vectors.Length == 0)
             {
@@ -276,7 +296,12 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithGravityGradient(bool smooth = false, params float[] values)
+        internal SpirefrostVFXBuilder WithGravityGradient(params float[] values)
+        {
+            return WithGravityGradient(false, values);
+        }
+
+        internal SpirefrostVFXBuilder WithGravityGradient(bool smooth, params float[] values)
         {
             if (values.Length == 0)
             {
