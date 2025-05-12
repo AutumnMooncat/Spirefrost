@@ -122,8 +122,8 @@ namespace Spirefrost
             }
             Gradient grad = new Gradient
             {
-                colorKeys = colors.Select((color, i) => new GradientColorKey(color, ((float)i) / colors.Length)).ToArray(),
-                alphaKeys = colors.Select((color, i) => new GradientAlphaKey(color.a, ((float)i) / colors.Length)).ToArray(),
+                colorKeys = colors.Select((color, i) => new GradientColorKey(color, ((float)i) / (colors.Length-1))).ToArray(),
+                alphaKeys = colors.Select((color, i) => new GradientAlphaKey(color.a, ((float)i) / (colors.Length-1))).ToArray(),
                 mode = GradientMode.Blend
             };
             _color = new ParticleSystem.MinMaxGradient(grad);
