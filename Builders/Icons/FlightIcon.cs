@@ -22,8 +22,17 @@ namespace Spirefrost.Builders.Icons
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords(FlightKeyword.ID)
-                .WithApplyVFX(MainModFile.instance.ImagePath("VFX/Flight.png"))
-                .WithApplySFX(MainModFile.instance.ImagePath("SFX/Flight.ogg"));
+                .WithApplySFX(MainModFile.instance.ImagePath("SFX/Flight.ogg"))
+                .FreeModify(icon =>
+                {
+                    GameObject vfx = new SpirefrostVFXBuilder(MainModFile.instance, "Icons/FlightIcon.png")
+                    .WithColorGradient(Color.white, new Color(1, 1, 1, 0.75f), new Color(1, 1, 1, 0))
+                    .WithSizeGradient(true, 2f, 3f)
+                    .WithDuration(1f)
+                    .WithVelocityGradient(new Vector3(0, 5, 0), new Vector3(0, 0, 0))
+                    .Build();
+                    vfx.RegisterAsApplyEffect(icon.type);
+                });
         }
     }
 }
