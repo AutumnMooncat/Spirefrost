@@ -85,31 +85,6 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithColorGradient(Color from, Color to)
-        {
-            if (from == to)
-            {
-                return WithColor(from);
-            }
-            Gradient grad = new Gradient
-            {
-                colorKeys = new GradientColorKey[]
-                {
-                    new GradientColorKey(from, 0),
-                    new GradientColorKey(to, 1)
-                },
-                alphaKeys = new GradientAlphaKey[]
-                {
-                    new GradientAlphaKey(from.a, 0),
-                    new GradientAlphaKey(to.a, 1)
-                },
-                mode = GradientMode.Blend
-            };
-            _color = new ParticleSystem.MinMaxGradient(grad);
-            _hasColor = true;
-            return this;
-        }
-
         internal SpirefrostVFXBuilder WithColorGradient(params Color[] colors)
         {
             if (colors.Length == 0)
@@ -140,24 +115,19 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithVelocityGradient(Vector3 from, Vector3 to, bool smooth = false)
+        internal SpirefrostVFXBuilder WithVelocityGradient(bool smooth = false, params Vector3[] vectors)
         {
-            if (from == to)
+            if (vectors.Length == 0)
             {
-                return WithVelocity(from);
+                return this;
             }
-            if (smooth)
+            if (vectors.All(vec => vec == vectors[0]))
             {
-                _velX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.x, 1, to.x));
-                _velY = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.y, 1, to.y));
-                _velZ = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.z, 1, to.z));
-            } 
-            else
-            {
-                _velX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.x, 1, to.x));
-                _velY = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.y, 1, to.y));
-                _velZ = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.z, 1, to.z));
+                return WithVelocity(vectors[0]);
             }
+            _velX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.x).ToArray()));
+            _velY = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.y).ToArray()));
+            _velZ = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.z).ToArray()));
             _hasVelocity = true;
             return this;
         }
@@ -192,42 +162,34 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithSizeGradient(float from, float to, bool smooth = false)
+        internal SpirefrostVFXBuilder WithSizeGradient(bool smooth = false, params float[] sizes)
         {
-            if (from == to)
+            if (sizes.Length == 0)
             {
-                return WithSize(from);
+                return this;
             }
-            if (smooth)
+            if (sizes.All(size => size == sizes[0]))
             {
-                _sizeX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from, 1, to));
+                return WithSize(sizes[0]);
             }
-            else
-            {
-                _sizeX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from, 1, to));
-            }
+            _sizeX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, sizes));
             _hasSize = true;
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithSizeGradient(Vector3 from, Vector3 to,  bool smooth = false)
+        internal SpirefrostVFXBuilder WithSizeGradient(bool smooth = false, params Vector3[] vectors)
         {
-            if (from.x == from.y && from.y == from.z && to.x == to.y && to.y == to.z)
+            if (vectors.Length == 0)
             {
-                return WithSizeGradient(from.x, to.x);
+                return this;
             }
-            if (smooth)
+            if (vectors.All(vec => vec.x == vec.y && vec.y == vec.z))
             {
-                _sizeX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.x, 1, to.x));
-                _sizeY = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.y, 1, to.y));
-                _sizeZ = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.z, 1, to.z));
+                return WithSizeGradient(smooth, vectors.Select(vec => vec.x).ToArray());
             }
-            else
-            {
-                _sizeX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.x, 1, to.x));
-                _sizeY = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.y, 1, to.y));
-                _sizeZ = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.z, 1, to.z));
-            }
+            _sizeX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.x).ToArray()));
+            _sizeY = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.y).ToArray()));
+            _sizeZ = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.z).ToArray()));
             _hasSize = true;
             _hasDifferentSizes = true;
             return this;
@@ -242,24 +204,19 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithRotationGradient(Vector3 from, Vector3 to, bool smooth = false)
+        internal SpirefrostVFXBuilder WithRotationGradient(bool smooth = false, params Vector3[] vectors)
         {
-            if (from == to)
+            if (vectors.Length == 0)
             {
-                return WithRotation(from);
+                return this;
             }
-            if (smooth)
+            if (vectors.All(vec => vec == vectors[0]))
             {
-                _rotX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.x, 1, to.x));
-                _rotY = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.y, 1, to.y));
-                _rotZ = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from.z, 1, to.z));
+                return WithRotation(vectors[0]);
             }
-            else
-            {
-                _rotX = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.x, 1, to.x));
-                _rotY = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.y, 1, to.y));
-                _rotZ = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from.z, 1, to.z));
-            }
+            _rotX = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.x).ToArray()));
+            _rotY = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.y).ToArray()));
+            _rotZ = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, vectors.Select(vec => vec.z).ToArray()));
             _hasRotation = true;
             return this;
         }
@@ -298,16 +255,17 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithGravityGradient(float from, float to, bool smooth = false)
+        internal SpirefrostVFXBuilder WithGravityGradient(bool smooth = false, params float[] values)
         {
-            if (smooth)
+            if (values.Length == 0)
             {
-                _gravity = new ParticleSystem.MinMaxCurve(1, AnimationCurve.EaseInOut(0, from, 1, to));
+                return this;
             }
-            else
+            if (values.All(val => val == values[0]))
             {
-                _gravity = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, from, 1, to));
+                return WithGravity(values[0]);
             }
+            _gravity = new ParticleSystem.MinMaxCurve(1, BuildCurve(smooth, values));
             _hasGravity = true;
             return this;
         }
@@ -413,6 +371,21 @@ namespace Spirefrost
                 main.startRotationZMultiplier = 1f;
             }
             return particleSystem.gameObject;
+        }
+
+        private AnimationCurve BuildCurve(bool smooth, params float[] values)
+        {
+            if (values.Length == 0)
+            {
+                return AnimationCurve.Constant(0, 1, 0);
+            }
+            if (values.Length == 1)
+            {
+                return AnimationCurve.Constant(0, 1, values[0]);
+            }
+            float outVal = smooth ? 0 : (values[1] - values[0]) * (values.Length - 1);
+            float inVal = smooth ? 0 : (values[values.Length - 1] - values[values.Length - 2]) * (values.Length - 1);
+            return new AnimationCurve(values.Select((val, i) => new Keyframe(((float)i)/(values.Length-1), val, (i == values.Length-1) ? inVal : 0, (i == 0) ? outVal : 0)).ToArray());
         }
     }
 }
