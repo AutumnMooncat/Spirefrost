@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 namespace Spirefrost
@@ -134,6 +135,7 @@ namespace Spirefrost
         {
             if (primed && trigger.entity == target && trigger.countsAsTrigger)
             {
+                bool hadTargets = !(trigger.targets is null) && trigger.targets.Any(e => e.IsAliveAndExists());
                 if (evokeEffect)
                 {
                     SetToEvoke();
@@ -148,6 +150,12 @@ namespace Spirefrost
                 if (amount != 0)
                 {
                     yield return CountDown(target, amount);
+                }
+                bool hasTargets = !(trigger.targets is null) && trigger.targets.Any(e => e.IsAliveAndExists());
+
+                if (hadTargets != hasTargets)
+                {
+                    trigger.targets = target.targetMode ? target.targetMode.GetTargets(target, null, null) : null;
                 }
             }
         }
