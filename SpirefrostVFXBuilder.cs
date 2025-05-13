@@ -564,6 +564,8 @@ namespace Spirefrost
                     {
                         continue;
                     }
+                    var submain = system.main;
+                    submain.stopAction = ParticleSystemStopAction.None;
                     item.transform.SetParent(particleSystem.gameObject.transform);
                     subEmit.AddSubEmitter(system, ParticleSystemSubEmitterType.Birth, ParticleSystemSubEmitterProperties.InheritNothing);
                 }
@@ -578,6 +580,8 @@ namespace Spirefrost
                     {
                         continue;
                     }
+                    var submain = system.main;
+                    submain.stopAction = ParticleSystemStopAction.None;
                     item.transform.SetParent(particleSystem.gameObject.transform);
                     subEmit.AddSubEmitter(system, ParticleSystemSubEmitterType.Death, ParticleSystemSubEmitterProperties.InheritNothing);
                 }
