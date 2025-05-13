@@ -446,13 +446,13 @@ namespace Spirefrost
             return this;
         }
 
-        internal SpirefrostVFXBuilder WithEffects(GameObject[] effects)
+        internal SpirefrostVFXBuilder WithEffects(params GameObject[] effects)
         {
             _withEffects = effects;
             return this;
         }
 
-        internal SpirefrostVFXBuilder AndThenEffects(GameObject[] effects)
+        internal SpirefrostVFXBuilder AndThenEffects(params GameObject[] effects)
         {
             _andThenEffects = effects;
             return this;
@@ -554,7 +554,7 @@ namespace Spirefrost
             var shape = particleSystem.shape;
             shape.position = _initialOffset;
             var subEmit = particleSystem.subEmitters;
-            if (_withEffects.Length > 0)
+            if (_withEffects?.Length > 0)
             {
                 subEmit.enabled = true;
                 foreach (var item in _withEffects)
@@ -568,7 +568,7 @@ namespace Spirefrost
                     subEmit.AddSubEmitter(system, ParticleSystemSubEmitterType.Birth, ParticleSystemSubEmitterProperties.InheritNothing);
                 }
             }
-            if (_andThenEffects.Length > 0)
+            if (_andThenEffects?.Length > 0)
             {
                 subEmit.enabled = true;
                 foreach (var item in _andThenEffects)
