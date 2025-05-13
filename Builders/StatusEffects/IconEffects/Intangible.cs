@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Icons;
+using Spirefrost.Patches;
 using Spirefrost.StatusEffects;
 using WildfrostHopeMod.VFX;
 
@@ -20,8 +21,6 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .WithIsStatus(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectSTSIntangible>(data =>
                 {
-                    data.eventPriority = -4;
-                    data.preventDeath = true;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintIsUnit>(t => {

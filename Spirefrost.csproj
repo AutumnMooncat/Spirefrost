@@ -475,6 +475,7 @@
     <Compile Include="Builders\StatusEffects\WhenWeakAppliedToAnythingApplyAttackToApplier.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToGremlins.cs" />
     <Compile Include="Patches\BarragePatch.cs" />
+    <Compile Include="Patches\DontTriggerPatch.cs" />
     <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
     <Compile Include="Builders\Cards\Clunkers\BronzeOrb.cs" />

@@ -19,16 +19,17 @@ namespace Spirefrost.Builders.Icons
             return new StatusIconBuilder(MainModFile.instance)
                 .Create(ID, SpriteID, MainModFile.instance.ImagePath("Icons/IntangibleIcon.png"))
                 .WithIconGroupName(StatusIconBuilder.IconGroups.health)
-                .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
-                .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                //.WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
+                //.WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords(IntangibleKeyword.ID)
                 .WithApplySFX(MainModFile.instance.ImagePath("SFX/Intangible.ogg"))
                 .FreeModify(icon =>
                 {
-                    icon.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                    icon.textElement.outlineWidth = 0.2f;
-                    icon.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                    //icon.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    //icon.textElement.outlineWidth = 0.2f;
+                    //icon.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                    icon.textElement = null;
 
                     GameObject vfx = new SpirefrostVFXBuilder(MainModFile.instance, "Icons/IntangibleIcon.png")
                     .WithColorGradient(Color.white, Color.white, new Color(1, 1, 1, 0))

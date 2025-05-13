@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using static Events;
 
 namespace Spirefrost
 {
@@ -61,6 +62,18 @@ namespace Spirefrost
                 return;
             }
             onPreStatusReduction(status, ref amount, temporary);
+        }
+
+        internal static event UnityActionRef<Trigger, bool> OnIgnoreTriggerCheck;
+
+        internal static void InvokeIgnoreTriggerCheck(ref Trigger trigger, ref bool ignore)
+        {
+            UnityActionRef<Trigger, bool> onIgnoreTriggerCheck = OnIgnoreTriggerCheck;
+            if (onIgnoreTriggerCheck == null)
+            {
+                return;
+            }
+            onIgnoreTriggerCheck(ref trigger, ref ignore);
         }
     }
 }

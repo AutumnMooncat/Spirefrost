@@ -7,7 +7,12 @@ namespace Spirefrost.StatusEffects
     {
         public override void Init()
         {
-            base.OnHit += Check;
+            SpirefrostEvents.OnIgnoreTriggerCheck += IgnoreTrigger;
+        }
+
+        public void OnDestroy()
+        {
+            SpirefrostEvents.OnIgnoreTriggerCheck -= IgnoreTrigger;
         }
 
         public override bool RunBeginEvent()
@@ -24,27 +29,29 @@ namespace Spirefrost.StatusEffects
 
         public override bool RunHitEvent(Hit hit)
         {
-            if (hit.target == target)
+            if (hit.target == target && hit.damage > 0)
             {
-                return hit.damage > 0;
+                hit.damageBlocked += hit.damage;
+                hit.damage = 0;
             }
 
             return false;
         }
 
-        public IEnumerator Check(Hit hit)
+        private void IgnoreTrigger(ref Trigger trigger, ref bool ignore)
         {
-            int reduction = Math.Min(hit.damage, count);
-            count -= reduction;
-            hit.damage -= reduction;
-            hit.damageBlocked += reduction;
-
-            if (count <= 0)
+            if (trigger.targets != null && trigger.targets.Contains(target))
             {
-                yield return Remove();
-            }
+                if (trigger.entity.HasAttackIcon())
+                {
+                    trigger.targets = trigger.targets.Without(target);
 
-            target.PromptUpdate();
+                    if (trigger.targets.Length == 0)
+                    {
+                        ignore = true;
+                    }
+                }
+            }
         }
     }
 }

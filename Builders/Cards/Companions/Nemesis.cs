@@ -18,14 +18,14 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Nemesis")
                 .SetSprites("Units/Nemesis.png", "Units/NemesisBG.png")
-                .SetStats(null, 3, 5)
+                .SetStats(1, 3, 5)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack(TriggerWhenShroomApplied.ID, 1),
-                        SStack(Intangible.ID, 8)
+                        SStack(Intangible.ID, 1)
                     };
                 });
         }
