@@ -26,7 +26,7 @@ namespace Spirefrost.Builders.Cards.Clunkers
                     {
                         SStack("Scrap", 1),
                         SStack("MultiHit", 1),
-                        SStack(TriggerWhenAttackAppliedToSelf.ID, 1)
+                        SStack(TriggerWhenShellAppliedToSelf.ID, 1)
                     };
                 });
         }
