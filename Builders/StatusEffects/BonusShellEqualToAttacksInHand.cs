@@ -12,10 +12,10 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectAffectAllXAppliedWhileInHand>(ID)
+                .Create<StatusEffectAffectAllXAppliedExtras>(ID)
                 .WithText("Apply additional <keyword=shell> equal to <Items> in hand with <keyword=attack>")
                 .WithCanBeBoosted(false)
-                .SubscribeToAfterAllBuildEvent<StatusEffectAffectAllXAppliedWhileInHand>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectAffectAllXAppliedExtras>(data =>
                 {
                     data.applierMustBeSelf = true;
                     data.scriptableAmount = ScriptableObject.CreateInstance<ScriptableAttacksInHand>();

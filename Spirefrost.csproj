@@ -767,7 +767,7 @@
     <Compile Include="StatusEffects\StatusEffectInstantIncreaseMaxCounterAdjusted.cs" />
     <Compile Include="StatusEffects\StatusEffectEquipMask.cs" />
     <Compile Include="StatusEffects\StatusEffectOrb.cs" />
-    <Compile Include="StatusEffects\StatusEffectAffectAllXAppliedWhileInHand.cs" />
+    <Compile Include="StatusEffects\StatusEffectAffectAllXAppliedExtras.cs" />
     <Compile Include="StatusEffects\StatusEffectDiscovery.cs" />
     <Compile Include="StatusEffects\StatusEffectFocus.cs" />
     <Compile Include="StatusEffects\StatusEffectRedirectConsume.cs" />

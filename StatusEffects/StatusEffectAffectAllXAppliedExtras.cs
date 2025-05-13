@@ -1,10 +1,19 @@
 ﻿namespace Spirefrost
 {
-    public class StatusEffectAffectAllXAppliedWhileInHand : StatusEffectAffectAllXApplied
+    public class StatusEffectAffectAllXAppliedExtras : StatusEffectAffectAllXApplied
     {
+        public enum LocationRequirement
+        {
+            None,
+            Hand,
+            Board,
+        }
+
         public bool applierMustBeSelf;
 
         public ScriptableAmount scriptableAmount;
+
+        public LocationRequirement location = LocationRequirement.None;
 
         public override bool RunApplyStatusEvent(StatusEffectApply apply)
         {
@@ -12,7 +21,11 @@
             {
                 return false;
             }
-            if (!References.Player.handContainer.Contains(target))
+            if (location == LocationRequirement.Hand && !References.Player.handContainer.Contains(target))
+            {
+                return false;
+            }
+            if (location == LocationRequirement.Board && !Battle.IsOnBoard(target))
             {
                 return false;
             }

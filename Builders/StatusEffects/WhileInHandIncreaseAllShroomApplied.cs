@@ -12,12 +12,13 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectAffectAllXAppliedWhileInHand>(ID)
+                .Create<StatusEffectAffectAllXAppliedExtras>(ID)
                 .WithText("While in hand, increase all <keyword=shroom> applied to enemies by <{a}>")
                 .WithCanBeBoosted(true)
-                .SubscribeToAfterAllBuildEvent<StatusEffectAffectAllXAppliedWhileInHand>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectAffectAllXAppliedExtras>(data =>
                 {
                     data.effectToAffect = TryGet<StatusEffectData>("Shroom");
+                    data.location = StatusEffectAffectAllXAppliedExtras.LocationRequirement.Hand;
                     data.multiplyBy = 1f;
                     data.add = 1;
                     data.targetCanBeFriendly = false;
