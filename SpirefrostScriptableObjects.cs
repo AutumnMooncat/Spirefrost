@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Spirefrost.Patches;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spirefrost
 {
@@ -85,6 +82,10 @@ namespace Spirefrost
 
     public class TargetConstraintPseudoBarrage : OwnerRelevantTargetConstraint
     {
+        private readonly TargetModeRow barrage = CreateInstance<TargetModeRow>();
+
+        public bool doesDamage;
+
         public override bool Check(Entity target)
         {
             if (relevantEntity == null)
@@ -92,26 +93,21 @@ namespace Spirefrost
                 MainModFile.Print($"OwnerRelevantTargetConstraint owner was null");
                 return false;
             }
-
-            CardContainer[] relevantRows = relevantEntity.containers;
-            int[] relevantIndices = relevantRows.Select(cont => References.Battle.GetRowIndex(cont)).ToArray();
-            bool targetingEmptyRow = relevantIndices.Select(i => relevantEntity.GetEnemiesInRow(i)).All(enemies => enemies.Count == 0);
-
-            foreach (CardContainer row in Battle.instance.GetRows(target.owner))
+            if (doesDamage && !target.canBeHit)
             {
-                if (relevantIndices.Contains(References.Battle.GetRowIndex(row)))
+                return false;
+            }
+
+            BarragePatch.shortCircuit = true;
+            Entity[] validTargets = barrage.GetTargets(relevantEntity, null, null);
+            BarragePatch.shortCircuit = false;
+            if (validTargets != null)
+            {
+                if (validTargets.Contains(target) && barrage.CanTarget(target))
                 {
                     return !not;
                 }
-                else
-                {
-                    if (targetingEmptyRow)
-                    {
-                        return !not;
-                    }
-                }
             }
-
             return not;
         }
 
@@ -123,6 +119,10 @@ namespace Spirefrost
 
     public class TargetConstraintPseudoFrontEnemy : OwnerRelevantTargetConstraint
     {
+        private readonly TargetModeBasic basic = CreateInstance<TargetModeBasic>();
+
+        public bool doesDamage;
+
         public override bool Check(Entity target)
         {
             if (relevantEntity == null)
@@ -130,30 +130,16 @@ namespace Spirefrost
                 MainModFile.Print($"OwnerRelevantTargetConstraint owner was null");
                 return false;
             }
-
-            CardContainer[] relevantRows = relevantEntity.containers;
-            int[] relevantIndices = relevantRows.Select(cont => References.Battle.GetRowIndex(cont)).ToArray();
-            bool targetingEmptyRow = relevantIndices.Select(i => relevantEntity.GetEnemiesInRow(i)).All(enemies => enemies.Count == 0);
-
-            foreach (CardContainer row in Battle.instance.GetRows(target.owner))
+            if (doesDamage && !target.canBeHit)
             {
-                if (target == row.GetTop())
-                {
-                    if (relevantIndices.Contains(References.Battle.GetRowIndex(row)))
-                    {
-                        return !not;
-                    }
-                    else
-                    {
-                        if (targetingEmptyRow)
-                        {
-                            return !not;
-                        }
-                    }
-                }
-                    
+                return false;
             }
-            
+
+            Entity[] validTargets = basic.GetTargets(relevantEntity, null, null);
+            if (validTargets != null && validTargets.Contains(target))
+            {
+                return !not;
+            }
             return not;
         }
 

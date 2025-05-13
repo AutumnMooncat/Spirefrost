@@ -29,7 +29,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     data.evokeFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
                     data.evokeApplyConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintPseudoBarrage>()
+                        MakeConstraint<TargetConstraintPseudoBarrage>(t => t.doesDamage = true)
                     };
                     data.targetConstraints = new TargetConstraint[]
                     {
