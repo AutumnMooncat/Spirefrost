@@ -64,6 +64,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     data.doesDamage = true;
                     data.countsAsHit = true;
                     data.canRetaliate = false;
+                    data.damageType = DarkIcon.DamageID;
                 });
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Spirefrost.Builders.Icons;
+using System.Collections;
 
 namespace Spirefrost
 {
@@ -36,12 +37,8 @@ namespace Spirefrost
                     {
                         screenShake = 0.25f,
                         canRetaliate = false,
+                        damageType = MarkIcon.DamageID
                     };
-                    // Add VFX Later?
-                    //var transform = entity.transform;
-                    //VFXMod.instance.VFX.TryPlayEffect("stsmark", transform.position, transform.lossyScale);
-                    // Add SFX Later?
-                    //VFXMod.instance.SFX.TryPlaySound("stsmark");
                     yield return hit.Process();
                     yield return Sequences.Wait(0.2f);
                 }

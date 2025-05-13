@@ -11,6 +11,8 @@ namespace Spirefrost.StatusEffects
 
         public float factor = 1f;
 
+        public string damageType = "basic";
+
         public override void Init()
         {
             base.Init();
@@ -22,7 +24,8 @@ namespace Spirefrost.StatusEffects
             Hit hit = new Hit(applier, target, Mathf.CeilToInt(GetAmount() * factor))
             {
                 canRetaliate = canRetaliate,
-                countsAsHit = countsAsHit
+                countsAsHit = countsAsHit,
+                damageType = damageType
             };
 
             yield return hit.Process();

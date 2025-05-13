@@ -14,6 +14,8 @@ namespace Spirefrost.Builders.Icons
 
         internal static string SpriteID => "spirefrost.stsmark";
 
+        internal static string DamageID => "damage." + SpriteID;
+
         internal static object GetBuilder()
         {
             return new StatusIconBuilder(MainModFile.instance)
@@ -23,11 +25,19 @@ namespace Spirefrost.Builders.Icons
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords(MarkKeyword.ID)
-                .FreeModify(action =>
+                .WithEffectDamageSFX(MainModFile.instance.ImagePath("SFX/Fire.ogg"))
+                .FreeModify(icon =>
                 {
-                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                    action.textElement.outlineWidth = 0.2f;
-                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                    icon.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    icon.textElement.outlineWidth = 0.2f;
+                    icon.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+
+                    GameObject vfx = new SpirefrostVFXBuilder(MainModFile.instance, "Icons/MarkIcon.png")
+                    .WithColorGradient(Color.white, Color.white, new Color(1, 1, 1, 0))
+                    .WithSizeGradient(true, 2f, 3f, 0f)
+                    .WithDuration(1f)
+                    .Build();
+                    vfx.RegisterAsDamageEffect(DamageID);
                 });
         }
     }

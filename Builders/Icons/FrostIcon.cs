@@ -3,6 +3,7 @@ using Spirefrost.Builders.Keywords;
 using Spirefrost.Patches;
 using TMPro;
 using UnityEngine;
+using WildfrostHopeMod.SFX;
 using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.Icons
@@ -15,6 +16,8 @@ namespace Spirefrost.Builders.Icons
 
         internal static string SpriteID => "spirefrost.stsfrost";
 
+        internal static string EvokeID => "evoke." + SpriteID;
+
         internal static object GetBuilder()
         {
             return new StatusIconBuilder(MainModFile.instance)
@@ -24,11 +27,26 @@ namespace Spirefrost.Builders.Icons
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords(FrostKeyword.ID)
-                .FreeModify(action =>
+                .WithApplySFX(MainModFile.instance.ImagePath("SFX/FrostChannel.ogg"))
+                .FreeModify(icon =>
                 {
-                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                    action.textElement.outlineWidth = 0.2f;
-                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                    icon.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    icon.textElement.outlineWidth = 0.2f;
+                    icon.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+
+                    GameObject vfx = new SpirefrostVFXBuilder(MainModFile.instance, "Icons/FrostIcon.png")
+                    .WithColorGradient(Color.white, Color.white, new Color(1, 1, 1, 0))
+                    .WithSizeGradient(true, 2f, 3f, 0f)
+                    .WithDuration(1f)
+                    .WithVelocityGradient(Vector3.zero, Vector3.zero, new Vector3(0, 7.5f, 0))
+                    .Build();
+                    vfx.RegisterAsApplyEffect(icon.type);
+
+                    SFXLoader loader = VFXMod.instance?.SFX;
+                    if (loader != null)
+                    {
+                        SFXLoader.RegisterSoundToGlobal(EvokeID, loader.LoadSoundFromPath(MainModFile.instance.ImagePath("SFX/FrostEvoke.ogg")), 0.05f);
+                    }
                 });
         }
     }

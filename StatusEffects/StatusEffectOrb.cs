@@ -26,6 +26,8 @@ namespace Spirefrost
 
         public TargetConstraint[] passiveApplyConstraints;
 
+        public string passiveSFXKey;
+
         public float evokeFactor = 1f;
 
         public StatusEffectData evokeEffect;
@@ -33,6 +35,8 @@ namespace Spirefrost
         public ApplyToFlags evokeFlags;
 
         public TargetConstraint[] evokeApplyConstraints;
+
+        public string evokeSFXKey;
 
         public override void Init()
         {
@@ -98,6 +102,10 @@ namespace Spirefrost
             if (passiveEffect)
             {
                 SetToPassive();
+                if (!passiveSFXKey.IsNullOrEmpty())
+                {
+                    SpirefrostUtils.PlayGlobalSound(passiveSFXKey);
+                }
                 yield return Run(GetTargets());
             }
             if (passiveIncrease != 0)
@@ -122,6 +130,10 @@ namespace Spirefrost
             if (passiveEffect)
             {
                 SetToPassive();
+                if (!passiveSFXKey.IsNullOrEmpty())
+                {
+                    SpirefrostUtils.PlayGlobalSound(passiveSFXKey);
+                }
                 yield return Run(GetTargets(hit, GetTargetContainers(), GetTargetActualContainers()));
             }
             if (passiveIncrease != 0)
@@ -139,6 +151,10 @@ namespace Spirefrost
                 if (evokeEffect)
                 {
                     SetToEvoke();
+                    if (!evokeSFXKey.IsNullOrEmpty())
+                    {
+                        SpirefrostUtils.PlayGlobalSound(evokeSFXKey);
+                    }
                     int originalAmount = count;
                     count = Mathf.CeilToInt(count * evokeFactor);
                     yield return Run(GetTargets());

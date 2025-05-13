@@ -23,11 +23,19 @@ namespace Spirefrost.Builders.Icons
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords(RollUpKeyword.ID)
-                .FreeModify(action =>
+                .WithApplySFX(MainModFile.instance.ImagePath("SFX/Buff.ogg"))
+                .FreeModify(icon =>
                 {
-                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                    action.textElement.outlineWidth = 0.2f;
-                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                    icon.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    icon.textElement.outlineWidth = 0.2f;
+                    icon.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+
+                    GameObject vfx = new SpirefrostVFXBuilder(MainModFile.instance, "Icons/RollUpIcon.png")
+                    .WithColorGradient(Color.white, Color.white, new Color(1, 1, 1, 0))
+                    .WithSizeGradient(true, 2f, 3f)
+                    .WithDuration(1f)
+                    .Build();
+                    vfx.RegisterAsApplyEffect(icon.type);
                 });
         }
     }

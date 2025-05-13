@@ -1,7 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Icons;
 using Spirefrost.StatusEffects;
-using UnityEngine;
 using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.StatusEffects.IconEffects
@@ -61,6 +60,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     data.doesDamage = true;
                     data.countsAsHit = true;
                     data.canRetaliate = false;
+                    data.damageType = LightningIcon.DamageID;
                 });
         }
     }

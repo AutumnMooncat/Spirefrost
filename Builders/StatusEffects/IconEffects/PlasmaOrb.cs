@@ -23,8 +23,10 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 {
                     data.passiveEffect = TryGet<StatusEffectData>("Reduce Counter");
                     data.passiveFlags = StatusEffectApplyX.ApplyToFlags.Self;
+                    data.passiveSFXKey = PlasmaIcon.EvokeID;
                     data.evokeEffect = TryGet<StatusEffectData>("Reduce Counter");
                     data.evokeFlags = StatusEffectApplyX.ApplyToFlags.AlliesInRow;
+                    data.evokeSFXKey = PlasmaIcon.EvokeID;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>

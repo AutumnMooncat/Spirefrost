@@ -15,6 +15,8 @@ namespace Spirefrost.Builders.Icons
 
         internal static string SpriteID => "spirefrost.stsdark";
 
+        internal static string DamageID => "damage." + SpriteID;
+
         internal static object GetBuilder()
         {
             return new StatusIconBuilder(MainModFile.instance)
@@ -24,11 +26,33 @@ namespace Spirefrost.Builders.Icons
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 .WithTextboxSprite()
                 .WithKeywords(DarkKeyword.ID)
-                .FreeModify(action =>
+                .WithApplySFX(MainModFile.instance.ImagePath("SFX/DarkChannel.ogg"))
+                .WithEffectDamageSFX(MainModFile.instance.ImagePath("SFX/DarkEvoke.ogg"))
+                .FreeModify(icon =>
                 {
-                    action.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                    action.textElement.outlineWidth = 0.2f;
-                    action.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+                    icon.textElement.outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    icon.textElement.outlineWidth = 0.2f;
+                    icon.textElement.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.25f);
+
+                    GameObject vfxApply = new SpirefrostVFXBuilder(MainModFile.instance, "Icons/DarkIcon.png")
+                    .WithColorGradient(Color.white, Color.white, new Color(1, 1, 1, 0))
+                    .WithSizeGradient(true, 2f, 3f, 0f)
+                    .WithDuration(1f)
+                    .WithVelocityGradient(Vector3.zero, Vector3.zero, new Vector3(0, 7.5f, 0))
+                    .Build();
+                    vfxApply.RegisterAsApplyEffect(icon.type);
+
+                    GameObject vfxDamage = new SpirefrostVFXBuilder(MainModFile.instance, "VFX/orbFlareOuter.png")
+                    .WithColorGradient(new Color(0.5f, 0.4f, 0.8f, 1), new Color(0.5f, 0.4f, 0.8f, 1), new Color(0.5f, 0.4f, 0.8f, 0))
+                    .WithSizeGradient(true, new Vector3(4, 3, 4), new Vector3(4, 6, 4), new Vector3(4, 3, 4))
+                    .WithDuration(1f)
+                    .WithEffects(new SpirefrostVFXBuilder(MainModFile.instance, "VFX/orbFlareInner.png")
+                        .WithColorGradient(new Color(0.4f, 0.32f, 0.64f, 1), new Color(0.4f, 0.32f, 0.64f, 1), new Color(0.4f, 0.32f, 0.64f, 0))
+                        .WithSizeGradient(true, new Vector3(3, 2, 3), new Vector3(3, 4, 3), new Vector3(3, 2, 3))
+                        .WithDuration(1f)
+                        .Build())
+                    .Build();
+                    vfxDamage.RegisterAsDamageEffect(DamageID);
                 });
         }
     }

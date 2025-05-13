@@ -25,6 +25,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     data.passiveType = StatusEffectOrb.PassiveTriggerType.OnHit;
                     data.passiveEffect = TryGet<StatusEffectData>("Frost");
                     data.passiveFlags = StatusEffectApplyX.ApplyToFlags.Attacker;
+                    data.passiveSFXKey = FrostIcon.EvokeID;
                     data.evokeFactor = 2f;
                     data.evokeEffect = TryGet<StatusEffectData>("Frost");
                     data.evokeFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
@@ -32,6 +33,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     {
                         MakeConstraint<TargetConstraintPseudoFrontEnemy>()
                     };
+                    data.evokeSFXKey = FrostIcon.EvokeID;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         MakeConstraint<TargetConstraintOr>(or =>

@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using FMOD;
+using HarmonyLib;
 using Mono.Cecil;
 using MonoMod.Cil;
 using MonoMod.Utils;
@@ -9,6 +10,8 @@ using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
 using UnityEngine;
+using WildfrostHopeMod.SFX;
+using Debug = UnityEngine.Debug;
 
 namespace Spirefrost
 {
@@ -99,6 +102,29 @@ namespace Spirefrost
                     }
                 }
                 return result;
+            }
+        }
+
+        private static Dictionary<string, Sound> soundDict;
+        internal static void PlayGlobalSound(string key)
+        {
+            if (soundDict is null)
+            {
+                soundDict = (Dictionary<string, Sound>)AccessTools.Field(typeof(HopeSFXSystem), "sounds").GetValue(null);
+            }
+
+            if (SfxSystem.CheckCooldown(key))
+            {
+                Debug.Log("[Spirefrost -> SFX Tools] APPLIED " + key);
+                if (soundDict.TryGetValue(key, out Sound sound))
+                {
+                    SFXLoader.PlaySound(sound, SFXLoader.PlayAs.SFX);
+                    SfxSystem.SetCooldown(key);
+                }
+                else
+                {
+                    Debug.LogWarning("[Spirefrost -> SFX Tools] Key [" + key + "] doesn't exist");
+                }
             }
         }
 
