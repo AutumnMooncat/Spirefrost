@@ -66,6 +66,9 @@ namespace Spirefrost
         private bool _hasInitialRotation;
         private ParticleSystem.MinMaxCurve _gravity;
         private bool _hasGravity;
+        private Vector3 _initialOffset = Vector3.zero;
+        private GameObject[] _withEffects;
+        private GameObject[] _andThenEffects;
 
         internal SpirefrostVFXBuilder WithDuration(float duration)
         {
@@ -437,6 +440,24 @@ namespace Spirefrost
             return this;
         }
 
+        internal SpirefrostVFXBuilder WithInitialOffset(Vector3 offset)
+        {
+            _initialOffset = offset;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder WithEffects(GameObject[] effects)
+        {
+            _withEffects = effects;
+            return this;
+        }
+
+        internal SpirefrostVFXBuilder AndThenEffects(GameObject[] effects)
+        {
+            _andThenEffects = effects;
+            return this;
+        }
+
         internal GameObject Build()
         {
             bool destroyOnEnd = _playType == GIFLoader.PlayType.applyEffect || _playType == GIFLoader.PlayType.damageEffect;
@@ -529,6 +550,37 @@ namespace Spirefrost
                 main.startRotationXMultiplier = 1f;
                 main.startRotationYMultiplier = 1f;
                 main.startRotationZMultiplier = 1f;
+            }
+            var shape = particleSystem.shape;
+            shape.position = _initialOffset;
+            var subEmit = particleSystem.subEmitters;
+            if (_withEffects.Length > 0)
+            {
+                subEmit.enabled = true;
+                foreach (var item in _withEffects)
+                {
+                    ParticleSystem system = item.GetComponent<ParticleSystem>();
+                    if (system == null)
+                    {
+                        continue;
+                    }
+                    item.transform.SetParent(particleSystem.gameObject.transform);
+                    subEmit.AddSubEmitter(system, ParticleSystemSubEmitterType.Birth, ParticleSystemSubEmitterProperties.InheritNothing);
+                }
+            }
+            if (_andThenEffects.Length > 0)
+            {
+                subEmit.enabled = true;
+                foreach (var item in _andThenEffects)
+                {
+                    ParticleSystem system = item.GetComponent<ParticleSystem>();
+                    if (system == null)
+                    {
+                        continue;
+                    }
+                    item.transform.SetParent(particleSystem.gameObject.transform);
+                    subEmit.AddSubEmitter(system, ParticleSystemSubEmitterType.Death, ParticleSystemSubEmitterProperties.InheritNothing);
+                }
             }
             return particleSystem.gameObject;
         }
