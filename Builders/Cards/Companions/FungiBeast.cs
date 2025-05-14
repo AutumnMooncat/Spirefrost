@@ -27,7 +27,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     };
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenHitApplyShroomToEnemies.ID, 1)
+                        SStack(WhenHitApplyShroomToFrontEnemies.ID, 2)
                     };
                 });
         }

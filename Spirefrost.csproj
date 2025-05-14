@@ -472,6 +472,7 @@
     <Compile Include="Builders\StatusEffects\TriggerWhenStatusApplied.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHitApplyShellToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyWithoutShellAttacksApplyShellToThem.cs" />
+    <Compile Include="Builders\StatusEffects\WhenHitApplyShroomToFrontEnemies.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitGainFury.cs" />
     <Compile Include="Builders\StatusEffects\WhenSpiceAppliedToSelfShellRandomAlly.cs" />
     <Compile Include="Builders\StatusEffects\WhenWeakAppliedToAnythingApplyAttackToApplier.cs" />
