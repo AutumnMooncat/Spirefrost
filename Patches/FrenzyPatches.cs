@@ -83,7 +83,7 @@ namespace Spirefrost.Patches
                     return true;
                 }
             }
-            return false;
+            return __instance.target.IsSnowed;
         }
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
