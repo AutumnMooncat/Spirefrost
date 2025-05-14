@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("On Kill Increase Health To Self & Allies", ID)
-                .WithText("On kill, add <+{a}><keyword=health> to self")
+                .WithText("Increase <keyword=health> by <{a}> on kill")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnKill>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;

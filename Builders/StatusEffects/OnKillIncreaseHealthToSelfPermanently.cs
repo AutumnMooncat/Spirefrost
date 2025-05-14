@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectFeed>(ID)
-                .WithText("On kill, add +{a}<keyword=health> to self permanently")
+                .WithText("Permanently increase <keyword=health> by <{a}> on kill")
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectFeed>(data =>
                 {
