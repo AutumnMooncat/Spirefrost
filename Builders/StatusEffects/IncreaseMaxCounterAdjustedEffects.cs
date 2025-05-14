@@ -32,7 +32,6 @@ namespace Spirefrost.Builders.StatusEffects
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectInstantIncreaseMaxCounterAdjusted>(ID)
                 .WithCanBeBoosted(true)
-                .WithOffensive(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstantIncreaseMaxCounterAdjusted>(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]

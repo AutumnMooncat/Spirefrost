@@ -18,7 +18,6 @@ namespace Spirefrost.Builders.StatusEffects
                 .Create<StatusEffectApplyXToFrontEnemiesWhenHit>(ID)
                 .WithText($"When hit, apply <{{a}}>{MakeKeywordInsert(VulnerableKeyword.FullID)} to enemies in front")
                 .WithCanBeBoosted(true)
-                .WithOffensive(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXToFrontEnemiesWhenHit>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(Vulnerable.ID);

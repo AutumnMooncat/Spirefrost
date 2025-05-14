@@ -14,9 +14,9 @@ namespace Spirefrost.Builders.StatusEffects
             return StatusCopy("When Hit Apply Frost To Enemies", ID)
                 .WithText("When hit, apply <{a}><keyword=shroom> to all enemies")
                 .WithCanBeBoosted(true)
-                .WithOffensive(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenHit>(data =>
                 {
+                    data.doesDamage = true;
                     data.effectToApply = TryGet<StatusEffectData>("Shroom");
                     data.applyConstraints = new TargetConstraint[]
                     {
