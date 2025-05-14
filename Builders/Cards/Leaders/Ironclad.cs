@@ -79,13 +79,12 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomPassive(OnCardPlayedApplyDoubleTapToRandomAttackInHand.ID, 1, 1);
                                 break;
 
-                            // Combust
+                            // Charon's Ashes
                             case 6:
-                                card.SetRandomHealth(10, 14);
-                                card.SetRandomDamage(2, 3);
+                                card.SetRandomHealth(8, 12);
+                                card.SetRandomDamage(3, 4);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive(OnCardPlayedLoseHealthSelf.ID, 1, 1);
-                                card.SetRandomPassive(OnCardPlayedCombustEnemies.ID, 1, 1);
+                                card.SetRandomPassive(WhenCardDestroyedDamageEnemies.ID, 1, 1);
                                 break;
                         }
                     };
