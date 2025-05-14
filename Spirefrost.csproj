@@ -457,6 +457,7 @@
     <Compile Include="Builders\Icons\RegrowIcon.cs" />
     <Compile Include="Builders\Keywords\IntangibleKeyword.cs" />
     <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
+    <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />

@@ -17,13 +17,14 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Shield Gremlin")
                 .SetSprites("Units/ShieldGremlin.png", "Units/ShieldGremlinBG.png")
-                .SetStats(3, 1, 3)
+                .SetStats(3, 3, 3)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenSpiceAppliedToSelfShellRandomAlly.ID, 1)
+                        SStack("On Turn Apply Shell To Self", 2),
+                        SStack(BonusShellEqualToSpice.ID, 1)
                     };
                 });
         }
