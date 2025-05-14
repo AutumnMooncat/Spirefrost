@@ -15,17 +15,21 @@ namespace Spirefrost.Patches
     {
         internal static bool CountdownCheck(StatusEffectMultiHit __instance)
         {
+            //Debug.Log($"FrenzyCardPlayedPatch - Checking current action {ActionQueue.current}");
             foreach (var item in ActionTriggerPatch.actionMap)
             {
                 if (ActionQueue.current == item.Value)
                 {
+                    //Debug.Log($"FrenzyCardPlayedPatch - Action found in action map");
                     if (__instance.additionalTriggers.Contains(item.Key))
                     {
+                        //Debug.Log($"FrenzyCardPlayedPatch - Action found in {__instance}, count down");
                         return true;
                     }
                 }
             }
-            
+
+            //Debug.Log($"FrenzyCardPlayedPatch - Action not found in {__instance}");
             return false;
         }
 
@@ -171,7 +175,14 @@ namespace Spirefrost.Patches
 
         internal static ActionProcessTrigger MapTrigger(ActionProcessTrigger created, ActionTrigger __instance)
         {
-            actionMap[__instance] = created;
+            foreach (var item in FrenzyEntityTriggerPatch.triggerMap)
+            {
+                if (item.Value.Contains(__instance))
+                {
+                    actionMap[__instance] = created;
+                }
+            }
+            
             return created;
         }
 
