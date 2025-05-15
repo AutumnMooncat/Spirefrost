@@ -56,13 +56,12 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomPassive(OnCardPlayedAddHolyWaterToHand.ID, 1, 1);
                                 break;
 
-                            // Empty Mind
+                            // Wreath of Flame
                             case 3:
-                                card.traits = new List<CardData.TraitStacks> { TStack("Draw", 2) };
-                                card.SetRandomHealth(8, 10);
-                                card.SetRandomDamage(4, 5);
+                                card.SetRandomHealth(7, 10);
+                                card.SetRandomDamage(3, 4);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive(OnTurnCleanseSelf.ID, 1, 1);
+                                card.SetRandomPassive(OnTurnApplySpiceToSelfAndAllyBehind.ID, 2, 2);
                                 break;
 
                             // Follow Up
