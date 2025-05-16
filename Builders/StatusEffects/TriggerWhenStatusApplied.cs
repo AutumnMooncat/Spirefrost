@@ -14,7 +14,9 @@ namespace Spirefrost.Builders.StatusEffects
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenStatusAppliedToSelf>(ID)
                 .WithText("Trigger when any status gained")
-                .WithCanBeBoosted(true)
+                .WithIsReaction(true)
+                .WithCanBeBoosted(false)
+                .WithStackable(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenStatusAppliedToSelf>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;

@@ -21,7 +21,7 @@ namespace Spirefrost.StatusEffects
 
         private bool ShouldApply(StatusEffectData apply)
         {
-            return apply != null && apply.isStatus && apply.visible && !apply.offensive && apply.count > 0;
+            return apply != null && apply.isStatus && apply.visible;
         }
 
         public IEnumerator Check(StatusEffectApply apply)
