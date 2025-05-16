@@ -18,14 +18,13 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Pure Water")
                 .SetSprites("Items/PureWater.png", "Items/PureWaterBG.png")
                 .WithValue(25)
-                .SetAttackEffect(SStack("Reduce Counter", 1))
+                .SetAttackEffect(SStack("Spice", 2), SStack("Reduce Counter", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.traits = new System.Collections.Generic.List<CardData.TraitStacks>
+                    /*data.traits = new System.Collections.Generic.List<CardData.TraitStacks>
                     {
-                        TStack(RetainTrait.ID, 1),
-                        TStack(PatientTrait.ID, 1)
-                    };
+                        TStack(RetainTrait.ID, 1)
+                    };*/
                 });
         }
     }
