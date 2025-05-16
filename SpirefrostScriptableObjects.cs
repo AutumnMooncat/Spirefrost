@@ -1,5 +1,6 @@
 ﻿using Spirefrost.Patches;
 using System.Linq;
+using UnityEngine;
 
 namespace Spirefrost
 {
@@ -162,6 +163,33 @@ namespace Spirefrost
         public override int Get(Entity entity)
         {
             return References.Player.handContainer.Where(e => e.data.IsItem && e.data.hasAttack).Count();
+        }
+    }
+
+    public class ScriptableMissingHealth : ScriptableAmount
+    {
+        public float multiplier = 1f;
+
+        public bool roundUp;
+
+        public override int Get(Entity entity)
+        {
+            if (!entity || !entity.data.hasHealth)
+            {
+                return 0;
+            }
+
+            return Mult(entity.hp.max - entity.hp.current);
+        }
+
+        public int Mult(int amount)
+        {
+            if (!roundUp)
+            {
+                return Mathf.FloorToInt((float)amount * multiplier);
+            }
+
+            return Mathf.RoundToInt((float)amount * multiplier);
         }
     }
 }
