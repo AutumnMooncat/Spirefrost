@@ -78,16 +78,26 @@ namespace Spirefrost.Patches
     internal class FrenzyEntityTriggerPatch
     {
         internal static readonly Dictionary<StatusEffectMultiHit, List<ActionTrigger>> triggerMap = new Dictionary<StatusEffectMultiHit, List<ActionTrigger>>();
+
         internal static bool TriggerCheck(StatusEffectMultiHit __instance, Trigger original, Trigger param)
+        {
+            if (IsTriggerFromMultiHit(param))
+            {
+                return true;
+            }
+            return __instance.target.IsSnowed;
+        }
+
+        internal static bool IsTriggerFromMultiHit(Trigger trigger)
         {
             foreach (var pair in triggerMap)
             {
-                if (pair.Value.Any(action => ActionTriggerPatch.actionMap.ContainsKey(action) && ActionTriggerPatch.actionMap[action].trigger == param))
+                if (pair.Value.Any(action => ActionTriggerPatch.actionMap.ContainsKey(action) && ActionTriggerPatch.actionMap[action].trigger == trigger))
                 {
                     return true;
                 }
             }
-            return __instance.target.IsSnowed;
+            return false;
         }
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
