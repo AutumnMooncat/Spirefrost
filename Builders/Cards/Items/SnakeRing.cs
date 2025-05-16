@@ -18,12 +18,16 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Ring of the Snake")
                 .SetSprites("Items/SnakeRing.png", "Items/SnakeRingBG.png")
                 .WithValue(25)
-                .CanPlayOnEnemy(false)
+                .SetDamage(0)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(InstantApplyTemporaryDrawToAlly.ID, 1)
+                        SStack("Shroom", 2)
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack("On Kill Draw", 2)
                     };
                 });
         }
