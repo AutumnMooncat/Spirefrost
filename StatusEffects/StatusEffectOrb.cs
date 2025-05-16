@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Spirefrost.Patches;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -11,10 +12,6 @@ namespace Spirefrost
             PerTurn,
             OnHit
         }
-
-        private bool subbed;
-
-        private bool primed;
 
         public int passiveIncrease;
 
@@ -40,31 +37,9 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.OnTurnEnd += PassiveTurnTrigger;
+            base.OnTurnEnd += PassiveTurnEndTrigger;
             base.PostHit += PassiveHitTrigger;
-            base.PreTrigger += EvokeTrigger;
-            Events.OnPostProcessUnits += Prime;
-            subbed = true;
-        }
-
-        public void OnDestroy()
-        {
-            Unsub();
-        }
-
-        public void Unsub()
-        {
-            if (subbed)
-            {
-                Events.OnPostProcessUnits -= Prime;
-                subbed = false;
-            }
-        }
-
-        public void Prime(Character character)
-        {
-            primed = true;
-            Unsub();
+            base.PreTrigger += EvokePreTrigger;
         }
 
         public override bool TargetSilenced()
@@ -89,7 +64,7 @@ namespace Spirefrost
 
         public override bool RunTurnEndEvent(Entity entity)
         {
-            if (primed && target.enabled && entity == target && Battle.IsOnBoard(target))
+            if (target.enabled && entity == target && Battle.IsOnBoard(target))
             {
                 return passiveType == PassiveTriggerType.PerTurn;
             }
@@ -97,7 +72,7 @@ namespace Spirefrost
             return false;
         }
 
-        public IEnumerator PassiveTurnTrigger(Entity entity)
+        public IEnumerator PassiveTurnEndTrigger(Entity entity)
         {
             if (passiveEffect)
             {
@@ -143,9 +118,9 @@ namespace Spirefrost
             }
         }
 
-        private IEnumerator EvokeTrigger(Trigger trigger)
+        private IEnumerator EvokePreTrigger(Trigger trigger)
         {
-            if (primed && trigger.entity == target && trigger.countsAsTrigger)
+            if (trigger.entity == target && trigger.countsAsTrigger && !FrenzyEntityTriggerPatch.IsTriggerFromMultiHit(trigger))
             {
                 bool hadTargets = !(trigger.targets is null) && trigger.targets.Any(e => e.IsAliveAndExists());
                 if (evokeEffect)
