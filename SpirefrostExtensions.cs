@@ -1,4 +1,5 @@
-﻿using Spirefrost.Builders.Icons;
+﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Icons;
 using Spirefrost.Patches;
 using System;
 using System.Collections.Generic;
@@ -147,7 +148,7 @@ namespace Spirefrost
         }
         internal static Sprite ToNamedSprite(this String self)
         {
-            Sprite sprite = ToNamedSprite(self);
+            Sprite sprite = ToNamedTex(self).ToSprite();
             sprite.name = Path.GetFileNameWithoutExtension(MainModFile.instance.ImagePath(self)) + "Sprite";
             return sprite;
         }
