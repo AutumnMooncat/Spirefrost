@@ -481,6 +481,7 @@
     <Compile Include="Builders\StatusEffects\WhenWeakAppliedToAnythingApplyAttackToApplier.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToGremlins.cs" />
     <Compile Include="Patches\BarragePatch.cs" />
+    <Compile Include="Patches\CardPocketPatch.cs" />
     <Compile Include="Patches\DontTriggerPatch.cs" />
     <Compile Include="Patches\FrenzyPatches.cs" />
     <Compile Include="SpirefrostActions.cs" />
