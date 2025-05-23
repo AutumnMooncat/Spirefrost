@@ -88,6 +88,7 @@ namespace Spirefrost
                     target.startingEffectsApplied = false;
                     yield return card.UpdateData();
                     RestoreChanges();
+                    yield return target.UpdateTraits();
                     CardUpdateDataPatch.shortCircuitOnce = true;
                     yield return card.UpdateData();
                 }
