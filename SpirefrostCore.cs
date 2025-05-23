@@ -12,6 +12,7 @@ using static Spirefrost.SpirefrostUtils;
 using Spirefrost.Builders.Tribes;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.Patches.ConfigPatches;
+using Spirefrost.Patches;
 
 
 namespace Spirefrost
@@ -148,6 +149,7 @@ namespace Spirefrost
 
             // Let our sprites automatically show up for icon descriptions
             SpriteAsset.RegisterSpriteAsset();
+            ApplySafetyPatches();
             base.Load();
             SpirefrostStrings.CreateLocalizedStrings();
             GameMode gameMode = TryGet<GameMode>("GameModeNormal"); //GameModeNormal is the standard game mode. 
@@ -173,6 +175,7 @@ namespace Spirefrost
             // Prevent our icons from accidentally showing up in descriptions when not loaded
             SpriteAsset.UnRegisterSpriteAsset();
             base.Unload();
+            RemoveSafetyPatches();
             GameMode gameMode = TryGet<GameMode>("GameModeNormal");
             gameMode.classes = RemoveNulls(gameMode.classes); //Without this, a non-restarted game would crash on tribe selection
             UnloadFromClasses();
@@ -183,6 +186,16 @@ namespace Spirefrost
             managedObjects = null;
             tempObjects.Destroy();
             tempObjects = null;
+        }
+
+        private void ApplySafetyPatches()
+        {
+            HarmonyInstance.Patch(SafetyPatches.Module_GetAssembly, transpiler: new HarmonyMethod(SafetyPatches.Module_GetAssembly_Patch));
+        }
+
+        private void RemoveSafetyPatches()
+        {
+            HarmonyInstance.Unpatch(SafetyPatches.Module_GetAssembly, SafetyPatches.Module_GetAssembly_Patch);
         }
 
         internal T TryGet<T>(string name) where T : DataFile
