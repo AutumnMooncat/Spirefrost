@@ -53,6 +53,125 @@ namespace Spirefrost
             StatusEffectData effect = MainModFile.instance.TryGet<StatusEffectData>(passiveEffect);
             target.attackEffects = target.attackEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
         }
+
+        internal static void SetWide(this CardData data, bool wide = true)
+        {
+            data.SetCustomData(WideUtils.WideKey, wide);
+        }
+
+        internal static bool IsWide(this CardData data)
+        {
+            data.TryGetCustomData(WideUtils.WideKey, out bool ret, false);
+            return ret;
+        }
+    }
+
+    internal static class CharacterExtensions
+    {
+        internal static int TotalOpenSlots(this Character owner)
+        {
+            int free = 0;
+            foreach (var item in Battle.instance.GetRows(owner))
+            {
+                if (item is CardSlotLane lane)
+                {
+                    foreach (var slot in lane.slots)
+                    {
+                        if (slot.Count < slot.max)
+                        {
+                            free++;
+                        }
+                    }
+                }
+            }
+            return free;
+        }
+    }
+
+    internal static class EntityExtensions
+    {
+        internal static CardSlot[] GetContainingSlots(this Entity entity)
+        {
+            return entity.actualContainers.Select(cont => cont as CardSlot).Where(slot => slot != null).ToArray();
+        }
+    }
+
+    internal static class RectTransformExtensions
+    {
+        internal static void ScaleOffsets(this RectTransform rectTransform, Vector2 scale)
+        {
+            rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x * scale.x, rectTransform.offsetMin.y * scale.y);
+            rectTransform.offsetMax = new Vector2(rectTransform.offsetMax.x * scale.x, rectTransform.offsetMax.y * scale.y);
+        }
+
+        internal static void TranslateViaSet(this RectTransform rectTransform, Vector3 offset)
+        {
+            rectTransform.SetLocalPositionAndRotation(new Vector3(rectTransform.localPosition.x + offset.x, rectTransform.localPosition.y + offset.y, rectTransform.localPosition.z + offset.y), rectTransform.localRotation);
+        }
+    }
+
+    internal static class CardContainerExtensions
+    {
+        internal static bool HasSlotBehind(this CardSlot slot)
+        {
+            CardSlotLane lane = slot.GetContainingLane();
+            if (lane != null)
+            {
+                if (lane.slots.IndexOf(slot) + 1 < lane.slots.Count)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        internal static CardSlot GetSlotBehind(this CardSlot slot)
+        {
+            CardSlotLane lane = slot.GetContainingLane();
+            if (lane != null)
+            {
+                int i = lane.slots.IndexOf(slot) + 1;
+                if (i < lane.slots.Count)
+                {
+                    return lane.slots[i];
+                }
+            }
+            return null;
+        }
+
+        internal static int GetXCoord(this CardSlot slot)
+        {
+            List<CardSlot> slots = slot.GetContainingLane()?.slots;
+            return slots?.IndexOf(slot) ?? -1;
+        }
+
+        internal static int GetYCoord(this CardSlot slot)
+        {
+            return Battle.instance.GetRowIndex(slot.GetContainingLane());
+        }
+
+        internal static CardSlot GetRelativeSlot(this CardSlot slot, int dx, int dy)
+        {
+            List<CardContainer> rows = Battle.instance.GetRows(slot.owner);
+            int rowIndex = slot.GetYCoord() + dy;
+            int slotIndex = slot.GetXCoord() + dx;
+            if (rowIndex >= 0 && rowIndex < Battle.instance.rowCount)
+            {
+                if (rows[rowIndex] is CardSlotLane lane)
+                {
+                    if (slotIndex >= 0 && slotIndex < lane.slots.Count)
+                    {
+                        return lane.slots[slotIndex];
+                    }
+                }
+            }
+            return null;
+        }
+
+        internal static CardSlotLane GetContainingLane(this CardSlot slot)
+        {
+            return slot.Group as CardSlotLane;
+        }
     }
 
     internal static class Texture2DExtensions

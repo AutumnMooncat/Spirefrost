@@ -489,6 +489,7 @@
     <Compile Include="Patches\DontTriggerPatch.cs" />
     <Compile Include="Patches\FrenzyPatches.cs" />
     <Compile Include="Patches\SafetyPatches.cs" />
+    <Compile Include="Patches\WideCardPatches.cs" />
     <Compile Include="SpirefrostActions.cs" />
     <Compile Include="Builders\Cards\Clunkers\BookOfStabbing.cs" />
     <Compile Include="Builders\Cards\Clunkers\BronzeOrb.cs" />

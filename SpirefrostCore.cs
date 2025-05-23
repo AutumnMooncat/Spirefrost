@@ -34,6 +34,14 @@ namespace Spirefrost
         internal Texture2D duplicationOverlay;
         internal Texture2D duplicationUnderlay;
 
+        internal Sprite wideCompanionFrame;
+        internal Sprite wideCompanionFrameChisel;
+        internal Sprite wideCompanionFrameGold;
+        internal Sprite wideCompanionMask;
+        internal Sprite wideCompanionOutline;
+        internal Sprite wideCompanionTextBox;
+        internal Sprite wideCompanionNameTag;
+
         internal GameObject managedObjects;
         internal GameObject tempObjects;
 
@@ -138,6 +146,16 @@ namespace Spirefrost
                 entropicUnderlay = "Charms/EntropicCharmUnderlay.png".ToNamedTex();
                 duplicationOverlay = "Charms/DuplicationCharmOverlay.png".ToNamedTex();
                 duplicationUnderlay = "Charms/DuplicationCharmUnderlay.png".ToNamedTex();
+
+                wideCompanionFrame = "Frames/WideCompanionFrame.png".ToNamedSprite();
+                wideCompanionFrameChisel = "Frames/WideCompanionFrame.png".ToNamedSprite();
+                wideCompanionFrameGold = "Frames/WideCompanionFrame.png".ToNamedSprite();
+                wideCompanionMask = "Frames/WideCompanionFrameMask.png".ToNamedSprite();
+                wideCompanionOutline = "Frames/WideCompanionFrameOutline.png".ToNamedSprite();
+                wideCompanionTextBox = "Frames/WideCompanionTextBox.png".ToNamedSprite();
+                wideCompanionNameTag = "Frames/WideCompanionNameTag.png".ToNamedSprite();
+
+                WideUtils.CreateWideCardPools();
 
                 // Add prevent death effects to kill list
                 StatusEffectInstantKill kill = TryGet<StatusEffectData>("Kill") as StatusEffectInstantKill;
