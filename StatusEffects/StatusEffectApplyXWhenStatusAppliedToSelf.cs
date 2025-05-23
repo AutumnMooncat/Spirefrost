@@ -4,6 +4,8 @@ namespace Spirefrost.StatusEffects
 {
     internal class StatusEffectApplyXWhenStatusAppliedToSelf : StatusEffectApplyX
     {
+        public bool selfCanBeApplier;
+
         public override void Init()
         {
             base.PostApplyStatus += Check;
@@ -13,7 +15,7 @@ namespace Spirefrost.StatusEffects
         {
             if (target.enabled && ShouldApply(apply.effectData))
             {
-                return apply.target == target;
+                return apply.target == target && (apply.applier != target || selfCanBeApplier);
             }
 
             return false;
