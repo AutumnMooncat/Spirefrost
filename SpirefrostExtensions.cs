@@ -139,6 +139,20 @@ namespace Spirefrost
             return null;
         }
 
+        internal static CardSlot GetSlotInFront(this CardSlot slot)
+        {
+            CardSlotLane lane = slot.GetContainingLane();
+            if (lane != null)
+            {
+                int i = lane.slots.IndexOf(slot) - 1;
+                if (i >= 0)
+                {
+                    return lane.slots[i];
+                }
+            }
+            return null;
+        }
+
         internal static int GetXCoord(this CardSlot slot)
         {
             List<CardSlot> slots = slot.GetContainingLane()?.slots;

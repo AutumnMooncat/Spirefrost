@@ -11,6 +11,8 @@ using System.Collections;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Pool;
+using static Spirefrost.Patches.WideCardBoardLogic.CardControllerLogic;
+using static Targets;
 
 namespace Spirefrost.Patches
 {
@@ -413,19 +415,226 @@ namespace Spirefrost.Patches
             [HarmonyPatch(typeof(Battle), nameof(Battle.CanDeploy))]
             internal static class CanDeployPatch
             {
+                // Set result true if valid
+                static bool WideCanSpawnCheck(Entity entity, CardSlot desiredSlot, ref bool result)
+                {
+                    if (entity && entity.data.IsWide())
+                    {
+                        CardSlot behind = desiredSlot.GetSlotBehind();
+                        if (!behind)
+                        {
+                            return true;
+                        }
+                        Entity[] blocking = new Entity[] { desiredSlot.GetTop(), behind.GetTop()};
+                        if (blocking.All(e => e != null))
+                        {
+                            return true;
+                        }
+                        if (blocking.All(e => e == null))
+                        {
+                            result = true;
+                        }
+                        else
+                        {
+                            Entity top = blocking.Where(e => e != null).First();
+                            if ((top.positionPriority >= entity.positionPriority && (entity.positionPriority <= 1 || top.positionPriority > entity.positionPriority)) || !Battle.CanPushBack(top))
+                            {
+                                return true;
+                            }
+                            CardSlotLane lane = desiredSlot.Group as CardSlotLane;
+                            if (!lane)
+                            {
+                                return true;
+                            }
+                            if (!lane.slots.Any(slot => slot.GetXCoord() > desiredSlot.GetXCoord() && slot.GetTop() && slot.GetTop().positionPriority >= entity.positionPriority))
+                            {
+                                result = true;
+                            }
+                        }
+                        return true;
+                    }
+                    return false;
+                }
 
+                // Set result to false if invalid
+                static bool WideCanBacklineSpawnCheck(Entity entity, CardSlot desiredSlot, ref bool result)
+                {
+                    if (entity && entity.data.IsWide())
+                    {
+                        CardSlot behind = desiredSlot.GetSlotBehind();
+                        if (!behind)
+                        {
+                            result = false;
+                            return true;
+                        }
+                        Entity[] blocking = new Entity[] { desiredSlot.GetTop(), behind.GetTop() };
+                        if (blocking.Any(e => e != null && (e.positionPriority > entity.positionPriority) || !Battle.CanPushForwards(e)))
+                        {
+                            result = false;
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+
+                static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+                {
+                    List<CodeInstruction> codes = instructions.ToList();
+                    FieldInfo canPlace = AccessTools.Field(typeof(CardContainer), nameof(CardContainer.canBePlacedOn));
+                    FieldInfo slots = AccessTools.Field(typeof(CardSlotLane), nameof(CardSlotLane.slots));
+                    MethodInfo getTop = AccessTools.Method(typeof(CardContainer), nameof(CardContainer.GetTop));
+                    MemberInfo getItem = AccessTools.Method(typeof(List<CardSlot>), "get_Item");
+                    MethodInfo wideCheck = AccessTools.Method(typeof(CanDeployPatch), nameof(WideCanSpawnCheck));
+                    MethodInfo wideBacklineCheck = AccessTools.Method(typeof(CanDeployPatch), nameof(WideCanBacklineSpawnCheck));
+                    bool callInserted = false;
+                    bool backlineCallInserted = false;
+                    for (int i = 0; i < codes.Count; i++)
+                    {
+                        if (!callInserted && codes[i].opcode == OpCodes.Ldloc_S && i + 1 < codes.Count && i - 2 >= 0)
+                        {
+                            if (codes[i + 1].opcode == OpCodes.Callvirt && codes[i + 1].operand as MethodInfo == getTop && codes[i - 1].opcode == OpCodes.Brfalse && codes[i - 2].opcode == OpCodes.Ldfld && codes[i - 2].operand as FieldInfo == canPlace)
+                            {
+                                Debug.Log($"WideCardBoardLogic.BattleLogic.CanDeployPatch match found, inserting wide check");
+                                callInserted = true;
+                                // needs entity, slot, ref flag2
+                                yield return new CodeInstruction(OpCodes.Ldarg_1);
+                                yield return new CodeInstruction(OpCodes.Ldloc, codes[i].operand);
+                                yield return new CodeInstruction(OpCodes.Ldloca, 6);
+                                yield return new CodeInstruction(OpCodes.Call, wideCheck);
+                                yield return new CodeInstruction(OpCodes.Brtrue, codes[i - 1].operand);
+                            }
+                        }
+                        if (!backlineCallInserted && codes[i].opcode == OpCodes.Ldloc_S && i + 1 < codes.Count && i - 2 >= 0)
+                        {
+                            if (codes[i + 1].opcode == OpCodes.Ldfld && codes[i + 1].operand as FieldInfo == slots && codes[i - 1].opcode == OpCodes.Brfalse && codes[i - 2].opcode == OpCodes.Ldloc_S)
+                            {
+                                Debug.Log($"WideCardBoardLogic.BattleLogic.CanDeployPatch match found, inserting backline wide check");
+                                backlineCallInserted = true;
+                                // needs entity, slot, ref flag4
+                                yield return new CodeInstruction(OpCodes.Ldarg_1);
+                                yield return new CodeInstruction(OpCodes.Ldloc_S, 18); // cardSlotLane2
+                                yield return new CodeInstruction(OpCodes.Ldfld, slots);
+                                yield return new CodeInstruction(OpCodes.Ldloc_S, 15); // l
+                                yield return new CodeInstruction(OpCodes.Callvirt, getItem);
+                                yield return new CodeInstruction(OpCodes.Ldloca, 16); // flag4
+                                yield return new CodeInstruction(OpCodes.Call, wideBacklineCheck);
+                                yield return new CodeInstruction(OpCodes.Brtrue, codes[i - 1].operand);
+                            }
+                        }
+                        yield return codes[i];
+                    }
+                }
             }
 
             [HarmonyPatch(typeof(Battle), nameof(Battle.CanPushBack))]
             internal static class CanPushBackPatch
             {
+                // Set result to false if invalid
+                static bool WidePushCheck(Entity entity, CardSlot slot, ref bool result)
+                {
+                    if (entity && entity.data.IsWide())
+                    {
+                        CardSlot behind = slot.GetSlotBehind();
+                        if (!behind)
+                        {
+                            result = false;
+                            return true;
+                        }
+                        Entity[] blocking = new Entity[] { slot.GetTop(), behind.GetTop() };
+                        if (blocking.Any(e => e != null && !Battle.CanPushBack(e)))
+                        {
+                            result = false;
+                        }
+                        return true;
+                    }
+                    return false;
+                }
 
+                static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+                {
+                    List<CodeInstruction> codes = instructions.ToList();
+                    MethodInfo getTop = AccessTools.Method(typeof(CardContainer), nameof(CardContainer.GetTop));
+                    MethodInfo wideCheck = AccessTools.Method(typeof(CanPushBackPatch), nameof(WidePushCheck));
+                    bool callInserted = false;
+                    for (int i = 0; i < codes.Count; i++)
+                    {
+                        if (!callInserted && codes[i].opcode == OpCodes.Ldloc_S && codes[i].operand is byte b && b == 5 && i - 1 >= 0 && i + 1 < codes.Count)
+                        {
+                            if (codes[i + 1].opcode == OpCodes.Callvirt && codes[i + 1].operand as MethodInfo == getTop)
+                            {
+                                Debug.Log($"WideCardBoardLogic.BattleLogic.CanPushBackPatch match found, inserting wide check and moving labels");
+                                callInserted = true;
+                                CodeInstruction nop = new CodeInstruction(OpCodes.Nop);
+                                nop.labels.AddRange(codes[i].labels);
+                                codes[i].labels.Clear();
+                                yield return nop;
+                                // needs entity, slot, ref result
+                                yield return new CodeInstruction(OpCodes.Ldloc_S, 5); // cardSlot
+                                yield return new CodeInstruction(OpCodes.Ldloca_S, 0); // result
+                                yield return new CodeInstruction(OpCodes.Call, wideCheck);
+                                yield return new CodeInstruction(OpCodes.Brtrue, codes[i - 1].operand);
+                            }
+                        }
+                        yield return codes[i];
+                    }
+                }
             }
 
             [HarmonyPatch(typeof(Battle), nameof(Battle.CanPushForwards))]
             internal static class CanPushForwardsPatch
             {
+                static bool Prefix(Entity entity, ref bool __result)
+                {
+                    if (entity && entity.data.IsWide())
+                    {
+                        __result = true;
+                        CardContainer[] containers = entity.containers;
+                        for (int i = 0; i < containers.Length; i++)
+                        {
+                            if (containers[i] is CardSlotLane cardSlotLane)
+                            {
+                                CardSlot current = cardSlotLane.slots[cardSlotLane.IndexOf(entity)];
+                                CardSlot inFront = current.GetSlotInFront();
+                                if (inFront == null || !inFront.Empty)
+                                {
+                                    __result = false;
+                                    break;
+                                }
+                                inFront = inFront.GetSlotInFront();
+                                if (inFront == null || !inFront.Empty)
+                                {
+                                    __result = false;
+                                    break;
+                                }
+                            }
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        }
 
+        internal static class CardHandLogic
+        {
+            [HarmonyPatch(typeof(CardHand), nameof(CardHand.GetAngle))]
+            internal static class HandAnglePatch
+            {
+                internal static void Postfix(CardHand __instance, int childIndex, ref float __result)
+                {
+                    float angleAdd = __instance.GetAngleAdd();
+                    for (int i = 0; i < __instance.Count; i++)
+                    {
+                        if (__instance[i].data.IsWide() || (i - 1 >= 0 && __instance[i - 1].data.IsWide()))
+                        {
+                            if (i <= childIndex)
+                            {
+                                __result += angleAdd;
+                            }
+                            __result -= angleAdd / 2f;
+                        }
+                    }
+                }
             }
         }
 
