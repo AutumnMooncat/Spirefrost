@@ -20,6 +20,7 @@ namespace Spirefrost
     public class MainModFile : WildfrostMod
     {
         public static MainModFile instance;
+        private readonly Harmony HarmonySafetyInstance;
         private bool preLoaded;
 
         // This allows for icons in descriptions
@@ -129,6 +130,7 @@ namespace Spirefrost
         public MainModFile(string modDirectory) : base(modDirectory)
         { 
             instance = this;
+            HarmonySafetyInstance = new Harmony(GUID+".safety");
         }
 
         public override string GUID => "autumnmooncat.wildfrost.spirefrost";
@@ -214,12 +216,12 @@ namespace Spirefrost
 
         private void ApplySafetyPatches()
         {
-            HarmonyInstance.Patch(SafetyPatches.Module_GetAssembly, transpiler: new HarmonyMethod(SafetyPatches.Module_GetAssembly_Patch));
+            HarmonySafetyInstance.Patch(SafetyPatches.Module_GetAssembly, transpiler: new HarmonyMethod(SafetyPatches.Module_GetAssembly_Patch));
         }
 
         private void RemoveSafetyPatches()
         {
-            HarmonyInstance.Unpatch(SafetyPatches.Module_GetAssembly, SafetyPatches.Module_GetAssembly_Patch);
+            HarmonySafetyInstance.Unpatch(SafetyPatches.Module_GetAssembly, SafetyPatches.Module_GetAssembly_Patch);
         }
 
         internal T TryGet<T>(string name) where T : DataFile
