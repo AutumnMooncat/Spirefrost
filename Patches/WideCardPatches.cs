@@ -35,19 +35,35 @@ namespace Spirefrost.Patches
             References.instance.StartCoroutine(CreateWidePool(
                 WideCompanionKey, 
                 "Friendly",
-                new Sprite[] {
+                new Sprite[] 
+                {
                     MainModFile.instance.wideCompanionFrame,
                     MainModFile.instance.wideCompanionFrameChisel,
                     MainModFile.instance.wideCompanionFrameGold,
                 },
-                MainModFile.instance.wideCompanionMask,
-                MainModFile.instance.wideCompanionOutline,
-                MainModFile.instance.wideCompanionTextBox,
-                MainModFile.instance.wideCompanionNameTag
+                new Sprite[]
+                {
+                    MainModFile.instance.wideCompanionMask,
+                    MainModFile.instance.wideCompanionChiseledMask,
+                    MainModFile.instance.wideCompanionChiseledMask
+                },
+                new Sprite[]
+                {
+                    MainModFile.instance.wideCompanionOutline,
+                    MainModFile.instance.wideCompanionChiseledOutline,
+                    MainModFile.instance.wideCompanionChiseledOutline
+                },
+                new Sprite[]
+                {
+                    MainModFile.instance.wideCompanionNameTag,
+                    MainModFile.instance.wideCompanionChiseledNameTag,
+                    MainModFile.instance.wideCompanionChiseledNameTag
+                },
+                MainModFile.instance.wideCompanionTextBox
                 ));
         }
 
-        private static IEnumerator CreateWidePool(string frameName, string toCopy, Sprite[] frameTiers, Sprite mask, Sprite outline, Sprite textBox, Sprite nameTag)
+        private static IEnumerator CreateWidePool(string frameName, string toCopy, Sprite[] frameTiers, Sprite[] maskTiers, Sprite[] outlineTiers, Sprite[] nameTagTiers, Sprite textBox)
         {
             Transform t = CardManager.instance.transform;
             CardType baseCardType = MainModFile.instance.TryGet<CardType>(toCopy);
@@ -60,6 +76,9 @@ namespace Spirefrost.Patches
             for (int i = 0; i < frameTiers.Length; i++)
             {
                 Sprite frame = frameTiers[i];
+                Sprite mask = maskTiers[i];
+                Sprite outline = maskTiers[i];
+                Sprite nameTag = nameTagTiers[i];
                 ObjectPool<Card> pool = new ObjectPool<Card>(() =>
                 {
                     GameObject obj = GameObject.Instantiate(prefab, CardManager.startPos, Quaternion.identity, t);

@@ -38,9 +38,12 @@ namespace Spirefrost
         internal Sprite wideCompanionFrameChisel;
         internal Sprite wideCompanionFrameGold;
         internal Sprite wideCompanionMask;
+        internal Sprite wideCompanionChiseledMask;
         internal Sprite wideCompanionOutline;
-        internal Sprite wideCompanionTextBox;
+        internal Sprite wideCompanionChiseledOutline;
         internal Sprite wideCompanionNameTag;
+        internal Sprite wideCompanionChiseledNameTag;
+        internal Sprite wideCompanionTextBox;
 
         internal GameObject managedObjects;
         internal GameObject tempObjects;
@@ -148,12 +151,15 @@ namespace Spirefrost
                 duplicationUnderlay = "Charms/DuplicationCharmUnderlay.png".ToNamedTex();
 
                 wideCompanionFrame = "Frames/WideCompanionFrame.png".ToNamedSprite();
-                wideCompanionFrameChisel = "Frames/WideCompanionFrame.png".ToNamedSprite();
-                wideCompanionFrameGold = "Frames/WideCompanionFrame.png".ToNamedSprite();
+                wideCompanionFrameChisel = "Frames/WideCompanionChiseledFrame.png".ToNamedSprite();
+                wideCompanionFrameGold = "Frames/WideCompanionGoldenFrame.png".ToNamedSprite();
                 wideCompanionMask = "Frames/WideCompanionFrameMask.png".ToNamedSprite();
+                wideCompanionChiseledMask = "Frames/WideCompanionChiseledFrameMask.png".ToNamedSprite();
                 wideCompanionOutline = "Frames/WideCompanionFrameOutline.png".ToNamedSprite();
-                wideCompanionTextBox = "Frames/WideCompanionTextBox.png".ToNamedSprite();
+                wideCompanionChiseledOutline = "Frames/WideCompanionChiseledFrameOutline.png".ToNamedSprite();
                 wideCompanionNameTag = "Frames/WideCompanionNameTag.png".ToNamedSprite();
+                wideCompanionChiseledNameTag = "Frames/WideCompanionChiseledNameTag.png".ToNamedSprite();
+                wideCompanionTextBox = "Frames/WideCompanionTextBox.png".ToNamedSprite();
 
                 WideUtils.CreateWideCardPools();
 
