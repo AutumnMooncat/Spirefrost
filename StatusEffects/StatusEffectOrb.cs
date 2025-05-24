@@ -120,7 +120,7 @@ namespace Spirefrost
 
         private IEnumerator EvokePreTrigger(Trigger trigger)
         {
-            if (trigger.entity == target && trigger.countsAsTrigger && !FrenzyEntityTriggerPatch.IsTriggerFromMultiHit(trigger))
+            if (trigger.entity == target && trigger.countsAsTrigger && !AlreadyAttackingPatches.HasAlreadyAttacked(target))
             {
                 bool hadTargets = !(trigger.targets is null) && trigger.targets.Any(e => e.IsAliveAndExists());
                 if (evokeEffect)
