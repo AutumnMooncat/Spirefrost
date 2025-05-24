@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Spirefrost.Patches;
+using System.Collections;
 
 namespace Spirefrost.StatusEffects
 {
@@ -19,7 +20,7 @@ namespace Spirefrost.StatusEffects
 
         public override bool RunPostApplyStatusEvent(StatusEffectApply apply)
         {
-            if (target.enabled && ShouldApply(apply.effectData))
+            if (target.enabled && ShouldApply(apply.effectData) && !StatusSystemPatch.isTemp)
             {
                 return apply.target == target && ApplierCheck(apply.applier);
             }

@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenStatusAppliedToSelf>(ID)
-                .WithText("Trigger when any status gained from anything else")
+                .WithText("Trigger whenever any status is applied to self")
                 .WithIsReaction(true)
                 .WithCanBeBoosted(false)
                 .WithStackable(false)
