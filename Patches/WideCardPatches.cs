@@ -77,7 +77,7 @@ namespace Spirefrost.Patches
             {
                 Sprite frame = frameTiers[i];
                 Sprite mask = maskTiers[i];
-                Sprite outline = maskTiers[i];
+                Sprite outline = outlineTiers[i];
                 Sprite nameTag = nameTagTiers[i];
                 ObjectPool<Card> pool = new ObjectPool<Card>(() =>
                 {
