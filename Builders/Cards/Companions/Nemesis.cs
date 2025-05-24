@@ -22,6 +22,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
+                    MainModFile.instance.maskedSpries[data.name] = MainModFile.instance.ImagePath("Units/NemesisMask.png").ToSprite();
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack(TriggerWhenShroomApplied.ID, 1),
