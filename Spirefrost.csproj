@@ -472,7 +472,7 @@
     <Compile Include="Builders\StatusEffects\TriggerWhenShellAppliedToSelf.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenShroomApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenSpiceAppliedToSelf.cs" />
-    <Compile Include="Builders\StatusEffects\TriggerWhenStatusApplied.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerWhenStatusAppliedByFriendly.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyIsHitApplyShellToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyWithoutShellAttacksApplyShellToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedDamageEnemies.cs" />

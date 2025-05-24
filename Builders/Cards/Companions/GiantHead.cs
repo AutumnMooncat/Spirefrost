@@ -26,7 +26,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("On Card Played Apply Attack To Self", 2),
-                        SStack(TriggerWhenStatusApplied.ID, 1)
+                        SStack(TriggerWhenStatusAppliedByFriendly.ID, 1)
                     };
                 });
         }
