@@ -14,7 +14,8 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Dagger")
                 .SetSprites("Items/ReptoDagger.png", "Items/ReptoDaggerBG.png")
                 .WithValue(50)
-                .SetDamage(4);
+                .SetDamage(4)
+                .WithFlavour("Poke Poke :)");
         }
     }
 }

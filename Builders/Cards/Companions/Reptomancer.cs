@@ -15,8 +15,8 @@ namespace Spirefrost.Builders.Cards.Companions
         internal static object GetBuilder()
         {
             return new CardDataBuilder(MainModFile.instance)
-                .CreateUnit(ID, "Repromancer")
-                .SetSprites("Units/Repromancer.png", "Units/RepromancerBG.png")
+                .CreateUnit(ID, "Reptomancer")
+                .SetSprites("Units/Reptomancer.png", "Units/ReptomancerBG.png")
                 .SetStats(8, 4, 0)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
