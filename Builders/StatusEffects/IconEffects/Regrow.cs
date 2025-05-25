@@ -1,6 +1,7 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Icons;
 using Spirefrost.StatusEffects;
+using System.Linq;
 using UnityEngine;
 using WildfrostHopeMod.VFX;
 
@@ -22,7 +23,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectSTSLifeLink>(data =>
                 {
                     data.preventDeath = true;
-                    data.animation = ScriptableObject.CreateInstance<CardAnimationClunkerBossChange>();
+                    data.animation = AssetLoader.GetGroup("CardAnimations").assets.Where(a => a is CardAnimationClunkerBossChange).FirstOrDefault() as CardAnimationClunkerBossChange;
                     data.targetConstraints = new TargetConstraint[]
                     {
                         ScriptableObject.CreateInstance<TargetConstraintHasHealth>()

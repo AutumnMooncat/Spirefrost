@@ -66,12 +66,6 @@ namespace Spirefrost
                 characterDisplay.CloseInventory();
             }
 
-            ChangePhaseAnimationSystem animationSystem = UnityEngine.Object.FindObjectOfType<ChangePhaseAnimationSystem>();
-            if ((bool)animationSystem)
-            {
-                yield return animationSystem.Focus(entity);
-            }
-
             if ((bool)animation)
             {
                 yield return animation.Routine(entity);
@@ -89,17 +83,8 @@ namespace Spirefrost
             ActionQueue.Stack(new ActionSequence(Refresh(entity))
             {
                 note = "Refresh unit phase",
-                priority = 10
+                priority = 11
             }, fixedPosition: true);
-
-            if ((bool)animationSystem)
-            {
-                ActionQueue.Stack(new ActionSequence(animationSystem.UnFocus())
-                {
-                    note = "Unfocus unit",
-                    priority = 10
-                }, fixedPosition: true);
-            }
         }
 
         public IEnumerator Refresh(Entity entity)
@@ -120,7 +105,7 @@ namespace Spirefrost
                 {
                     int newHealth = healthFactor >= 1f ? Mathf.CeilToInt(entity.hp.max * healthFactor) : Mathf.FloorToInt(entity.hp.max * healthFactor);
                     entity.hp.current = Math.Max(1, newHealth);
-                    entity.hp.max = Math.Max(entity.hp.max, newHealth);
+                    entity.hp.max = Math.Max(1, newHealth);
                 }
                 else
                 {

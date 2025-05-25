@@ -6,6 +6,8 @@ namespace Spirefrost.StatusEffects
     {
         public CardAnimation animation;
 
+        private bool locked;
+
         public override void Init()
         {
             Events.OnEntityDisplayUpdated += EntityDisplayUpdated;
@@ -36,6 +38,10 @@ namespace Spirefrost.StatusEffects
 
         private void TryActivate()
         {
+            if (locked)
+            {
+                return;
+            }
             bool flag = true;
             foreach (StatusEffectData statusEffect in target.statusEffects)
             {
@@ -51,27 +57,25 @@ namespace Spirefrost.StatusEffects
                 return;
             }
 
-            FindObjectOfType<ChangePhaseAnimationSystem>()?.Flash();
-            IEnumerator logic = ClumpLogic();
-            while (logic.MoveNext())
+            locked = true;
+
+            ActionQueue.Stack(new ActionSequence(Cleanse())
             {
-                object _ = logic.Current;
-            }
+                priority = 10
+            }, fixedPosition: true);
+
             ActionQueue.Stack(new ActionRefreshPhase(target, animation, false, 0.5f)
             {
                 priority = 10
             }, fixedPosition: true);
-            return;
+
+            ActionQueue.Stack(new ActionSequence(CountDown())
+            {
+                priority = 10
+            }, fixedPosition: true);
         }
 
-        private IEnumerator ClumpLogic()
-        {
-            Routine.Clump clump = new Routine.Clump();
-            clump.Add(Logic());
-            yield return clump.WaitForEnd();
-        }
-
-        private IEnumerator Logic()
+        private IEnumerator Cleanse()
         {
             int num = target.statusEffects.Count;
             for (int i = num - 1; i >= 0; i--)
@@ -82,11 +86,16 @@ namespace Spirefrost.StatusEffects
                     yield return statusEffectData.Remove();
                 }
             }
+        }
 
+        private IEnumerator CountDown()
+        {
             if ((bool)this && (bool)target && target.alive)
             {
                 yield return CountDown(target, 1);
             }
+
+            locked = false;
         }
     }
 }
