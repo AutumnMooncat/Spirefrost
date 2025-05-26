@@ -615,6 +615,110 @@ namespace Spirefrost.Patches
             }
         }
 
+        internal static class BattleSaveLogic
+        {
+            [HarmonyPatch]
+            internal static class CreateCardsInRowsPatch
+            {
+                private static Type createdType;
+                private static readonly Dictionary<CardSlot, ulong> nullMap = new Dictionary<CardSlot, ulong>();
+                private static Dictionary<ulong, Entity> foundDict;
+
+                static bool NullCheck(CardSlotLane row, int index, Dictionary<ulong, Entity> entities, BattleEntityData data)
+                {
+                    if (entities[data.cardSaveData.id] == null)
+                    {
+                        if (foundDict == null)
+                        {
+                            foundDict = entities;
+                        }
+                        nullMap[row.slots[index]] = data.cardSaveData.id;
+                    }
+                    return false;
+                }
+
+                static void ResolveNulls()
+                {
+                    if (foundDict != null)
+                    {
+                        foreach (var item in nullMap)
+                        {
+                            item.Key.Add(foundDict[item.Value]);
+                        }
+                    }
+                    foundDict = null;
+                    nullMap.Clear();
+                }
+
+                static MethodBase TargetMethod()
+                {
+                    return SpirefrostUtils.FindEnumeratorMethod(AccessTools.DeclaredMethod(typeof(BattleSaveSystem), nameof(BattleSaveSystem.CreateCardsInRows)), ref createdType);
+                }
+
+                static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+                {
+                    List<CodeInstruction> codes = instructions.ToList();
+                    Label skipJump = generator.DefineLabel();
+                    FieldInfo d = AccessTools.Field(Type.GetType("BattleSaveSystem+<>c__DisplayClass19_2,Assembly-CSharp"), "d");
+                    FieldInfo locals2 = AccessTools.Field(Type.GetType("BattleSaveSystem+<>c__DisplayClass19_2,Assembly-CSharp"), "CS$<>8__locals2");
+                    FieldInfo locals1 = AccessTools.Field(Type.GetType("BattleSaveSystem+<>c__DisplayClass19_1,Assembly-CSharp"), "CS$<>8__locals1");
+                    FieldInfo row = AccessTools.Field(Type.GetType("BattleSaveSystem+<>c__DisplayClass19_1,Assembly-CSharp"), "row");
+                    FieldInfo entities = AccessTools.Field(Type.GetType("BattleSaveSystem+<>c__DisplayClass19_0,Assembly-CSharp"), "entities");
+                    FieldInfo slots = AccessTools.Field(typeof(CardSlotLane), nameof(CardSlotLane.slots));
+                    MethodInfo nullCheck = AccessTools.Method(typeof(CreateCardsInRowsPatch), nameof(NullCheck));
+                    MethodInfo resolveNulls = AccessTools.Method(typeof(CreateCardsInRowsPatch), nameof(ResolveNulls));
+                    MethodInfo add = AccessTools.Method(typeof(CardContainer), nameof(CardContainer.Add));bool checkInserted = false;
+                    bool jumpInserted = false;
+                    bool resolveInserted = false;
+                    for (int i = 0; i < codes.Count; i++)
+                    {
+                        if (!checkInserted && codes[i].opcode == OpCodes.Ldloc_S && i - 2 >= 0 && codes[i - 2].opcode == OpCodes.Callvirt)
+                        {
+                            if (codes[i - 2].operand is MethodInfo clumpInfo && clumpInfo.DeclaringType == typeof(Routine.Clump) && clumpInfo.Name == "Add")
+                            {
+                                Debug.Log($"WideCardBoardLogic.BattleSaveLogic.CreateCardsInRowPatch match found, inserting null check and moving labels");
+                                checkInserted = true;
+                                // move label back
+                                CodeInstruction first = new CodeInstruction(OpCodes.Nop);
+                                first.labels.AddRange(codes[i].labels);
+                                codes[i].labels.Clear();
+                                yield return first;
+                                // we need slot (or lane and index), the dictionary, and id (or BattleEntityData)
+                                yield return new CodeInstruction(OpCodes.Ldloc, 4); // BattleSaveSystem+<>c__DisplayClass19_2
+                                yield return new CodeInstruction(OpCodes.Ldfld, locals2); // BattleSaveSystem+<>c__DisplayClass19_1
+                                yield return new CodeInstruction(OpCodes.Ldfld, row); // CardSlotLane
+                                yield return new CodeInstruction(OpCodes.Ldloc_3); // int i
+                                yield return new CodeInstruction(OpCodes.Ldloc, 4);
+                                yield return new CodeInstruction(OpCodes.Ldfld, locals2);
+                                yield return new CodeInstruction(OpCodes.Ldfld, locals1);
+                                yield return new CodeInstruction(OpCodes.Ldfld, entities); // Dict
+                                yield return new CodeInstruction(OpCodes.Ldloc, 4);
+                                yield return new CodeInstruction(OpCodes.Ldfld, d); // BattleEntityData
+                                yield return new CodeInstruction(OpCodes.Call, nullCheck);
+                                yield return new CodeInstruction(OpCodes.Brtrue, skipJump);
+                            }
+                        }
+
+                        if (!jumpInserted && checkInserted && codes[i].opcode == OpCodes.Callvirt && codes[i].operand as MethodInfo == add && i + 1 < codes.Count)
+                        {
+                            Debug.Log($"WideCardBoardLogic.BattleSaveLogic.CreateCardsInRowPatch match found, inserting jump");
+                            jumpInserted = true;
+                            codes[i + 1].labels.Add(skipJump);
+                        }
+
+                        if (!resolveInserted && codes[i].opcode == OpCodes.Ldarg_0 && i + 2 < codes.Count && codes[i + 1].opcode == OpCodes.Ldfld && codes[i + 2].opcode == OpCodes.Ldfld && codes[i + 2].operand as FieldInfo == entities)
+                        {
+                            Debug.Log($"WideCardBoardLogic.BattleSaveLogic.CreateCardsInRowPatch match found, inserting null resolver");
+                            resolveInserted = true;
+                            yield return new CodeInstruction(OpCodes.Call, resolveNulls);
+                        }
+
+                        yield return codes[i];
+                    }
+                }
+            }
+        }
+
         internal static class CardHandLogic
         {
             [HarmonyPatch(typeof(CardHand), nameof(CardHand.GetAngle))]
