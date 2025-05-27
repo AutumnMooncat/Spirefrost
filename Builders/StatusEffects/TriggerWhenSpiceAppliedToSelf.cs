@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects
 {
@@ -11,18 +12,18 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectApplyXWhenYAppliedToSelf>(ID)
+                .Create<StatusEffectApplyXWhenStatusAppliedToSelf>(ID)
                 .WithText("Trigger when <keyword=spice>'d")
                 .WithIsReaction(true)
                 .WithCanBeBoosted(false)
                 .WithStackable(false)
-                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenYAppliedToSelf>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenStatusAppliedToSelf>(data =>
                 {
                     data.textOrder = 1;
-                    data.whenAppliedType = TryGet<StatusEffectData>("Spice").type;
-                    data.whenAppliedTypes = new string[]
+                    data.anyStatus = false;
+                    data.statusTypes = new string[]
                     {
-                        TryGet<StatusEffectData>("Spice").type
+                        "spice"
                     };
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("Trigger (High Prio)");

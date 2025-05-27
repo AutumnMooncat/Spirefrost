@@ -13,6 +13,10 @@ namespace Spirefrost.StatusEffects
 
         public bool itemCanBeApplier = true;
 
+        public bool anyStatus = true;
+
+        public string[] statusTypes;
+
         public override void Init()
         {
             base.PostApplyStatus += DoApply;
@@ -52,7 +56,7 @@ namespace Spirefrost.StatusEffects
 
         private bool ShouldApply(StatusEffectData apply)
         {
-            return apply != null && apply.isStatus && apply.visible;
+            return apply != null && apply.isStatus && apply.visible && (anyStatus || statusTypes.Contains(apply.type));
         }
 
         public IEnumerator DoApply(StatusEffectApply apply)
