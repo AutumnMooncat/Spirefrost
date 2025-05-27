@@ -11,7 +11,6 @@ namespace Spirefrost.StatusEffects
 {
     internal class StatusEffectDivision : StatusEffectInstant
     {
-        [Serializable]
         public struct Profile
         {
             public string cardName;
@@ -19,7 +18,6 @@ namespace Spirefrost.StatusEffects
             public string changeToCardName;
         }
 
-        [SerializeField]
         public Profile[] profiles;
 
         public readonly List<Entity> newCards = new List<Entity>();
@@ -90,7 +88,7 @@ namespace Spirefrost.StatusEffects
                 CardContainer toContainer = target.actualContainers[0];
                 yield return ShoveSystem.DoShove(shoveData, updatePositions: true);
                 toContainer.Add(newCard1);
-                toContainer.Add(newCard2);
+                target.actualContainers[0].Add(newCard2);
                 newCard1.transform.position = newCard1.GetContainerWorldPosition();
                 newCard2.transform.position = newCard2.GetContainerWorldPosition();
                 newCard1.wobbler.WobbleRandom();
@@ -178,6 +176,10 @@ namespace Spirefrost.StatusEffects
             {
                 CardData cardData = target.data;
                 Profile[] array = profiles;
+                if (array == null && original != null)
+                {
+                    array = ((StatusEffectDivision)original).profiles;
+                }
                 for (int j = 0; j < array.Length; j++)
                 {
                     Profile profile = array[j];
