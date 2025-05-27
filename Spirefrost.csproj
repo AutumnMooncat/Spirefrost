@@ -482,6 +482,7 @@
     <Compile Include="Builders\StatusEffects\WhenFrostAppliedToAnythingApplyAttackToApplier.cs" />
     <Compile Include="Builders\StatusEffects\WhenHealthLostGainAttack.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitApplyShroomToFrontEnemies.cs" />
+    <Compile Include="Builders\StatusEffects\WhenHitByFrostedCardGainFrenzy.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitGainFury.cs" />
     <Compile Include="Builders\StatusEffects\WhenSpiceAppliedToSelfShellRandomAlly.cs" />
     <Compile Include="Builders\StatusEffects\WhenWeakAppliedToAnythingApplyAttackToApplier.cs" />

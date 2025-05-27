@@ -26,7 +26,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Shell", 4),
-                        SStack(PreTriggerGainTempFrenzyIfTargetHasWeak.ID, 1)
+                        SStack(WhenHitByFrostedCardGainFrenzy.ID, 1)
                     };
                 });
         }
