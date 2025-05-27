@@ -48,10 +48,20 @@ namespace Spirefrost
             target.startWithEffects = target.startWithEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
         }
 
-        internal static void SetRandomActive(this CardData target, string passiveEffect, int min, int max)
+        internal static void SetRandomActive(this CardData target, string attackEffect, int min, int max)
         {
-            StatusEffectData effect = MainModFile.instance.TryGet<StatusEffectData>(passiveEffect);
+            StatusEffectData effect = MainModFile.instance.TryGet<StatusEffectData>(attackEffect);
             target.attackEffects = target.attackEffects.With(new CardData.StatusEffectStacks(effect, new Vector2Int(min, max).Random()));
+        }
+
+        internal static void SetRandomTrait(this CardData target, string traitName, int min, int max)
+        {
+            TraitData trait = MainModFile.instance.TryGet<TraitData>(traitName);
+            if (target.traits == null)
+            {
+                target.traits = new List<CardData.TraitStacks>();
+            }
+            target.traits.Add(new CardData.TraitStacks(trait, new Vector2Int(min, max).Random()));
         }
 
         internal static void SetWide(this CardData data, bool wide = true)

@@ -63,12 +63,14 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomPassive(OnCardPlayedAddShivToHand.ID, 2, 2);
                                 break;
 
-                            // Malaise
+                            // Crippling Cloud
                             case 3:
                                 card.SetRandomHealth(6, 9);
-                                card.SetRandomDamage(3, 5);
+                                card.SetRandomDamage(2, 2);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomActive(Weak.ID, 1, 1);
+                                card.SetRandomActive("Shroom", 1, 1);
+                                card.SetRandomActive("Frost", 1, 1);
+                                card.SetRandomTrait("Barrage", 1, 1);
                                 break;
 
                             // Caltrops
