@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectAffectAllXAppliedExtras>(ID)
-                .WithText("Apply additional <keyword=shell> equal to <keyword=spice>")
+                .WithText("Gain additional <keyword=shell> equal to <keyword=spice>")
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectAffectAllXAppliedExtras>(data =>
                 {
