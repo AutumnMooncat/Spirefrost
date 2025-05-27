@@ -49,10 +49,10 @@ namespace Spirefrost.Builders.Cards.Leaders
 
                             // Bash
                             case 2:
-                                card.SetRandomHealth(8, 11);
-                                card.SetRandomDamage(4, 6);
+                                card.SetRandomHealth(7, 10);
+                                card.SetRandomDamage(2, 4);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomActive(Vulnerable.ID, 2, 3);
+                                card.SetRandomActive("Demonize", 2, 3);
                                 break;
 
                             // Dark Embrace
