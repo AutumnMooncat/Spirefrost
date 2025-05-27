@@ -742,6 +742,7 @@
     <Compile Include="SpirefrostVFXBuilder.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyMultipleWhenYAppliedTo.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXAtHalfHealth.cs" />
+    <Compile Include="StatusEffects\StatusEffectApplyXToApplierWhenYAppliedTo.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenAlliesAttackOnBoard.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenAnyCardIsPlayed.cs" />
     <Compile Include="SpirefrostStrings.cs" />

@@ -1,5 +1,8 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Icons;
 using Spirefrost.Builders.Keywords;
+using Spirefrost.Builders.StatusEffects.IconEffects;
+using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects
 {
@@ -11,15 +14,16 @@ namespace Spirefrost.Builders.StatusEffects
 
         internal static object GetBuilder()
         {
-            return StatusCopy("When Snow Applied To Anything Gain Attack To Self", ID)
+            return new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectApplyXToApplierWhenYAppliedTo>(ID)
                 .WithText($"Whenever anything is {MakeKeywordInsert(WeakKeyword.FullID)}'d, add <+{{a}}><keyword=attack> to the applier")
-                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenYAppliedTo>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXToApplierWhenYAppliedTo>(data =>
                 {
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Applier;
+                    data.whenAppliedToFlags = StatusEffectApplyX.ApplyToFlags.Self | StatusEffectApplyX.ApplyToFlags.Allies | StatusEffectApplyX.ApplyToFlags.Enemies;
                     data.effectToApply = TryGet<StatusEffectData>("Increase Attack");
                     data.whenAppliedTypes = new string[]
                     {
-                        WeakKeyword.FullID
+                        WeakIcon.SpriteID
                     };
                 });
         }
