@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectApplyXAfterTurnAndDecay : StatusEffectApplyX
     {
@@ -13,7 +13,7 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.OnTurnEnd += PostTurn;
+            OnTurnEnd += PostTurn;
             Events.OnPostProcessUnits += Prime;
             subbed = true;
         }
@@ -49,7 +49,7 @@ namespace Spirefrost
 
         public override int GetAmount()
         {
-            if (!target || (target.silenced && !ignoreSilence))
+            if (!target || target.silenced && !ignoreSilence)
             {
                 return 0;
             }
@@ -59,7 +59,7 @@ namespace Spirefrost
                 return count;
             }
 
-            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
+            return Mathf.Max(0, Mathf.RoundToInt((count + target.effectBonus) * target.effectFactor));
         }
 
         public override bool RunTurnEndEvent(Entity entity)

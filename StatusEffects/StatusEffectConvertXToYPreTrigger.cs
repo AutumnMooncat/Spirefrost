@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectConvertXToYPreTrigger : StatusEffectApplyXPreTrigger
     {
@@ -20,15 +20,15 @@ namespace Spirefrost
 
         public StatusEffectConvertXToYPreTrigger()
         {
-            scriptableAmount = ScriptableObject.CreateInstance<ScriptableFixedAmount>();
+            scriptableAmount = CreateInstance<ScriptableFixedAmount>();
             ((ScriptableFixedAmount)scriptableAmount).amount = 0;
             eventPriority = -10000;
         }
 
         public override void Init()
         {
-            base.PreTrigger += EntityPreTrigger;
-            base.OnActionPerformed += ActionPerformed;
+            PreTrigger += EntityPreTrigger;
+            OnActionPerformed += ActionPerformed;
         }
 
         public new IEnumerator EntityPreTrigger(Trigger trigger)
@@ -83,7 +83,7 @@ namespace Spirefrost
                     }
                     break;
                 case Conversion.Scrap:
-                    StatusEffectData scrapEffect = target.statusEffects.Find((StatusEffectData a) => a.name.Equals("Scrap"));
+                    StatusEffectData scrapEffect = target.statusEffects.Find((a) => a.name.Equals("Scrap"));
                     if (scrapEffect?.count > reduceTo)
                     {
                         if (doPing)

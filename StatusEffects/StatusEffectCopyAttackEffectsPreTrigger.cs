@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectCopyAttackEffectsPreTrigger : StatusEffectData
     {
@@ -9,7 +9,7 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.PreTrigger += EntityPreTrigger;
+            PreTrigger += EntityPreTrigger;
         }
 
         public override bool RunPreTriggerEvent(Trigger trigger)
@@ -43,7 +43,7 @@ namespace Spirefrost
 
                 foreach (var effect in item.attackEffects)
                 {
-                    CardData.StatusEffectStacks toApply = target.attackEffects.Find((CardData.StatusEffectStacks a) => a.data.name == effect.data.name);
+                    CardData.StatusEffectStacks toApply = target.attackEffects.Find((a) => a.data.name == effect.data.name);
                     if (toApply != null)
                     {
                         toApply.count += effect.count;

@@ -1,7 +1,7 @@
 ﻿using Spirefrost.Patches;
 using System.Collections.Generic;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectFocus : StatusEffectData
     {

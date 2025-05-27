@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectApplyXToFrontEnemiesWhenHit : StatusEffectApplyX
     {
@@ -9,12 +9,12 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.PostHit += CheckHit;
+            PostHit += CheckHit;
         }
 
         public override bool RunPostHitEvent(Hit hit)
         {
-            if (target.enabled && hit.target == target && hit.canRetaliate && (!targetMustBeAlive || (target.alive && Battle.IsOnBoard(target))) && hit.Offensive && hit.BasicHit)
+            if (target.enabled && hit.target == target && hit.canRetaliate && (!targetMustBeAlive || target.alive && Battle.IsOnBoard(target)) && hit.Offensive && hit.BasicHit)
             {
                 return CheckAttackerConstraints(hit.attacker);
             }

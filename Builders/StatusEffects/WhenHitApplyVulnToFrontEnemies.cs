@@ -2,6 +2,7 @@
 using Spirefrost.Builders.Icons;
 using Spirefrost.Builders.Keywords;
 using Spirefrost.Builders.StatusEffects.IconEffects;
+using Spirefrost.StatusEffects;
 using UnityEngine;
 
 namespace Spirefrost.Builders.StatusEffects

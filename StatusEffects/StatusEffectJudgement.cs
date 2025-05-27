@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectJudgement : StatusEffectInstant
     {

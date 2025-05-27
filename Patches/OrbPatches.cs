@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MonoMod.Utils;
+using Spirefrost.StatusEffects;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

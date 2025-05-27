@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Spirefrost.Builders.StatusEffects
+namespace Spirefrost.StatusEffects
 {
     internal class StatusEffectApplyTempXForTrigger : StatusEffectData
     {
@@ -22,8 +22,8 @@ namespace Spirefrost.Builders.StatusEffects
 
         public override void Init()
         {
-            base.PreTrigger += EntityPreTrigger;
-            base.OnActionPerformed += ActionPerformed;
+            PreTrigger += EntityPreTrigger;
+            OnActionPerformed += ActionPerformed;
         }
 
         public override bool RunPreTriggerEvent(Trigger trigger)
@@ -101,7 +101,7 @@ namespace Spirefrost.Builders.StatusEffects
             runThisTurn = false;
             if (appliedAmount > 0)
             {
-                StatusEffectData addedEffect = target.statusEffects.Find((StatusEffectData a) => a.name.Equals(effectToApply.name));
+                StatusEffectData addedEffect = target.statusEffects.Find((a) => a.name.Equals(effectToApply.name));
                 if (doPing)
                 {
                     target.curveAnimator.Ping();

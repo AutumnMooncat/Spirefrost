@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectSTSAmplify : StatusEffectData
     {
@@ -12,7 +12,7 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.OnActionPerformed += ActionPerformed;
+            OnActionPerformed += ActionPerformed;
             SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
         }
 

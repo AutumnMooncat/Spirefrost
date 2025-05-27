@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectApplyXWhenHitOnce : StatusEffectApplyXWhenHit
     {
@@ -9,7 +9,7 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.PostHit += RemoveMe;
+            PostHit += RemoveMe;
         }
 
         public override bool TargetSilenced()
@@ -23,7 +23,7 @@ namespace Spirefrost
 
         public override int GetAmount()
         {
-            if (!target || (target.silenced && !ignoreSilence))
+            if (!target || target.silenced && !ignoreSilence)
             {
                 return 0;
             }
@@ -33,7 +33,7 @@ namespace Spirefrost
                 return count;
             }
 
-            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
+            return Mathf.Max(0, Mathf.RoundToInt((count + target.effectBonus) * target.effectFactor));
         }
 
         public IEnumerator RemoveMe(Hit hit)

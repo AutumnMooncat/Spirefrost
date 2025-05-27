@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectApplyRandomCharm : StatusEffectInstant
     {
@@ -46,7 +46,7 @@ namespace Spirefrost
 
         private bool HasRoom(Entity entity)
         {
-            int filled = entity.data.upgrades.FindAll((CardUpgradeData a) => a.type == CardUpgradeData.Type.Charm && a.takeSlot).Count;
+            int filled = entity.data.upgrades.FindAll((a) => a.type == CardUpgradeData.Type.Charm && a.takeSlot).Count;
             int slots = entity.data.charmSlots;
             if (entity.data.customData != null)
             {

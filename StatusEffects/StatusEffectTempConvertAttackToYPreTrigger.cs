@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectTempConvertAttackToYPreTrigger : StatusEffectApplyXPreTrigger
     {
@@ -17,15 +17,15 @@ namespace Spirefrost
 
         public StatusEffectTempConvertAttackToYPreTrigger()
         {
-            scriptableAmount = ScriptableObject.CreateInstance<ScriptableFixedAmount>();
+            scriptableAmount = CreateInstance<ScriptableFixedAmount>();
             ((ScriptableFixedAmount)scriptableAmount).amount = 0;
             eventPriority = -10000;
         }
 
         public override void Init()
         {
-            base.PreTrigger += EntityPreTrigger;
-            base.OnActionPerformed += ActionPerformed;
+            PreTrigger += EntityPreTrigger;
+            OnActionPerformed += ActionPerformed;
             SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
         }
 
@@ -134,7 +134,7 @@ namespace Spirefrost
             removedTemp = 0;
             if (effectAmountAdded > 0)
             {
-                StatusEffectData addedEffect = target.statusEffects.Find((StatusEffectData a) => a.name.Equals(effectToApply.name));
+                StatusEffectData addedEffect = target.statusEffects.Find((a) => a.name.Equals(effectToApply.name));
                 if (doPing)
                 {
                     target.curveAnimator.Ping();

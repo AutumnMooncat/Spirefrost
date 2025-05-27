@@ -1,4 +1,4 @@
-﻿namespace Spirefrost
+﻿namespace Spirefrost.StatusEffects
 {
     public class StatusEffectRetain : StatusEffectData
     {

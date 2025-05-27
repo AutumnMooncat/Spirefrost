@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectApplyXWhenRedrawHitButIgnoreInk : StatusEffectApplyXWhenRedrawHit
     {
@@ -21,7 +21,7 @@ namespace Spirefrost
                 return count;
             }
 
-            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
+            return Mathf.Max(0, Mathf.RoundToInt((count + target.effectBonus) * target.effectFactor));
         }
 
         public override bool CanTrigger()

@@ -1,6 +1,7 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
 using Spirefrost.Builders.StatusEffects.IconEffects;
+using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects
 {

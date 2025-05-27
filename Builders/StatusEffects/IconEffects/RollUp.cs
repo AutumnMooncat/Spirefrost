@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Icons;
+using Spirefrost.StatusEffects;
 using UnityEngine;
 using WildfrostHopeMod.VFX;
 

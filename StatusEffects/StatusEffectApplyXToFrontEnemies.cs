@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectApplyXToFrontEnemies : StatusEffectApplyX
     {
         public override void Init()
         {
-            base.OnCardPlayed += Run;
+            OnCardPlayed += Run;
         }
 
         public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)

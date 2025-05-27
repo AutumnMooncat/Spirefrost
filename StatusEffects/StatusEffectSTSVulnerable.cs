@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectSTSVulnerable : StatusEffectData
     {
@@ -14,8 +14,8 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.OnActionPerformed += ActionPerformed;
-            base.OnHit += MultiplyHit;
+            OnActionPerformed += ActionPerformed;
+            OnHit += MultiplyHit;
         }
 
         public override bool RunHitEvent(Hit hit)

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectInstantConvertStatusToX : StatusEffectInstant
     {
@@ -9,7 +9,7 @@ namespace Spirefrost
 
         public override IEnumerator Process()
         {
-            int toApply = target.statusEffects.Select(status => (status.isStatus && status.visible && !status.isReaction) ? status.GetAmount() : 0).Sum();
+            int toApply = target.statusEffects.Select(status => status.isStatus && status.visible && !status.isReaction ? status.GetAmount() : 0).Sum();
             int num = target.statusEffects.Count;
 
             for (int i = num - 1; i >= 0; i--)

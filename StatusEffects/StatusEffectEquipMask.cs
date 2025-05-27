@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectEquipMask : StatusEffectData
     {

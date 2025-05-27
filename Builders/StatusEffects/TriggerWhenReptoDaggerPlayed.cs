@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Cards.Items;
+using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects
 {

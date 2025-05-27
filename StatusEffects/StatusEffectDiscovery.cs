@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Localization;
 using WildfrostHopeMod.Utils;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     // Thank you AbsentAbigail!
     public class StatusEffectDiscovery : StatusEffectInstant
@@ -177,7 +177,7 @@ namespace Spirefrost
 
         private void PredicateContainer(int amount)
         {
-            Predicate<CardData> predicate = MainModFile.instance.predicateReferences[this.name];
+            Predicate<CardData> predicate = MainModFile.instance.predicateReferences[name];
             List<CardData> validCards = new List<CardData>();
             foreach (RewardPool pool in References.PlayerData.classData.rewardPools)
             {

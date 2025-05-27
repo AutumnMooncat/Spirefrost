@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectOrb : StatusEffectApplyX
     {
@@ -37,9 +37,9 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.OnTurnEnd += PassiveTurnEndTrigger;
-            base.PostHit += PassiveHitTrigger;
-            base.PreTrigger += EvokePreTrigger;
+            OnTurnEnd += PassiveTurnEndTrigger;
+            PostHit += PassiveHitTrigger;
+            PreTrigger += EvokePreTrigger;
         }
 
         public override bool TargetSilenced()
@@ -59,7 +59,7 @@ namespace Spirefrost
                 return count;
             }
 
-            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
+            return Mathf.Max(0, Mathf.RoundToInt((count + target.effectBonus) * target.effectFactor));
         }
 
         public override bool RunTurnEndEvent(Entity entity)
@@ -92,7 +92,7 @@ namespace Spirefrost
 
         public override bool RunPostHitEvent(Hit hit)
         {
-            if (target.enabled && hit.target == target && hit.canRetaliate && (!targetMustBeAlive || (target.alive && Battle.IsOnBoard(target))) && hit.Offensive && hit.BasicHit)
+            if (target.enabled && hit.target == target && hit.canRetaliate && (!targetMustBeAlive || target.alive && Battle.IsOnBoard(target)) && hit.Offensive && hit.BasicHit)
             {
                 return passiveType == PassiveTriggerType.OnHit;
             }

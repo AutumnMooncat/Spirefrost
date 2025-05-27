@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectSTSDoubleTap : StatusEffectData
     {
@@ -14,9 +14,9 @@ namespace Spirefrost
 
         public override void Init()
         {
-            base.OnActionPerformed += ActionPerformed;
-            base.OnStack += StackRoutine;
-            base.OnEnd += EndRoutine;
+            OnActionPerformed += ActionPerformed;
+            OnStack += StackRoutine;
+            OnEnd += EndRoutine;
             SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
         }
 
@@ -110,7 +110,7 @@ namespace Spirefrost
             }
             else if (stacks < 0)
             {
-                StatusEffectData frenzyEffect = target.statusEffects.Find((StatusEffectData a) => a.name.Equals(effectToApply.name));
+                StatusEffectData frenzyEffect = target.statusEffects.Find((a) => a.name.Equals(effectToApply.name));
                 target.curveAnimator.Ping();
                 yield return frenzyEffect?.RemoveStacks(-stacks, removeTemporary: true);
             }

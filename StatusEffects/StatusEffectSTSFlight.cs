@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectSTSFlight : StatusEffectData
     {
         public override void Init()
         {
-            base.OnHit += FlightHit;
+            OnHit += FlightHit;
         }
 
         public override bool RunHitEvent(Hit hit)

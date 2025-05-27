@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
 
     // This now only works for items, but thats my only use case at the moment
@@ -65,7 +65,7 @@ namespace Spirefrost
 
         public override bool RunCardPlayedEvent(Entity entity, Entity[] targets)
         {
-            if (target.enabled && !primed && ((worksInHand && References.Player.handContainer.Contains(target)) || Battle.IsOnBoard(target)))
+            if (target.enabled && !primed && (worksInHand && References.Player.handContainer.Contains(target) || Battle.IsOnBoard(target)))
             {
                 foreach (TargetConstraint triggerConstraint in triggerConstraints)
                 {

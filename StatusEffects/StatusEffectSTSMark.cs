@@ -1,13 +1,13 @@
 ﻿using Spirefrost.Builders.Icons;
 using System.Collections;
 
-namespace Spirefrost
+namespace Spirefrost.StatusEffects
 {
     public class StatusEffectSTSMark : StatusEffectData
     {
         public override void Init()
         {
-            base.OnStack += DoStuff;
+            OnStack += DoStuff;
         }
 
         private IEnumerator DoStuff(int stacks)

@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects.TraitEffects
 {
