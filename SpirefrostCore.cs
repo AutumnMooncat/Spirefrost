@@ -13,6 +13,7 @@ using Spirefrost.Builders.Tribes;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.Patches.ConfigPatches;
 using Spirefrost.Patches;
+using WildfrostHopeMod.SFX;
 
 
 namespace Spirefrost
@@ -66,41 +67,39 @@ namespace Spirefrost
             On
         }
 
-        public enum OnOff
-        {
-            Off,
-            On
-        }
-
         [ConfigItem(ReplaceType.Off, "Give <Junk> a \"fitting\" depricated relic image", "Replace Junk Image")]
         public ReplaceType junkReplace = ReplaceType.Off;
 
-        [ConfigItem(OnOff.Off, "Off: Disable all changes\n//On: Individual settings will be used", "Enable Status Changes")]
-        public OnOff statusReplace = OnOff.Off;
+        [ConfigItem(false, "Should Cultist Mask play sfx", "Caw Caw?")]
+        [ConfigManagerCallbackSetting("CawCawCallback")]
+        [ConfigManagerOptionSetting(new string[] { "No", "Caw Caw!" }, new object[] { false, true })]
+        public bool cawCaw = false;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=demonize> with <sprite=spirefrost.stsvuln>", "Demonize is Vulnerable")]
-        [ConfigManagerSetting(ConfigManagerSetting.SettingType.HideIf, "statusReplace", OnOff.Off)]
         public ReplaceType vulnReplace = ReplaceType.Off;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=frost> with <sprite=spirefrost.stsweak>", "Frost is Weak")]
-        [ConfigManagerSetting(ConfigManagerSetting.SettingType.HideIf, "statusReplace", OnOff.Off)]
         public ReplaceType weakReplace = ReplaceType.Off;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=shroom> with make poison icon lol", "Shroom is Poison")]
-        [ConfigManagerSetting(ConfigManagerSetting.SettingType.HideIf, "statusReplace", OnOff.Off)]
         public ReplaceType poisonReplace = ReplaceType.Off;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=teeth> with make teeth icon lol", "Teeth is Thorns")]
-        [ConfigManagerSetting(ConfigManagerSetting.SettingType.HideIf, "statusReplace", OnOff.Off)]
         public ReplaceType thornsReplace = ReplaceType.Off;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=spice> with make vigor icon lol", "Spice is Vigor")]
-        [ConfigManagerSetting(ConfigManagerSetting.SettingType.HideIf, "statusReplace", OnOff.Off)]
         public ReplaceType vigorReplace = ReplaceType.Off;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=haze> with make confusion icon lol", "Haze is Confused")]
-        [ConfigManagerSetting(ConfigManagerSetting.SettingType.HideIf, "statusReplace", OnOff.Off)]
         public ReplaceType confusedReplace = ReplaceType.Off;
+
+        internal static void CawCawCallback(object value)
+        {
+            if (value is bool val && val)
+            {
+                VFXMod.instance.SFX.TryPlaySoundFromPath(MainModFile.instance.ImagePath("SFX/CawCaw.ogg"));
+            }
+        }
 
         public enum PoolListType
         {
