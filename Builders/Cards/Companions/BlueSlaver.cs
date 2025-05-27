@@ -24,7 +24,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Weak.ID, 2)
+                        SStack("Frost", 3)
                     };
                 });
         }
