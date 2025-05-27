@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int Amount => 1;
+        internal static int Amount => 2;
 
         internal static object GetBuilder()
         {
