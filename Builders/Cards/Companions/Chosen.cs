@@ -24,7 +24,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("MultiHit", 1),
-                        SStack(OnHitDamageVulnTarget.ID, 3)
+                        SStack(OnHitDamageDemonizedTarget.ID, 4)
                     };
                 });
         }
