@@ -14,8 +14,10 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithText("On kill, apply <{a}><keyword=demonize> to all enemies")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnKill>(data =>
                 {
-                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Allies;
+                    data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
                     data.effectToApply = TryGet<StatusEffectData>("Demonize");
+                    data.noTargetType = NoTargetType.NoTargetForStatus;
+                    data.noTargetTypeArgs = new string[] { "<sprite name=demonize>" };
                 });
         }
     }
