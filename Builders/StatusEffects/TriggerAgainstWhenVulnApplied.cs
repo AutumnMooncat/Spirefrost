@@ -16,6 +16,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithTextInsert(MakeKeywordInsert(VulnerableKeyword.FullID))
                 .SubscribeToAfterAllBuildEvent<StatusEffectTriggerWhenStatusApplied>(data =>
                 {
+                    data.textOrder = 1;
                     data.targetStatus = TryGet<StatusEffectData>(Vulnerable.ID);
                 });
         }

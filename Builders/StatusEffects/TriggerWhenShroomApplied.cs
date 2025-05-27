@@ -15,6 +15,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithTextInsert("<keyword=shroom>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectTriggerWhenStatusApplied>(data =>
                 {
+                    data.textOrder = 1;
                     data.targetStatus = TryGet<StatusEffectData>("Shroom");
                     data.triggerType = StatusEffectTriggerWhenStatusApplied.TriggerType.Normal;
                 });

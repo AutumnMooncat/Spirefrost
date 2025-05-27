@@ -19,6 +19,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithStackable(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenStatusAppliedToSelf>(data =>
                 {
+                    data.textOrder = 1;
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
                     data.effectToApply = TryGet<StatusEffectData>("Trigger (High Prio)");
                     data.eventPriority = -99;

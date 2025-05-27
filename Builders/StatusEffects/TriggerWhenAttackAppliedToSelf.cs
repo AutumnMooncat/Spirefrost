@@ -19,6 +19,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithStackable(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenNonTempYAppliedToSelf>(data =>
                 {
+                    data.textOrder = 1;
                     data.whenAppliedType = TryGet<StatusEffectData>("Increase Attack").type;
                     data.whenAppliedTypes = new string[]
                     {

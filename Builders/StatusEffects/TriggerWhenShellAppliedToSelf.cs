@@ -19,6 +19,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithStackable(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenYAppliedToSelf>(data =>
                 {
+                    data.textOrder = 1;
                     data.whenAppliedType = TryGet<StatusEffectData>("Shell").type;
                     data.whenAppliedTypes = new string[]
                     {

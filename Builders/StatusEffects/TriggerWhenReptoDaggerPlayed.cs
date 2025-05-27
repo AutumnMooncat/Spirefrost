@@ -19,6 +19,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithStackable(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAnyCardIsPlayed>(data =>
                 {
+                    data.textOrder = 1;
                     data.effectToApply = TryGet<StatusEffectData>("Trigger (High Prio)");
                     data.eventPriority = -99;
                     data.descColorHex = "F99C61";
