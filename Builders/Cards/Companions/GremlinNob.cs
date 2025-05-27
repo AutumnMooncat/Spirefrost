@@ -25,7 +25,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     MainModFile.instance.maskedSpries[data.name] = MainModFile.instance.ImagePath("Units/NobMask.png").ToSprite();
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Vulnerable.ID, 2)
+                        SStack("Demonize", 2)
                     };
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {

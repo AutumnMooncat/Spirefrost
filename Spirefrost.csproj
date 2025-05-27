@@ -459,6 +459,7 @@
     <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToMissingHealth.cs" />
     <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
+    <Compile Include="Builders\StatusEffects\DoubleFrost.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelfPermanently.cs" />
@@ -466,6 +467,7 @@
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
+    <Compile Include="Builders\StatusEffects\TriggerAgainstWhenDemonizeApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenVulnApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenAttackAppliedToSelf.cs" />
     <Compile Include="Builders\StatusEffects\TriggerWhenReptoDaggerPlayed.cs" />
@@ -476,6 +478,7 @@
     <Compile Include="Builders\StatusEffects\WhenAllyIsHitApplyShellToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenAllyWithoutShellAttacksApplyShellToThem.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedDamageEnemies.cs" />
+    <Compile Include="Builders\StatusEffects\WhenFrostAppliedToAnythingApplyAttackToApplier.cs" />
     <Compile Include="Builders\StatusEffects\WhenHealthLostGainAttack.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitApplyShroomToFrontEnemies.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitGainFury.cs" />

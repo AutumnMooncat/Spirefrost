@@ -25,7 +25,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Vulnerable.ID, 1)
+                        SStack("Demonize", 1)
                     };
                 });
         }
