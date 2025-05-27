@@ -487,6 +487,7 @@
     <Compile Include="Builders\StatusEffects\WhenSpiceAppliedToSelfShellRandomAlly.cs" />
     <Compile Include="Builders\StatusEffects\WhenWeakAppliedToAnythingApplyAttackToApplier.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToGremlins.cs" />
+    <Compile Include="Builders\StatusEffects\HitFrontEnemies.cs" />
     <Compile Include="Patches\AlreadyAttackingPatches.cs" />
     <Compile Include="Patches\BarragePatch.cs" />
     <Compile Include="Patches\CardPatches.cs" />

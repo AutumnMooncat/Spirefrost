@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
@@ -19,12 +20,15 @@ namespace Spirefrost.Builders.Cards.Items
                 .SetSprites("Items/RedMask.png", "Items/RedMaskBG.png")
                 .WithValue(55)
                 .SetDamage(0)
-                .SetTraits(TStack("Barrage", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Weak.ID, 1)
+                        SStack("Frost", 3)
+                    };
+                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    {
+                        SStack(HitFrontEnemies.ID, 1)
                     };
                 });
         }
