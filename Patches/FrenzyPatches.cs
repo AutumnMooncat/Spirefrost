@@ -179,6 +179,7 @@ namespace Spirefrost.Patches
     }
 
     [HarmonyPatch(typeof(ActionTrigger), "Process")]
+    [HarmonyPatch(typeof(ActionTriggerAgainst), "Process")]
     internal class ActionTriggerPatch
     {
         internal static readonly Dictionary<ActionTrigger, ActionProcessTrigger> actionMap = new Dictionary<ActionTrigger, ActionProcessTrigger>();
