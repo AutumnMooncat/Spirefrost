@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
+using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
@@ -13,7 +14,7 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int Amount => 1;
+        internal static int Amount => 2;
 
         internal static object GetBuilder()
         {
@@ -22,28 +23,17 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/WeaknessCharm.png")
                 .WithTitle("Weak Potion")
-                .WithText($"Apply <{Amount}>{MakeKeywordInsert(WeakKeyword.FullID)}")
+                .WithText($"When an ally is hit, apply <{Amount}><keyword=frost> to the attacker")
                 .WithTier(2)
-                .SetBecomesTarget(true)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintPlayOnSlot>(t => t.board = true),
-                        MakeConstraint<TargetConstraintPlayOnSlot>(t => { t.slot = true; t.not = true; }),
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(t => t.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>(),
-                                MakeConstraint<TargetConstraintIsItem>()
-                            };
-                        })
+                        MakeConstraint<TargetConstraintIsUnit>()
                     };
-                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Weak.ID, Amount)
+                        SStack("When Ally is Hit Apply Frost To Attacker", Amount)
                     };
                 });
         }

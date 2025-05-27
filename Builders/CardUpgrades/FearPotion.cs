@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
+using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using UnityEngine;
 using static Spirefrost.MainModFile;
@@ -14,7 +15,7 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int Amount => 2;
+        internal static int Amount => 1;
 
         internal static object GetBuilder()
         {
@@ -23,28 +24,17 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/FearCharm.png")
                 .WithTitle("Fear Potion")
-                .WithText($"Apply <{Amount}>{MakeKeywordInsert(VulnerableKeyword.FullID)}")
+                .WithText($"On kill, apply <{Amount}><keyword=demonize> to all enemies")
                 .WithTier(2)
-                .SetBecomesTarget(true)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintPlayOnSlot>(t => t.board = true),
-                        MakeConstraint<TargetConstraintPlayOnSlot>(t => { t.slot = true; t.not = true; }),
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(t => t.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>(),
-                                MakeConstraint<TargetConstraintIsItem>()
-                            };
-                        })
+                        MakeConstraint<TargetConstraintDoesDamage>()
                     };
-                    data.attackEffects = new CardData.StatusEffectStacks[]
+                    data.effects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(Vulnerable.ID, Amount)
+                        SStack(OnKillApplyDemonizeToEnemies.ID, Amount)
                     };
                 });
         }

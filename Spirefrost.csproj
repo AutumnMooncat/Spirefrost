@@ -463,6 +463,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\OnHitDamageDemonizedTarget.cs" />
+    <Compile Include="Builders\StatusEffects\OnKillApplyDemonizeToEnemies.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelfPermanently.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnApplySpiceToSelfAndAllyBehind.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
