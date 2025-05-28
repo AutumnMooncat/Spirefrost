@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("On Hit Damage Snowed Target", ID)
-                .WithTextInsert("keyword=<demonize>")
+                .WithTextInsert("<keyword=demonize>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnHit>(data =>
                 {
                     data.applyConstraints = new TargetConstraint[]
