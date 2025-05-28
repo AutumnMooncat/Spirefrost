@@ -12,7 +12,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("On Card Played Add Gearhammer To Hand", ID)
-                .WithText("Add <{a}> {0} to your hand")
+                .WithText("Add <{a}> {0}{!{a}!|1= |@=<s >}to your hand")
                 .WithTextInsert(MakeCardInsert(Shiv.FullID))
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
@@ -30,7 +30,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("When Consumed Add Health To Allies", ID)
-                .WithText("When consumed, add <{a}> {0} to your hand")
+                .WithText("When consumed, add <{a}> {0}{!{a}!|1= |@=<s >}to your hand")
                 .WithTextInsert(MakeCardInsert(Shiv.FullID))
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDestroyed>(data =>
                 {
