@@ -76,6 +76,15 @@ namespace Spirefrost.Patches
                             //Debug.Log($"Found default {split[1]}");
                             ret = split[1];
                         }
+                        // Do repeat if we havent matched yet
+                        if (split[0].Equals("repeat") && !matched)
+                        {
+                            ret = "";
+                            for (int r = 0; r < num; r++)
+                            {
+                                ret += split[1];
+                            }
+                        }
                     }
                 }
             }
