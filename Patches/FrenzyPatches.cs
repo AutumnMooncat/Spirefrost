@@ -178,8 +178,7 @@ namespace Spirefrost.Patches
         }
     }
 
-    [HarmonyPatch(typeof(ActionTrigger), "Process")]
-    [HarmonyPatch(typeof(ActionTriggerAgainst), "Process")]
+    [HarmonyPatch]
     internal class ActionTriggerPatch
     {
         internal static readonly Dictionary<ActionTrigger, ActionProcessTrigger> actionMap = new Dictionary<ActionTrigger, ActionProcessTrigger>();
@@ -195,6 +194,12 @@ namespace Spirefrost.Patches
             }
             
             return created;
+        }
+
+        static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return AccessTools.Method(typeof(ActionTrigger), nameof(ActionTrigger.Process));
+            yield return AccessTools.Method(typeof(ActionTriggerAgainst), nameof(ActionTriggerAgainst.Process));
         }
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
