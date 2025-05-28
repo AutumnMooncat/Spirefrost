@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(OnTurnApplyRegenToAllies.ID, 2),
+                        SStack("On Turn Add Health & Attack To Allies", 1),
                     };
                 });
         }
