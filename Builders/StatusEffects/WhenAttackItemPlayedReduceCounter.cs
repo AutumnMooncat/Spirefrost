@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Keywords;
 using Spirefrost.StatusEffects;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenAnyCardIsPlayed>(ID)
-                .WithText("When an <Item> with <keyword=attack> is played, count down <keyword=counter> by <{a}>")
+                .WithText($"When an {MakeKeywordInsert(AttackKeyword.FullID)} is played, count down <keyword=counter> by <{{a}}>")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAnyCardIsPlayed>(data =>
                 {

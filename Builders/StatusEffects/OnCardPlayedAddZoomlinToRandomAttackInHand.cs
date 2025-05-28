@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Keywords;
 using UnityEngine;
 
 namespace Spirefrost.Builders.StatusEffects
@@ -12,7 +13,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("On Card Played Add Zoomlin To Random Card In Hand", ID)
-                .WithText("Add <keyword=zoomlin> to a random <Item> with <keyword=attack> in your hand")
+                .WithText($"Add <keyword=zoomlin> to a random {MakeKeywordInsert(AttackKeyword.FullID)} in your hand")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     TargetConstraintAnd damageItem = ScriptableObject.CreateInstance<TargetConstraintAnd>();

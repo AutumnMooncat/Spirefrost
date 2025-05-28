@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Keywords;
 using Spirefrost.StatusEffects;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectAffectAllXAppliedExtras>(ID)
-                .WithText("Apply additional <keyword=shell> equal to <Items> in hand with <keyword=attack>")
+                .WithText($"Apply additional <keyword=shell> equal to {MakeKeywordInsert(AttackKeyword.FullID)}<s >in hand")
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectAffectAllXAppliedExtras>(data =>
                 {

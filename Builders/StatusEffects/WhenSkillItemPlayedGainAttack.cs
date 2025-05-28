@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.Keywords;
 using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects
@@ -13,7 +14,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenAnyCardIsPlayed>(ID)
-                .WithText("When an <Item> without <keyword=attack> is played, gain <+{a}><keyword=attack>")
+                .WithText($"When a {MakeKeywordInsert(SkillKeyword.FullID)} is played, gain <+{{a}}><keyword=attack>")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAnyCardIsPlayed>(data =>
                 {

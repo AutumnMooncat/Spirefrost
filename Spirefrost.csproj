@@ -455,8 +455,10 @@
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
     <Compile Include="Builders\Icons\IntangibleIcon.cs" />
     <Compile Include="Builders\Icons\RegrowIcon.cs" />
+    <Compile Include="Builders\Keywords\AttackKeyword.cs" />
     <Compile Include="Builders\Keywords\IntangibleKeyword.cs" />
     <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
+    <Compile Include="Builders\Keywords\SkillKeyword.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToMissingHealth.cs" />
     <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
     <Compile Include="Builders\StatusEffects\DoubleFrost.cs" />
