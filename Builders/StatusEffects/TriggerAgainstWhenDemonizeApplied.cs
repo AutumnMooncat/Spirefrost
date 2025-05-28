@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("Trigger Against When Snow Applied", ID)
-                .WithTextInsert(MakeKeywordInsert(VulnerableKeyword.FullID))
+                .WithTextInsert("<keyword=demonize>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectTriggerWhenStatusApplied>(data =>
                 {
                     data.textOrder = 1;
