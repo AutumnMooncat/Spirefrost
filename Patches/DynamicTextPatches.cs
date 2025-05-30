@@ -15,14 +15,14 @@ namespace Spirefrost.Patches
     [HarmonyPatch(typeof(Text), nameof(Text.Process), new Type[] { typeof(string), typeof(int), typeof(float), typeof(Text.ColourProfileHex) })]
     internal class DynamicTextPatches
     {
-        private static readonly string regex = "\\{!.*?!\\|.*?}";
+        private static readonly string regex = "\\{!.*?\\|.*?!}";
         private static void HandleDynText(ref string text, int effectBonus, float effectFactor)
         {
             //Debug.Log($"Got: {text}");
             var matches = Regex.Matches(text, regex);
             for (int i = 0; i < matches.Count; i++) 
             {
-                //Debug.Log($"Found match: {matches[i].Value}");
+                Debug.Log($"Found match: {matches[i].Value}");
                 Match match = matches[i];
                 text = text.Replace(match.Value, UnwrapText(match.Value, effectBonus, effectFactor));
             }
@@ -31,16 +31,16 @@ namespace Spirefrost.Patches
         private static string UnwrapText(string found, int effectBonus, float effectFactor)
         {
             string ret = "";
-            // Trim { and }
+            // Trim {! and !}
             //Debug.Log($"Processing {found}");
-            found = found.Substring(1, found.Length - 2);
+            found = found.Substring(2, found.Length - 4);
             //Debug.Log($"Trimmed to {found}");
             // Split into cases
             string[] chunks = found.Split('|');
             //Debug.Log($"Split into {chunks.Length} chunks");
-            //Debug.Log($"Attempting to parse {chunks[0].Substring(1, chunks[0].Length - 2)}");
-            // First match will be our amount wrapped by !, trim them and parse
-            if (int.TryParse(chunks[0].Substring(1, chunks[0].Length - 2), out int result))
+            //Debug.Log($"Attempting to parse {chunks[0]}");
+            // First match will be our amount
+            if (int.TryParse(chunks[0], out int result))
             {
                 // Get effective amount
                 //Debug.Log($"Parsed {result}");
