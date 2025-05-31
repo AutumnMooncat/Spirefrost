@@ -470,7 +470,9 @@
     <Compile Include="Builders\StatusEffects\OnTurnApplySpiceToSelfAndAllyBehind.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
+    <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
+    <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenDemonizeApplied.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenVulnApplied.cs" />

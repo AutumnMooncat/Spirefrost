@@ -4,7 +4,6 @@ using Spirefrost.StatusEffects;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,62 +41,12 @@ namespace Spirefrost.Patches
         }
     }
 
-    [HarmonyPatch(typeof(EntityDisplay), "SetStatusIcon")]
-    internal static class IgnoreOrbs
-    {
-        static bool Prefix(EntityDisplay __instance, string iconGroupName)
-        {
-            if (iconGroupName == LayoutPatch.orbIconGroup)
-            {
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    [HarmonyPatch]
-    internal static class CustomLogicInsert
-    {
-        private static Type createdType;
-        public static MethodBase TargetMethod()
-        {
-            return SpirefrostUtils.FindEnumeratorMethod(AccessTools.DeclaredMethod(typeof(EntityDisplay), "UpdateDisplay"), ref createdType);
-        }
-
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            FieldInfo iconsField = typeof(EntityDisplay).GetField("iconGroups", AccessTools.all);
-            
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].opcode == OpCodes.Ldfld)
-                {
-                    if (codes[i].operand is FieldInfo info && info == iconsField)
-                    {
-                        Debug.Log("CustomLogicInsert - Match found, injecting new instructions");
-                        // Ldloc_1 already on the stack, we load from it
-                        yield return new CodeInstruction(OpCodes.Ldfld, typeof(EntityDisplay).GetField("entity", AccessTools.all));
-                        yield return new CodeInstruction(OpCodes.Ldarg_0);
-                        yield return new CodeInstruction(OpCodes.Ldfld, createdType.GetField("doPing"));
-                        yield return new CodeInstruction(OpCodes.Call, typeof(CustomIconLogic).GetMethod("DoCustomIcons", BindingFlags.Static | BindingFlags.NonPublic));
-                        // Put Ldloc_1 back
-                        yield return new CodeInstruction(OpCodes.Ldloc_1);
-                    }
-                }
-                yield return codes[i];
-            }
-        }
-    }
-
     [HarmonyPatch(typeof(InspectSystem), "CreateIconPopups")]
     internal static class OrbPopups
     {
         static void Postfix(InspectSystem __instance, RectTransform iconLayoutGroup, Transform popGroup)
         {
-            if (iconLayoutGroup == __instance.inspect.display.damageLayoutGroup && popGroup == __instance.rightPopGroup)
+            if (iconLayoutGroup == __instance.inspect.display.damageLayoutGroup && popGroup == __instance.rightPopGroup && __instance.inspect.display is Card)
             {
                 CardPopUpTarget[] componentsInChildren = __instance.inspect.display.iconGroups[LayoutPatch.orbIconGroup].GetComponentsInChildren<CardPopUpTarget>();
                 for (int i = 0; i < componentsInChildren.Length; i++)
@@ -290,105 +239,6 @@ namespace Spirefrost.Patches
             {
                 flexible = Mathf.Max(flexible, 1f);
             }
-        }
-    }
-
-    internal class CustomStatusIcon : StatusIcon
-    {
-        public StatusEffectData linkedData;
-
-        public override void CheckRemove()
-        {
-            if (linkedData == null || (!persistent && !target.statusEffects.Contains(linkedData)))
-            {
-                MainModFile.Print($"Status not found, we should remove");
-                SetValue(default);
-                Destroy();
-            }
-        }
-    }
-
-    internal class CustomIconLogic
-    {
-        internal static void DoCustomIcons(Entity entity, bool doPing)
-        {
-            //Debug.Log($"DoCustomIcons - Begin");
-            foreach (StatusEffectData statusEffect in entity.statusEffects)
-            {
-                if (statusEffect.visible && statusEffect.iconGroupName == LayoutPatch.orbIconGroup)
-                {
-                    SetCustomIcon(entity, entity.display, statusEffect, doPing);
-                }
-            }
-        }
-
-        private static void SetCustomIcon(Entity entity, EntityDisplay display, StatusEffectData data, bool doPing)
-        {
-            //Debug.Log($"DoCustomIcons - Entity {entity}, Status {data}");
-            StatusIcon statusIcon = FindCustomIcon(display, data);
-            if ((bool)statusIcon)
-            {
-                UpdateCustomIcon(statusIcon, new Stat(data.count, 0), doPing);
-            }
-            else
-            {
-                statusIcon = CardManager.NewStatusIcon(data.type, display.iconGroups[LayoutPatch.orbIconGroup]);
-                if (!statusIcon)
-                {
-                    Debug.LogError("Status Icon for [" + data.type + "] NOT FOUND!");
-                }
-                else
-                {
-                    //Debug.Log($"DoCustomIcons - Created Icon {statusIcon}");
-                    if (statusIcon is CustomStatusIcon custom)
-                    {
-                        Debug.Log($"DoCustomIcons - Linked Status {data} to Icon");
-                        custom.linkedData = data;
-                    }
-
-                    if (display.hover)
-                    {
-                        CardHover component = statusIcon.GetComponent<CardHover>();
-                        component.master = display.hover;
-                        component.enabled = true;
-                    }
-
-                    statusIcon.Assign(entity);
-                    statusIcon.SetValue(new Stat(data.count, 0), doPing);
-                    statusIcon.SetText();
-                    if (doPing)
-                    {
-                        statusIcon.CreateEvent();
-                        Events.InvokeStatusIconCreated(statusIcon);
-                    }
-                }
-            }
-        }
-
-        private static StatusIcon FindCustomIcon(EntityDisplay display, StatusEffectData data)
-        {
-            //Debug.Log($"DoCustomIcons - Finding Icon for Status {data}");
-            StatusIcon statusIcon = null;
-            foreach (RectTransform item in display.iconGroups[LayoutPatch.orbIconGroup])
-            {
-                CustomStatusIcon component = item.GetComponent<CustomStatusIcon>();
-                if (component && component.linkedData == data)
-                {
-                    statusIcon = component;
-                    break;
-                }
-            }
-
-            //Debug.Log($"DoCustomIcons - Returning Icon {statusIcon}");
-            return statusIcon;
-        }
-
-        private static void UpdateCustomIcon(StatusIcon icon, Stat value, bool doPing)
-        {
-            //Debug.Log($"DoCustomIcons - Update Custom {icon}, Value {value.current}");
-            icon.SetValue(value, doPing);
-            //Debug.Log($"Has textElement? {icon.textElement != null}");
-            icon.SetText();
         }
     }
 }

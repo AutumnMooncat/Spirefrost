@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Spirefrost.StatusEffects
 {
-    public class StatusEffectOrb : StatusEffectApplyX
+    public class StatusEffectOrb : StatusEffectApplyX, INonStackingStatusEffect
     {
         public enum PassiveTriggerType
         {
@@ -34,6 +34,10 @@ namespace Spirefrost.StatusEffects
         public TargetConstraint[] evokeApplyConstraints;
 
         public string evokeSFXKey;
+
+        public StatusIcon Icon { get => _icon; set => _icon = value; }
+
+        private StatusIcon _icon;
 
         public override void Init()
         {

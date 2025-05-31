@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using WildfrostHopeMod.Utils;
 using WildfrostHopeMod.VFX;
+using static Spirefrost.Patches.CustomStatusIconPatches;
 
 namespace Spirefrost
 {
@@ -294,6 +295,25 @@ namespace Spirefrost
             Sprite sprite = ToNamedTex(self).ToSprite();
             sprite.name = Path.GetFileNameWithoutExtension(MainModFile.instance.ImagePath(self)) + "Sprite";
             return sprite;
+        }
+    }
+
+    internal static class StatusIconExtensions
+    {
+        internal static void LinkStatus(this StatusIcon icon, StatusEffectData toLink)
+        {
+            SpirefrostUtils.SetNamedReference(icon, HasLinkedKey, true);
+            SpirefrostUtils.SetNamedReference(icon, LinkedKey, toLink);
+        }
+
+        internal static bool HasLinkedStatus(this StatusIcon icon)
+        {
+            return SpirefrostUtils.GetNamedReference(icon, HasLinkedKey) is bool check && check;
+        }
+
+        internal static StatusEffectData GetLinkedStatus(this StatusIcon icon)
+        {
+            return SpirefrostUtils.GetNamedReference(icon, LinkedKey) as StatusEffectData;
         }
     }
 
