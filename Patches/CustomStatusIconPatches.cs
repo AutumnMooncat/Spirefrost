@@ -246,20 +246,28 @@ namespace Spirefrost.Patches
                         if (data is INonStackingStatusEffect nonStacking)
                         {
                             nonStacking.Icon = statusIcon;
+                            statusIcon.persistent = false;
                         }
-                        Debug.Log($"DoCustomIcons - Linked Status {data} to Icon");
-                        statusIcon.LinkStatus(data);
                         
-                        /*if (statusIcon is CustomStatusIcon custom)
+                        if (data is StatusEffectExtraCounter)
                         {
-                            Debug.Log($"DoCustomIcons - Linked Status {data} to Icon");
-                            custom.linkedData = data;
+                            // Move to the left of any Reaction icons
+                            Transform parent = statusIcon.transform.parent;
+                            if (parent)
+                            {
+                                foreach (var item in parent.GetAllChildren())
+                                {
+                                    if (item.GetComponent<StatusIconReaction>())
+                        {
+                                        statusIcon.transform.SetSiblingIndex(item.GetSiblingIndex());
+                                        break;
+                                    }
+                                }
+                            }
                         }
-                        else if (statusIcon is CustomCounterIcon customCounter)
-                        {
+
                             Debug.Log($"DoCustomIcons - Linked Status {data} to Icon");
-                            customCounter.linkedData = data;
-                        }*/
+                        statusIcon.LinkStatus(data);
 
                         if (display.hover)
                         {
@@ -294,12 +302,6 @@ namespace Spirefrost.Patches
                             statusIcon = icon;
                             break;
                         }
-                        CustomStatusIcon custom = rect.GetComponent<CustomStatusIcon>();
-                        if (custom && custom.linkedData == data)
-                        {
-                            statusIcon = custom;
-                            break;
-                        }
                     }
                 }
 
@@ -314,190 +316,6 @@ namespace Spirefrost.Patches
                 //Debug.Log($"Has textElement? {icon.textElement != null}");
                 icon.SetText();
             }
-
-            /*private static StatusIcon MakeCustomIcon(StatusIcon icon)
-            {
-                Debug.Log($"Making custom counter icon from {icon}");
-                GameObject gameObject = icon.gameObject;
-                StatusIcon thingy;
-                if (icon is StatusIconCounter counter)
-                {
-                    thingy = gameObject.GetOrAdd<CustomCounterIcon>();
-                    foreach (var item in AccessTools.GetDeclaredFields(typeof(StatusIconCounter)))
-                    {
-                        Debug.Log($"Copying {item.Name} -> {item.GetValue(counter)}");
-                        item.SetValue(thingy, item.GetValue(counter));
-                    }
-                }
-                else
-                {
-                    thingy = gameObject.GetOrAdd<CustomStatusIcon>();
-                }
-                foreach (var item in AccessTools.GetDeclaredFields(typeof(StatusIcon)))
-                {
-                    Debug.Log($"Copying {item.Name} -> {item.GetValue(icon)}");
-                    item.SetValue(thingy, item.GetValue(icon));
-                }
-                GameObject.Destroy(icon);
-                Rereference(thingy);
-                return thingy;
-            }
-
-            private static void Rereference(StatusIcon icon)
-            {
-                icon.afterUpdate = new UnityEngine.Events.UnityEvent();
-                Debug.Log($"Adding SetText listener");
-                icon.afterUpdate.AddListener(icon.SetText);
-                if (icon is CustomCounterIcon counter)
-                {
-                    Debug.Log($"Adding CheckSetSprite listener");
-                    icon.afterUpdate.AddListener(counter.CheckSetSprite);
-                }
-            }*/
-
-            /*private static void Rereference(StatusIcon newIcon, object current, Type currentType, Dictionary<Type, List<object>> processed, bool root = false)
-            {
-                Debug.Log($"Processing {current}({currentType})");
-                if (currentType.IsValueType)
-                {
-                    Debug.Log($"Skipping value type");
-                    return;
-                }
-                if (!processed.ContainsKey(currentType))
-                {
-                    processed[currentType] = new List<object>();
-                }
-                if (processed[currentType].Contains(current))
-                {
-                    Debug.Log($"Already processed, skipping");
-                    return;
-                }
-                processed[currentType].Add(current);
-                Dictionary<Type, List<object>> foundMap = new Dictionary<Type, List<object>>();
-                foreach (var item in currentType.GetFields(AccessTools.all))
-                {
-                    Debug.Log($"Found {currentType} Field {item.Name}({item.FieldType})");
-                    if (item.FieldType.IsAssignableFrom(typeof(StatusIcon)))
-                    {
-                        if (item.IsInitOnly)
-                        {
-                            Debug.Log($"Cant Rereference {item.Name}, its readonly");
-                            continue;
-                        }
-                        Debug.Log($"Rereferencing {item.Name}");
-                        item.SetValue(current, newIcon);
-                        continue;
-                    }
-                    if (item.FieldType.IsValueType)
-                    {
-                        Debug.Log($"Skipping value type");
-                        continue;
-                    }
-                    object found = item.GetValue(current);
-                    if (found == null)
-                    {
-                        Debug.Log($"Field is null");
-                        continue;
-                    }
-                    Debug.Log($"Got {found}");
-                    if (!foundMap.ContainsKey(item.FieldType))
-                    {
-                        foundMap[item.FieldType] = new List<object>();
-                    }
-                    if (!foundMap[item.FieldType].Contains(found))
-                    {
-                        foundMap[item.FieldType].Add(found);
-                    }
-                }
-
-                foreach (var item in currentType.GetProperties(AccessTools.all))
-                {
-                    Debug.Log($"Found {currentType} Property {item.Name}({item.PropertyType})");
-                    if (item.PropertyType.IsAssignableFrom(typeof(StatusIcon)))
-                    {
-                        if (item.SetMethod == null)
-                        {
-                            Debug.Log($"Cant Rereference {item.Name}, no set method");
-                            continue;
-                        }
-                        Debug.Log($"Rereferencing {item.Name}");
-                        item.SetValue(current, newIcon);
-                        continue;
-                    }
-                    if (item.PropertyType.IsValueType)
-                    {
-                        Debug.Log($"Skipping value type");
-                        continue;
-                    }
-                    object found = item.GetValue(current);
-                    if (found == null)
-                    {
-                        Debug.Log($"Property is null");
-                        continue;
-                    }
-                    Debug.Log($"Got {found}");
-                    if (!foundMap.ContainsKey(item.PropertyType))
-                    {
-                        foundMap[item.PropertyType] = new List<object>();
-                    }
-                    if (!foundMap[item.PropertyType].Contains(found))
-                    {
-                        foundMap[item.PropertyType].Add(found);
-                    }
-                }
-
-                Debug.Log($"Found {foundMap.Aggregate(0, (total, pair) => total += pair.Value.Count)} things to check");
-                foreach (var item in foundMap)
-                {
-                    foreach (var found in item.Value)
-                    {
-                        Debug.Log($"Checking {found}({item.Key})");
-                        if (item.Key.IsGenericType && item.Key.GetGenericTypeDefinition() == typeof(List<>))
-                        {
-                            Debug.Log($"This is a list, iterating");
-                            IList list = found as IList;
-                            Debug.Log($"Found {list?.Count ?? 0} items");
-                            foreach (var obj in list)
-                            {
-                                Rereference(newIcon, obj, item.Key.GenericTypeArguments[0], processed);
-                            }
-                        }
-                        else if (typeof(Delegate).IsAssignableFrom(item.Key))
-                        {
-                            Debug.Log($"This is an action, finding events");
-                            Delegate action = found as Delegate;
-                            foreach (var del in action.GetInvocationList())
-                            {
-                                Debug.Log($"Found {del.Method.Name} from {del.Method.DeclaringType}");
-                                Debug.Log($"");
-                                FieldInfo target = AccessTools.Field(typeof(Delegate), "_target");
-                                Type targetType = target.FieldType;
-                                Debug.Log($"Its type is {targetType}");
-                                if (targetType.IsAssignableFrom(typeof(StatusIcon)))
-                                {
-                                    Debug.Log($"Rereferencing {del.Method.Name}");
-                                    target.SetValue(del, newIcon);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Rereference(newIcon, found, item.Key, processed);
-                        }
-                    }
-                }
-
-                if (root)
-                {
-                    Debug.Log($"Walking up event base");
-                    Rereference(newIcon, current, typeof(UnityEventBase), processed);
-                }
-                else if (currentType.BaseType != null)
-                {
-                    Debug.Log($"Walking up inheritence");
-                    Rereference(newIcon, current, currentType.BaseType, processed);
-                }
-            }*/
         }
     }
 }

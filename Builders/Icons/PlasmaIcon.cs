@@ -21,7 +21,7 @@ namespace Spirefrost.Builders.Icons
         internal static object GetBuilder()
         {
             return new StatusIconBuilder(MainModFile.instance)
-                .CreateCustom(ID, SpriteID, MainModFile.instance.ImagePath("Icons/PlasmaIcon.png"))
+                .Create(ID, SpriteID, MainModFile.instance.ImagePath("Icons/PlasmaIcon.png"))
                 .WithIconGroupName(LayoutPatch.orbIconGroup)
                 .WithTextColour(new Color(0.2471f, 0.1216f, 0.1647f, 1f))
                 .WithTextShadow(new Color(1.0f, 1.0f, 1.0f, 1.0f))
