@@ -17,6 +17,31 @@ namespace Spirefrost
 {
     internal class SpirefrostUtils
     {
+        private static readonly Dictionary<object, Dictionary<string, object>> managedReferences = new Dictionary<object, Dictionary<string, object>>();
+
+        internal static void SetNamedReference(object reference, string name, object value)
+        {
+            if (!managedReferences.ContainsKey(reference))
+            {
+                managedReferences[reference] = new Dictionary<string, object>();
+            }
+            managedReferences[reference][name] = value;
+        }
+
+        internal static object GetNamedReference(object reference, string name)
+        {
+            if (!managedReferences.ContainsKey(reference) || !managedReferences[reference].ContainsKey(name))
+            {
+                return null;
+            }
+            return managedReferences[reference][name];
+        }
+
+        internal static void FreeReference(object reference)
+        {
+            managedReferences.Remove(reference);
+        }
+
         internal class WeightedString : IComparable<WeightedString>
         {
             public WeightedString(string str, int weight)
