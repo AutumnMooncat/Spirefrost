@@ -462,6 +462,7 @@
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToMissingHealth.cs" />
     <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
     <Compile Include="Builders\StatusEffects\DoubleFrost.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\ExtraCounter.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\OnHitDamageDemonizedTarget.cs" />
@@ -472,6 +473,7 @@
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
+    <Compile Include="Patches\ExtraCounterPatches.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenDemonizeApplied.cs" />
@@ -770,6 +772,7 @@
     <Compile Include="StatusEffects\StatusEffectConvertXToYPreTrigger.cs" />
     <Compile Include="StatusEffects\StatusEffectCopyAttackEffectsPreTrigger.cs" />
     <Compile Include="StatusEffects\StatusEffectDivision.cs" />
+    <Compile Include="StatusEffects\StatusEffectExtraCounter.cs" />
     <Compile Include="StatusEffects\StatusEffectFeed.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantCleanseAndApplyForEachRemoved.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantDamage.cs" />

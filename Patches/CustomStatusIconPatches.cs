@@ -127,90 +127,6 @@ namespace Spirefrost.Patches
             }
         }
 
-        [HarmonyPatch]
-        internal static class CounterImminentPatches
-        {
-            internal static List<StatusIconCounter> GetCustomCounterIcons(Entity entity)
-            {
-                return entity.statusEffects
-                    .Select(effect => effect as INonStackingStatusEffect)
-                    .Where(effect => effect != null && effect.Icon is StatusIconCounter counter)
-                    .Select(effect => effect.Icon as StatusIconCounter)
-                    .ToList();
-            }
-
-            internal static bool CounterCheck(bool enable, Entity entity)
-            {
-                return enable && entity.counter.current == 1;
-            }
-
-            [HarmonyPatch(typeof(CounterImminentDisplaySystem), nameof(CounterImminentDisplaySystem.Imminent))]
-            internal static class ImminentPatch
-            {
-                static void Postfix(Entity entity, ref bool __result)
-                {
-                    if (!entity.IsSnowed && GetCustomCounterIcons(entity).Any(icon => icon.GetValue().current == 1)) 
-                    {
-                        __result = true;
-                    }
-                }
-            }
-
-            [HarmonyPatch(typeof(CounterImminentDisplaySystem), nameof(CounterImminentDisplaySystem.SetCounterIconAnimation))]
-            internal static class SetCounterIconAnimationPatch
-            {
-                static void Postfix(Entity entity, bool enable)
-                {
-                    foreach (var item in GetCustomCounterIcons(entity))
-                    {
-                        CardIdleAnimation imminentAnimation = item.imminentAnimation;
-                        if (imminentAnimation != null)
-                        {
-                            if (enable && item.GetValue().current == 1)
-                            {
-                                imminentAnimation.FadeIn();
-                                continue;
-                            }
-                            imminentAnimation.FadeOut();
-                        }
-                    }
-                }
-
-                static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-                {
-                    List<CodeInstruction> codes = instructions.ToList();
-                    MethodInfo check = AccessTools.Method(typeof(CounterImminentPatches), nameof(CounterCheck));
-
-                    for (int i = 0; i < codes.Count; i++)
-                    {
-                        yield return codes[i];
-
-                        if (codes[i].opcode == OpCodes.Ldarg_2)
-                        {
-                            Debug.Log($"SetCounterIconAnimationPatch found 'enable' load, inserting check");
-                            yield return new CodeInstruction(OpCodes.Ldarg_1);
-                            yield return new CodeInstruction(OpCodes.Call, check);
-                        }
-                    }
-                }
-            }
-        }
-
-        internal class CustomStatusIcon : StatusIcon
-        {
-            public StatusEffectData linkedData;
-
-            /*public override void CheckRemove()
-            {
-                if (linkedData == null || (!persistent && !target.statusEffects.Contains(linkedData)))
-                {
-                    MainModFile.Print($"Status not found, we should remove");
-                    SetValue(default);
-                    Destroy();
-                }
-            }*/
-        }
-
         internal class CustomIconLogic
         {
             internal static void DoCustomIcons(Entity entity, bool doPing)
@@ -248,7 +164,7 @@ namespace Spirefrost.Patches
                             nonStacking.Icon = statusIcon;
                             statusIcon.persistent = false;
                         }
-                        
+
                         if (data is StatusEffectExtraCounter)
                         {
                             // Move to the left of any Reaction icons
@@ -258,7 +174,7 @@ namespace Spirefrost.Patches
                                 foreach (var item in parent.GetAllChildren())
                                 {
                                     if (item.GetComponent<StatusIconReaction>())
-                        {
+                                    {
                                         statusIcon.transform.SetSiblingIndex(item.GetSiblingIndex());
                                         break;
                                     }
@@ -266,7 +182,7 @@ namespace Spirefrost.Patches
                             }
                         }
 
-                            Debug.Log($"DoCustomIcons - Linked Status {data} to Icon");
+                        Debug.Log($"DoCustomIcons - Linked Status {data} to Icon");
                         statusIcon.LinkStatus(data);
 
                         if (display.hover)
