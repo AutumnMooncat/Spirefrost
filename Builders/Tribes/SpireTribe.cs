@@ -9,6 +9,8 @@ namespace Spirefrost.Builders.Tribes
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
+        internal static string ClassID => "Spirefrost.Spire";
+
         internal static object GetBuilder()
         {
             return TribeCopy("Basic", ID) //Snowdweller = "Basic", Shademancer = "Magic", Clunkmaster = "Clunk"
@@ -30,7 +32,7 @@ namespace Spirefrost.Builders.Tribes
                         data.characterPrefab = gameObject.GetComponent<Character>();
 
                         // Used to track win/loss statistics for the tribe. Not displayed anywhere though :/
-                        data.id = "Spirefrost.Spire";
+                        data.id = ClassID;
 
                         // Set title
                         data.characterPrefab.title = gameObject.name;
