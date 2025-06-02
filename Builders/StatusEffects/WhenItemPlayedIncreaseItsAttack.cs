@@ -14,7 +14,7 @@ namespace Spirefrost.Builders.StatusEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXWhenAnyCardIsPlayed>(ID)
-                .WithText("When an item is played, add <+{a}><keyword=attack> to it")
+                .WithText("When an <Item> is played, add <+{a}><keyword=attack> to it")
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenAnyCardIsPlayed>(data =>
                 {

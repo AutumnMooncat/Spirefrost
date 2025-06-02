@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("When Card Destroyed, Gain Attack", ID)
-                .WithText("When a card is destroyed, draw <{a}>")
+                .WithText("When a card is destroyed, <keyword=draw {a}>")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenCardDestroyed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Instant Draw");
