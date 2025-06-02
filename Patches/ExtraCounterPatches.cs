@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using Spirefrost.StatusEffects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
-using static Targets;
 
 namespace Spirefrost.Patches
 {
@@ -286,6 +286,90 @@ namespace Spirefrost.Patches
                                 __result |= item.count > __instance.moreThan;
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch]
+        internal class PopupPatches
+        {
+            [HarmonyPatch(typeof(PopUpAddStatsSystem), nameof(PopUpAddStatsSystem.BuildCounterBodyText))]
+            internal static class BuildCounterBodyTextPatch
+            {
+
+            }
+
+            [HarmonyPatch(typeof(PopUpAddStatsSystem), nameof(PopUpAddStatsSystem.PopupCreated))]
+            internal static class PopUpCreatedPatch
+            {
+                static string CheckExtraCounters(string text, Entity entity)
+                {
+                    foreach (var item in entity.statusEffects)
+                    {
+                        if (item is StatusEffectExtraCounter counter)
+                        {
+                            text += ", <color=white>";
+                            if (counter.count > counter.maxCount)
+                            {
+                                text += string.Format("<color={0}>{1}</color>", "#e8a0a0", counter.count);
+                            }
+                            else
+                            {
+                                text += string.Format("{0}", counter.count);
+                            }
+                            text += string.Format("/{0}</color>", counter.maxCount);
+                        }
+                    }
+                    return text;
+                }
+
+                static int GetMinCounter(int currentCounter, Entity entity)
+                {
+                    int ret = currentCounter;
+                    foreach (var item in entity.statusEffects)
+                    {
+                        if (item is StatusEffectExtraCounter counter)
+                        {
+                            ret = Math.Min(ret, counter.count);
+                        }
+                    }
+                    return ret;
+                }
+
+                static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+                {
+                    List<CodeInstruction> codes = instructions.ToList();
+                    MethodInfo addToTitle = AccessTools.Method(typeof(CardPopUpPanel), nameof(CardPopUpPanel.AddToTitle));
+                    MethodInfo check = AccessTools.Method(typeof(PopUpCreatedPatch), nameof(CheckExtraCounters));
+                    MethodInfo buildBody = AccessTools.Method(typeof(PopUpAddStatsSystem), nameof(PopUpAddStatsSystem.BuildCounterBodyText));
+                    MethodInfo getMin = AccessTools.Method(typeof(PopUpCreatedPatch), nameof(GetMinCounter));
+                    FieldInfo hover = AccessTools.Field(typeof(PopUpAddStatsSystem), nameof(PopUpAddStatsSystem.hover));
+                    FieldInfo counter = AccessTools.Field(typeof(Entity), nameof(Entity.counter));
+                    bool counterRead = false;
+                    bool checkInserted = false;
+
+                    for (int i = 0; i < codes.Count; i++)
+                    {
+                        if (!counterRead && codes[i].opcode == OpCodes.Ldflda && codes[i].operand as FieldInfo == counter)
+                        {
+                            counterRead = true;
+                        }
+                        if (counterRead && !checkInserted && codes[i].opcode == OpCodes.Ldc_I4_1 && i + 1 < codes.Count && codes[i + 1].opcode == OpCodes.Callvirt && codes[i + 1].operand as MethodInfo == addToTitle)
+                        {
+                            Debug.Log($"PopUpCreatedPatch - match found, inserting call");
+                            checkInserted = true;
+                            yield return new CodeInstruction(OpCodes.Ldarg_0);
+                            yield return new CodeInstruction(OpCodes.Ldfld, hover);
+                            yield return new CodeInstruction(OpCodes.Call, check);
+                        }
+                        if (codes[i].opcode == OpCodes.Call && codes[i].operand as MethodInfo == buildBody)
+                        {
+                            yield return new CodeInstruction(OpCodes.Ldarg_0);
+                            yield return new CodeInstruction(OpCodes.Ldfld, hover);
+                            yield return new CodeInstruction(OpCodes.Call, getMin);
+                        }
+                        yield return codes[i];
                     }
                 }
             }
