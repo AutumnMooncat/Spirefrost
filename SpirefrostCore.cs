@@ -13,7 +13,6 @@ using Spirefrost.Builders.Tribes;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.Patches.ConfigPatches;
 using Spirefrost.Patches;
-using WildfrostHopeMod.SFX;
 
 
 namespace Spirefrost
@@ -75,25 +74,25 @@ namespace Spirefrost
         [ConfigManagerOptionSetting(new string[] { "No", "Caw Caw!" }, new object[] { false, true })]
         public bool cawCaw = false;
 
-        [ConfigItem(ReplaceType.Off, "Replace <sprite=demonize> with <sprite=spirefrost.stsvuln>", "Demonize is Vulnerable")]
+        [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=demonize> with <sprite=spirefrost.stsvuln>", "Demonize is Vulnerable")]
         public ReplaceType vulnReplace = ReplaceType.If_StS_Leader;
 
-        [ConfigItem(ReplaceType.Off, "Replace <sprite=frost> with <sprite=spirefrost.stsweak>", "Frost is Weak")]
+        [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=frost> with <sprite=spirefrost.stsweak>", "Frost is Weak")]
         public ReplaceType weakReplace = ReplaceType.If_StS_Leader;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=frost> with <sprite=spirefrost.stsshackled>", "Frost is Shackled")]
         public ReplaceType shackledReplace = ReplaceType.Off;
 
-        [ConfigItem(ReplaceType.Off, "Replace <sprite=shroom> with <sprite=spirefrost.stspoison>", "Shroom is Poison")]
+        [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=shroom> with <sprite=spirefrost.stspoison>", "Shroom is Poison")]
         public ReplaceType poisonReplace = ReplaceType.If_StS_Leader;
 
-        [ConfigItem(ReplaceType.Off, "Replace <sprite=teeth> with <sprite=spirefrost.ststhorns>", "Teeth is Thorns")]
+        [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=teeth> with <sprite=spirefrost.ststhorns>", "Teeth is Thorns")]
         public ReplaceType thornsReplace = ReplaceType.If_StS_Leader;
 
-        [ConfigItem(ReplaceType.Off, "Replace <sprite=spice> with <sprite=spirefrost.stsvigor>", "Spice is Vigor")]
+        [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=spice> with <sprite=spirefrost.stsvigor>", "Spice is Vigor")]
         public ReplaceType vigorReplace = ReplaceType.If_StS_Leader;
 
-        [ConfigItem(ReplaceType.Off, "Replace <sprite=haze> with <sprite=spirefrost.stsconfused>", "Haze is Confused")]
+        [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=haze> with <sprite=spirefrost.stsconfused>", "Haze is Confused")]
         public ReplaceType confusedReplace = ReplaceType.If_StS_Leader;
 
         internal static void CawCawCallback(object value)
