@@ -78,9 +78,11 @@ namespace Spirefrost
         public ReplaceType vulnReplace = ReplaceType.If_StS_Leader;
 
         [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=frost> with <sprite=spirefrost.stsweak>", "Frost is Weak")]
+        [ConfigManagerExclusiveSetting("shackledReplace", new object[] { ReplaceType.If_StS_Leader, ReplaceType.On }, ReplaceType.Off)]
         public ReplaceType weakReplace = ReplaceType.If_StS_Leader;
 
         [ConfigItem(ReplaceType.Off, "Replace <sprite=frost> with <sprite=spirefrost.stsshackled>", "Frost is Shackled")]
+        [ConfigManagerExclusiveSetting("weakReplace", new object[] { ReplaceType.If_StS_Leader, ReplaceType.On }, ReplaceType.Off)]
         public ReplaceType shackledReplace = ReplaceType.Off;
 
         [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=shroom> with <sprite=spirefrost.stspoison>", "Shroom is Poison")]

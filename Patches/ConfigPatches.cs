@@ -7,6 +7,7 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using static Deadpan.Enums.Engine.Components.Modding.WildfrostMod;
+using static Spirefrost.Patches.ConfigPatches.ConfigItemCreateItemPatch;
 
 namespace Spirefrost.Patches
 {
@@ -35,6 +36,48 @@ namespace Spirefrost.Patches
             internal bool IsSatisfied(object value)
             {
                 return acceptedValues.Contains(value);
+            }
+        }
+
+        [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+        internal class ConfigManagerExclusiveSetting : Attribute
+        {
+            internal ConfigManagerExclusiveSetting(string exclusiveWith, object blockingValue, object blockingOutput)
+            {
+                this.exclusiveWith = exclusiveWith;
+                blockingMap = new Dictionary<object, object>
+                {
+                    [blockingValue] = blockingOutput
+                };
+            }
+
+            internal ConfigManagerExclusiveSetting(string exclusiveWith, object[] blockingValues, object blockingOutput)
+            {
+                this.exclusiveWith = exclusiveWith;
+                blockingMap = new Dictionary<object, object>();
+                for (int i = 0; i < blockingValues.Length; i++)
+                {
+                    blockingMap[blockingValues[i]] = blockingOutput;
+                }
+            }
+
+            internal ConfigManagerExclusiveSetting(string exclusiveWith, object[] blockingValues, object[] blockingOutputs)
+            {
+                this.exclusiveWith = exclusiveWith;
+                blockingMap = new Dictionary<object, object>();
+                int outputMax = blockingOutputs.Length - 1;
+                for (int i = 0; i < blockingValues.Length; i++)
+                {
+                    blockingMap[blockingValues[i]] = blockingOutputs[Math.Min(i, outputMax)];
+                }
+            }
+
+            internal string exclusiveWith;
+            internal Dictionary<object, object> blockingMap;
+
+            internal bool IsSatisfied(object value)
+            {
+                return blockingMap.ContainsKey(value);
             }
         }
 
@@ -184,6 +227,18 @@ namespace Spirefrost.Patches
         {
             private static Type configItemType;
             private static MethodBase configItemCreateItem;
+            
+            private static FieldInfo parentField;
+            private static Type parentType;
+            private static FieldInfo itemsField;
+            private static PropertyInfo optionProp;
+            private static Type optionType;
+            private static EventInfo configEvent;
+            private static MethodInfo invokeChange;
+            private static MethodInfo tryGet;
+            private static MethodInfo updateLabel;
+            private static PropertyInfo currentProp;
+            private static FieldInfo buttonField;
 
             static bool Prepare(MethodBase original)
             {
@@ -191,6 +246,17 @@ namespace Spirefrost.Patches
                 {
                     configItemType = Type.GetType("WildfrostHopeMod.Configs.ConfigItem,Config Manager");
                     configItemCreateItem = AccessTools.Method(configItemType, "CreateItem");
+                    parentField = AccessTools.Field(configItemType, "parent");
+                    parentType = parentField.FieldType;
+                    itemsField = AccessTools.Field(parentType, "items");
+                    optionProp = AccessTools.Property(configItemType, "optionsAtr");
+                    optionType = optionProp.PropertyType;
+                    configEvent = parentType.GetEvent("OnConfigChanged", AccessTools.all);
+                    invokeChange = AccessTools.Method(parentType, "InvokeConfigChanged");
+                    tryGet = AccessTools.Method(parentType, "TryGetItem");
+                    updateLabel = AccessTools.Method(configItemType, "UpdateLabel");
+                    currentProp = AccessTools.Property(configItemType, "currentValue");
+                    buttonField = AccessTools.Field(configItemType, "button");
                     if (configItemCreateItem != null)
                     {
                         MainModFile.Print($"Config Manager ConfigItem CreateItem patched");
@@ -212,22 +278,70 @@ namespace Spirefrost.Patches
                 (ConfigItemAttribute attr, FieldInfo fld) = ((ConfigItemAttribute, FieldInfo))AccessTools.Field(configItemType, "con").GetValue(__instance);
                 Type containingClass = fld.DeclaringType;
                 ConfigManagerCallbackSetting[] callbackSettings = Attribute.GetCustomAttributes(fld, typeof(ConfigManagerCallbackSetting)) as ConfigManagerCallbackSetting[];
+                ConfigManagerExclusiveSetting[] exclusiveSettings = Attribute.GetCustomAttributes(fld, typeof(ConfigManagerExclusiveSetting)) as ConfigManagerExclusiveSetting[];
                 ConfigManagerOptionSetting optionsSetting = Attribute.GetCustomAttribute(fld, typeof(ConfigManagerOptionSetting)) as ConfigManagerOptionSetting;
-                Type parentType = AccessTools.Field(configItemType, "parent").FieldType;
-                object parentObj = AccessTools.Field(configItemType, "parent").GetValue(__instance);
-                PropertyInfo optionProp = AccessTools.Property(configItemType, "optionsAtr");
-                Type optionType = optionProp.PropertyType;
-                EventInfo configEvent = parentType.GetEvent("OnConfigChanged", AccessTools.all);
+                
+                object parentObj = parentField.GetValue(__instance);
+                IDictionary items = itemsField.GetValue(parentObj) as IDictionary;
                 Type callbackDelClassType = typeof(CallbackDelClass<,>).MakeGenericType(configItemType, typeof(object));
+                Type exclusiveDelClassType = typeof(ExclusiveDelClass<,>).MakeGenericType(configItemType, typeof(object));
+
                 foreach (var item in callbackSettings)
                 {
                     MethodInfo callback = AccessTools.Method(containingClass, item.callbackName);
                     object callbackDel = Activator.CreateInstance(callbackDelClassType, __instance, callback);
                     configEvent.AddEventHandler(parentObj, Delegate.CreateDelegate(configEvent.EventHandlerType, callbackDel, "Run"));
                 }
+                foreach (var item in exclusiveSettings)
+                {
+                    object exclusiveDel = Activator.CreateInstance(exclusiveDelClassType, __instance, item);
+                    configEvent.AddEventHandler(parentObj, Delegate.CreateDelegate(configEvent.EventHandlerType, exclusiveDel, "Run"));
+                }
                 if (optionsSetting != null)
                 {
                     optionProp.SetValue(__instance, Activator.CreateInstance(optionType, new object[] { optionsSetting.labels, optionsSetting.vals }));
+                }
+            }
+
+            internal class ExclusiveDelClass<T, O>
+            {
+                public ExclusiveDelClass(T __instance, ConfigManagerExclusiveSetting setting)
+                {
+                    this.__instance = __instance;
+                    this.invokeTarget = parentField.GetValue(__instance);
+                    this.lookup = itemsField.GetValue(invokeTarget) as IDictionary;
+                    this.setting = setting;
+                }
+
+                readonly T __instance;
+                readonly object invokeTarget;
+                readonly IDictionary lookup;
+                readonly ConfigManagerExclusiveSetting setting;
+
+                public void Run(T item, O val)
+                {
+                    if (__instance.Equals(item) && setting.blockingMap.ContainsKey(val))
+                    {
+                        object exclusive = lookup[setting.exclusiveWith];
+                        object blockedVal = setting.blockingMap[val];
+                        Debug.Log($"Value before invoke {currentProp.GetValue(exclusive)}");
+                        invokeChange.Invoke(invokeTarget, new object[] { exclusive, blockedVal });
+                        Debug.Log($"Value after invoke {currentProp.GetValue(exclusive)}");
+                        updateLabel.Invoke(exclusive, null);
+                        GameObject button = buttonField.GetValue(exclusive) as GameObject;
+                        var settingOptions = button.GetComponent<SettingOptions>();
+                        int index = 0;
+                        if (blockedVal.GetType().IsEnum)
+                        {
+                            index = (int)blockedVal;
+                        }
+                        else if (blockedVal is bool b)
+                        {
+                            index = b ? 1 : 0;
+                        }
+                        settingOptions.SetValue(index);
+                        settingOptions.onValueChanged?.Invoke(settingOptions.dropdown.value);
+                    }
                 }
             }
 
@@ -260,69 +374,5 @@ namespace Spirefrost.Patches
                 return null;
             }
         }
-
-        /*[HarmonyPatch]
-        internal static class CreateButtonLabelPatch
-        {
-            private static Type configItemType;
-            private static MethodBase cbMethod;
-
-            static bool Prepare(MethodBase original)
-            {
-                if (original == null)
-                {
-                    configItemType = Type.GetType("WildfrostHopeMod.Configs.ConfigItem,Config Manager");
-                    cbMethod = AccessTools.Method(configItemType, "CreateButtonLabel");
-                    if (cbMethod != null)
-                    {
-                        MainModFile.Print($"Config Manager ConfigItem CreateButtonLabel patched");
-                        return true;
-                    }
-                    MainModFile.Print($"Config Manager ConfigItem CreateButtonLabel not patched");
-                    return false;
-                }
-                return true;
-            }
-
-            static MethodBase TargetMethod()
-            {
-                return cbMethod;
-            }
-
-            static void Postfix(object __instance, GameObject button)
-            {
-                (ConfigItemAttribute attr, FieldInfo fld) = ((ConfigItemAttribute, FieldInfo))AccessTools.Field(configItemType, "con").GetValue(__instance);
-                ConfigManagerOptionSetting optionsSetting = Attribute.GetCustomAttribute(fld, typeof(ConfigManagerOptionSetting)) as ConfigManagerOptionSetting;
-                if (optionsSetting != null)
-                {
-                    PropertyInfo optionProp = AccessTools.Property(configItemType, "optionsAtr");
-                    PropertyInfo currValProp = AccessTools.Property(configItemType, "currentValue");
-                    Type optionType = optionProp.PropertyType;
-                    var dict = AccessTools.Field(optionType, "lookup").GetValue(optionProp.GetValue(__instance)) as Dictionary<string, object>;
-                    object curr = currValProp.GetValue(__instance);
-                    string text = "";
-                    foreach (var item in dict)
-                    {
-                        if (item.Value.Equals(curr))
-                        {
-                            text = item.Key;
-                        }
-                    }
-                    var label = button.transform.FindRecursive("Label");
-                    Debug.Log($"Label was made with text: {label.GetComponentInChildren<TextMeshProUGUI>().text}, we want {text}");
-                    label.GetComponentInChildren<TextMeshProUGUI>().text = text;
-                }
-            }
-
-            static Exception Cleanup(MethodBase original, Exception exception)
-            {
-                if (exception != null)
-                {
-                    MainModFile.Print($"Patching Config Manager Failed:");
-                    Debug.Log(exception);
-                }
-                return null;
-            }
-        }*/
     }
 }
