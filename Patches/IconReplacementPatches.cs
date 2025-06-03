@@ -92,9 +92,29 @@ namespace Spirefrost.Patches
                     {
                         __result = GetOrMakeSplicedData(__result, VulnerableKeyword.FullID);
                     }
-                    if (__result.name == "Frost" && CheckIconReplace(instance.weakReplace))
+                    else if (__result.name == "Frost" && CheckIconReplace(instance.weakReplace))
                     {
                         __result = GetOrMakeSplicedData(__result, WeakKeyword.FullID);
+                    }
+                    else if (__result.name == "Frost" && CheckIconReplace(instance.shackledReplace))
+                    {
+                        __result = GetOrMakeSplicedData(__result, ShackledKeyword.FullID);
+                    }
+                    else if (__result.name == "Shroom" && CheckIconReplace(instance.poisonReplace))
+                    {
+                        __result = GetOrMakeSplicedData(__result, PoisonKeyword.FullID);
+                    }
+                    else if (__result.name == "Teeth" && CheckIconReplace(instance.thornsReplace))
+                    {
+                        __result = GetOrMakeSplicedData(__result, ThornsKeyword.FullID);
+                    }
+                    else if (__result.name == "Spice" && CheckIconReplace(instance.vigorReplace))
+                    {
+                        __result = GetOrMakeSplicedData(__result, VigorKeyword.FullID);
+                    }
+                    else if (__result.name == "Haze" && CheckIconReplace(instance.confusedReplace))
+                    {
+                        __result = GetOrMakeSplicedData(__result, ConfusedKeyword.FullID);
                     }
                 }
             }
@@ -213,9 +233,29 @@ namespace Spirefrost.Patches
                     {
                         __result = MakeSplicedIcon(__result, type, iconParent, "Demonize", VulnerableIcon.SpriteID, VulnerableKeyword.FullID);
                     }
-                    if (type == "frost" && CheckIconReplace(instance.weakReplace))
+                    else if (type == "frost" && CheckIconReplace(instance.weakReplace))
                     {
                         __result = MakeSplicedIcon(__result, type, iconParent, "Frost", WeakIcon.SpriteID, WeakKeyword.FullID);
+                    }
+                    else if (type == "frost" && CheckIconReplace(instance.shackledReplace))
+                    {
+                        __result = MakeSplicedIcon(__result, type, iconParent, "Frost", ShackledIcon.SpriteID, ShackledKeyword.FullID);
+                    }
+                    else if (type == "shroom" && CheckIconReplace(instance.poisonReplace))
+                    {
+                        __result = MakeSplicedIcon(__result, type, iconParent, "Shroom", PoisonIcon.SpriteID, PoisonKeyword.FullID);
+                    }
+                    else if (type == "teeth" && CheckIconReplace(instance.thornsReplace))
+                    {
+                        __result = MakeSplicedIcon(__result, type, iconParent, "Teeth", ThornsIcon.SpriteID, ThornsKeyword.FullID);
+                    }
+                    else if (type == "spice" && CheckIconReplace(instance.vigorReplace))
+                    {
+                        __result = MakeSplicedIcon(__result, type, iconParent, "Spice", VigorIcon.SpriteID, VigorKeyword.FullID);
+                    }
+                    else if (type == "haze" && CheckIconReplace(instance.confusedReplace))
+                    {
+                        __result = MakeSplicedIcon(__result, type, iconParent, "Haze", ConfusedIcon.SpriteID, ConfusedKeyword.FullID);
                     }
                 }
             }
@@ -230,9 +270,29 @@ namespace Spirefrost.Patches
                 {
                     return VulnerableIcon.SpriteID;
                 }
-                if (type == "frost" && CheckIconReplace(instance.weakReplace))
+                else if (type == "frost" && CheckIconReplace(instance.weakReplace))
                 {
                     return WeakIcon.SpriteID;
+                }
+                else if (type == "frost" && CheckIconReplace(instance.shackledReplace))
+                {
+                    return ShackledIcon.SpriteID;
+                }
+                else if (type == "shroom" && CheckIconReplace(instance.poisonReplace))
+                {
+                    return PoisonIcon.SpriteID;
+                }
+                else if ((type == "teeth" || type == "spikes") && CheckIconReplace(instance.thornsReplace))
+                {
+                    return ThornsIcon.SpriteID;
+                }
+                else if (type == "spice" && CheckIconReplace(instance.vigorReplace))
+                {
+                    return VigorIcon.SpriteID;
+                }
+                else if (type == "haze" && CheckIconReplace(instance.confusedReplace))
+                {
+                    return ConfusedIcon.SpriteID;
                 }
                 return type;
             }
@@ -250,13 +310,68 @@ namespace Spirefrost.Patches
                         return "spirefrost.dummyeffecttype";
                     }
                 }
-                if (CheckIconReplace(instance.weakReplace))
+                else if (CheckIconReplace(instance.weakReplace))
                 {
                     if (type == WeakIcon.SpriteID)
                     {
                         return "frost";
                     }
                     else if (type == "frost")
+                    {
+                        return "spirefrost.dummyeffecttype";
+                    }
+                }
+                else if (CheckIconReplace(instance.shackledReplace))
+                {
+                    if (type == ShackledIcon.SpriteID)
+                    {
+                        return "frost";
+                    }
+                    else if (type == "frost")
+                    {
+                        return "spirefrost.dummyeffecttype";
+                    }
+                }
+                else if (CheckIconReplace(instance.poisonReplace))
+                {
+                    if (type == PoisonIcon.SpriteID)
+                    {
+                        return "shroom";
+                    }
+                    else if (type == "shroom")
+                    {
+                        return "spirefrost.dummyeffecttype";
+                    }
+                }
+                else if (CheckIconReplace(instance.thornsReplace))
+                {
+                    if (type == ThornsIcon.SpriteID)
+                    {
+                        return "teeth";
+                    }
+                    else if (type == "teeth")
+                    {
+                        return "spirefrost.dummyeffecttype";
+                    }
+                }
+                else if (CheckIconReplace(instance.vigorReplace))
+                {
+                    if (type == VigorIcon.SpriteID)
+                    {
+                        return "spice";
+                    }
+                    else if (type == "spice")
+                    {
+                        return "spirefrost.dummyeffecttype";
+                    }
+                }
+                else if (CheckIconReplace(instance.confusedReplace))
+                {
+                    if (type == ConfusedIcon.SpriteID)
+                    {
+                        return "haze";
+                    }
+                    else if (type == "haze")
                     {
                         return "spirefrost.dummyeffecttype";
                     }
