@@ -232,12 +232,15 @@ namespace Spirefrost.Patches
     {
         static void Prefix(StatusEffectMultiHit __instance)
         {
-            foreach (var item in FrenzyEntityTriggerPatch.triggerMap[__instance])
+            if (FrenzyEntityTriggerPatch.triggerMap.ContainsKey(__instance))
             {
-                ActionTriggerPatch.actionMap.Remove(item);
-            }
+                foreach (var item in FrenzyEntityTriggerPatch.triggerMap[__instance])
+                {
+                    ActionTriggerPatch.actionMap.Remove(item);
+                }
 
-            FrenzyEntityTriggerPatch.triggerMap.Remove(__instance);
+                FrenzyEntityTriggerPatch.triggerMap.Remove(__instance);
+            }
         }
     }
 }
