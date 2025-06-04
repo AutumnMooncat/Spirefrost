@@ -1,5 +1,4 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.StatusEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
@@ -24,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenHitGainFury.ID, 2)
+                        SStack("When Hit Gain Attack To Self (No Ping)", 2)
                     };
                 });
         }
