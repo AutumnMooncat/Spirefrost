@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int Amount => 2;
+        internal static int Amount => 1;
 
         internal static object GetBuilder()
         {
@@ -21,7 +21,7 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithImage("Charms/StrengthCharm.png")
                 .WithTitle("Strength Potion")
                 .WithText($"Gain <+{Amount}><keyword=attack> on kill")
-                .WithTier(2)
+                .WithTier(1)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
