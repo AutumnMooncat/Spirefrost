@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(WhenDeployedAddReptoDaggerToHand.ID, 1),
+                        SStack(LinkedDagger.ID, 2),
                         SStack(TriggerWhenReptoDaggerPlayed.ID, 1)
                     };
                 });

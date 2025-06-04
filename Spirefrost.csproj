@@ -463,6 +463,7 @@
     <Compile Include="Builders\Keywords\AttackKeyword.cs" />
     <Compile Include="Builders\Keywords\ConfusedKeyword.cs" />
     <Compile Include="Builders\Keywords\IntangibleKeyword.cs" />
+    <Compile Include="Builders\Keywords\LinkedKeyword.cs" />
     <Compile Include="Builders\Keywords\PoisonKeyword.cs" />
     <Compile Include="Builders\Keywords\RegrowKeyword.cs" />
     <Compile Include="Builders\Keywords\ShackledKeyword.cs" />
@@ -475,6 +476,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\ExtraCounter.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="Builders\StatusEffects\LinkedCards.cs" />
     <Compile Include="Builders\StatusEffects\OnHitDamageDemonizedTarget.cs" />
     <Compile Include="Builders\StatusEffects\OnKillApplyDemonizeToEnemies.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelfPermanently.cs" />
@@ -793,6 +795,7 @@
     <Compile Include="StatusEffects\StatusEffectJudgement.cs" />
     <Compile Include="StatusEffects\StatusEffectLessonLearned.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenRetained.cs" />
+    <Compile Include="StatusEffects\StatusEffectLinkedCard.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSAmplify.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSDoubleTap.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSEnergized.cs" />

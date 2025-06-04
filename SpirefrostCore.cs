@@ -13,6 +13,7 @@ using Spirefrost.Builders.Tribes;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.Patches.ConfigPatches;
 using Spirefrost.Patches;
+using Spirefrost.StatusEffects;
 
 
 namespace Spirefrost
@@ -186,6 +187,7 @@ namespace Spirefrost
             Events.OnEntityCreated += FixImage;
             Events.PostBattle += CleanUpBattleEnd;
             Events.OnBackToMainMenu += CleanUpTemp;
+            Events.OnEntityChosen += PickupCheck;
 
             managedObjects = new GameObject(Title+".ManagedObjects");
             UnityEngine.Object.DontDestroyOnLoad(managedObjects);
@@ -211,6 +213,7 @@ namespace Spirefrost
             Events.OnEntityCreated -= FixImage;
             Events.PostBattle -= CleanUpBattleEnd;
             Events.OnBackToMainMenu -= CleanUpTemp;
+            Events.OnEntityChosen -= PickupCheck;
             managedObjects.Destroy();
             managedObjects = null;
             tempObjects.Destroy();
@@ -273,6 +276,28 @@ namespace Spirefrost
             List<T> list = data.ToList();
             list.RemoveAll(x => x == null || x.ModAdded == this);
             return list.ToArray();
+        }
+
+        private void PickupCheck(Entity entity)
+        {
+            if (References.Player)
+            {
+                foreach (var item in entity.statusEffects)
+                {
+                    if (item is StatusEffectLinkedCard link)
+                    {
+                        for (int i = 0; i < item.count; i++)
+                        {
+                            References.Player.data.inventory.deck.Add(link.linkedCard.Clone(true));
+                        }
+                    }
+                }
+                entity.data.startWithEffects = entity.data.startWithEffects.ToList().Where(s => !(s.data is StatusEffectLinkedCard)).ToArray();
+                if (entity.display is Card card)
+                {
+                    card.UpdateData(false);
+                }
+            }
         }
 
         private void CleanUpTemp()
