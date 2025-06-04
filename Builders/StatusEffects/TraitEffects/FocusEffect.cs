@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.StatusEffects;
 
 namespace Spirefrost.Builders.StatusEffects.TraitEffects
 {
@@ -11,7 +12,7 @@ namespace Spirefrost.Builders.StatusEffects.TraitEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectFocus>(ID)
+                .Create<StatusEffectSTSFocus>(ID)
                 .WithCanBeBoosted(false)
                 .WithStackable(true);
         }

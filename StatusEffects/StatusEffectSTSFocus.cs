@@ -1,9 +1,10 @@
 ﻿using Spirefrost.Patches;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Spirefrost.StatusEffects
 {
-    public class StatusEffectFocus : StatusEffectData
+    public class StatusEffectSTSFocus : StatusEffectData
     {
         private readonly Dictionary<string, int> modifedTempEffects = new Dictionary<string, int>();
 

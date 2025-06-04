@@ -812,7 +812,7 @@
     <Compile Include="StatusEffects\StatusEffectOrb.cs" />
     <Compile Include="StatusEffects\StatusEffectAffectAllXAppliedExtras.cs" />
     <Compile Include="StatusEffects\StatusEffectDiscovery.cs" />
-    <Compile Include="StatusEffects\StatusEffectFocus.cs" />
+    <Compile Include="StatusEffects\StatusEffectSTSFocus.cs" />
     <Compile Include="StatusEffects\StatusEffectRedirectConsume.cs" />
     <Compile Include="StatusEffects\StatusEffectRetain.cs" />
     <Compile Include="StatusEffects\StatusEffectTempConvertAttackToYPreTrigger.cs" />
