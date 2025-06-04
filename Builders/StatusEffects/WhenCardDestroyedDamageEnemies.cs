@@ -11,16 +11,17 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
-                .Create<StatusEffectApplyXOnCardPlayed>(ID)
+                .Create<StatusEffectApplyXWhenCardDestroyed>(ID)
                 .WithText("When a card is destroyed, deal <{a}> damage to all enemies")
                 .WithCanBeBoosted(true)
-                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenCardDestroyed>(data =>
                 {
                     data.dealDamage = true;
                     data.doesDamage = true;
                     data.countsAsHit = true;
                     data.canRetaliate = false;
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Enemies;
+                    data.mustBeOnBoard = false;
                 });
         }
     }
