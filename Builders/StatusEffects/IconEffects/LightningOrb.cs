@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
 
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
-        internal static int ApplyAmount => 2;
+        internal static int ApplyAmount => 1;
 
         internal static object GetBuilder()
         {
