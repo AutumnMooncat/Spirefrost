@@ -20,6 +20,9 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/GiantHead.png", "Units/GiantHeadBG2.png")
                 .SetStats(10, 3, 0)
                 .WithValue(50)
+                .WithEyes(FullID, 
+                (0.3f, 0.775f, 1.5f, 1.5f, 10f),
+                (0.475f, 0f, 1.5f, 1.5f, 10f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.SetWide();

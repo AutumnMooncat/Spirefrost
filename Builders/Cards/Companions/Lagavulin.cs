@@ -20,6 +20,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetStats(8, 4, 0)
                 .WithValue(50)
                 .SetTraits(TStack("Smackback", 1))
+                .WithEyes(FullID, (0.45f, -0.05f, 0.85f, 0.85f, 0f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     MainModFile.instance.maskedSpries[data.name] = MainModFile.instance.ImagePath("Units/LagavulinMask.png").ToSprite();

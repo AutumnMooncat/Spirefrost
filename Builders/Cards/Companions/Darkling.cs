@@ -19,6 +19,11 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/Darkling.png", "Units/DarklingBG.png")
                 .SetStats(4, 2, 5)
                 .WithValue(50)
+                .WithEyes(FullID, 
+                (0.475f, 0.525f, 1.1f, 1.1f, 0f),
+                (1.075f, 0.575f, 1f, 1f, 0f),
+                (-0.45f, 1.475f, 0.7f, 0.7f, 20f),
+                (-0.2f, 1.6f, 0.7f, 0.7f, 20f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]

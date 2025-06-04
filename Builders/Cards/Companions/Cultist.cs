@@ -20,6 +20,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetStats(6, 2, 5)
                 .WithValue(50)
                 .WithFlavour("Caw Caw!")
+                .WithEyes(FullID, (0.575f, 1.225f, 0.85f, 0.85f, -10f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]

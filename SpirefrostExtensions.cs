@@ -77,6 +77,37 @@ namespace Spirefrost
         }
     }
 
+    internal static class CardDataBuilderExtensions
+    {
+        internal static CardDataBuilder WithEyes(this CardDataBuilder builder, string cardID, params (float posX, float posY, float sizeX, float sizeY, float rot)[] eyes)
+        {
+            EyeData.Eye[] trueEyes = eyes.Select(e => new EyeData.Eye()
+            {
+                position = new Vector2(e.posX, e.posY),
+                scale = new Vector2(e.sizeX, e.sizeY),
+                rotation = e.rot
+            }).ToArray();
+            EyeDataBuilder eyeBuilder = new EyeDataBuilder(builder.Mod)
+                .Create("EyesOf" + cardID)
+                .WithCardData(cardID)
+                .WithEyes(trueEyes);
+            builder.AddLinkedBuilder(eyeBuilder);
+            return builder;
+        }
+    }
+
+    internal static class DataFileBuilderExtensions
+    {
+        public static string LinkedKey => "linkedBuilders";
+
+        internal static void AddLinkedBuilder<T, Y>(this DataFileBuilder<T, Y> builder, object other) where T : DataFile where Y : DataFileBuilder<T, Y>, new()
+        {
+            List<object> linked = SpirefrostUtils.GetNamedReference(builder, LinkedKey) as List<object> ?? new List<object>();
+            linked.Add(other);
+            SpirefrostUtils.SetNamedReference(builder, LinkedKey, linked);
+        }
+    }
+
     internal static class CharacterExtensions
     {
         internal static int TotalOpenSlots(this Character owner)

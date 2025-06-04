@@ -19,6 +19,9 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetStats(5, 1, 4)
                 .WithValue(50)
                 .SetTraits(TStack("Fury", 2))
+                .WithEyes(FullID, 
+                (-0.15f, 1.775f, 0.6f, 0.6f, 0f),
+                (0.15f, 1.775f, 0.55f, 0.55f, 0f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]

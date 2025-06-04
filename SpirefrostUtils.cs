@@ -1,4 +1,5 @@
-﻿using FMOD;
+﻿using Deadpan.Enums.Engine.Components.Modding;
+using FMOD;
 using HarmonyLib;
 using Mono.Cecil;
 using MonoMod.Cil;
@@ -113,6 +114,11 @@ namespace Spirefrost
                     object obj = (t.GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, null)) 
                         ?? throw new Exception($"AutoAdd Error: Type {t} does not define static method {methodName}");
                     result.Add(obj);
+
+                    if (GetNamedReference(obj, DataFileBuilderExtensions.LinkedKey) is List<object> linked)
+                    {
+                        result.AddRange(linked);
+                    }
 
                     string id = (string)(t.GetProperty(fieldName, BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null)) 
                         ?? throw new Exception($"AutoAdd Error: Type {t} does not define static property {fieldName}");

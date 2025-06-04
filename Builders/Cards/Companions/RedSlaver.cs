@@ -21,6 +21,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetStats(6, 3, 3)
                 .WithValue(50)
                 .SetTraits(TStack("Longshot", 1))
+                .WithEyes(FullID, (0.475f, 0.75f, 0.45f, 0.45f, -35f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]

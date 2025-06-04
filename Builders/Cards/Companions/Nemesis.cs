@@ -20,6 +20,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/Nemesis.png", "Units/NemesisBG.png")
                 .SetStats(1, 3, 5)
                 .WithValue(50)
+                .WithEyes(FullID, (0.35f, 1.325f, 0.85f, 0.85f, 10f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     MainModFile.instance.maskedSpries[data.name] = MainModFile.instance.ImagePath("Units/NemesisMask.png").ToSprite();

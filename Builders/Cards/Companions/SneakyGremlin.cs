@@ -18,6 +18,9 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/SneakyGremlin.png", "Units/SneakyGremlinBG.png")
                 .SetStats(2, 1, 0)
                 .WithValue(50)
+                .WithEyes(FullID, 
+                (0.375f, 1.325f, 0.75f, 0.75f, -10f),
+                (0.1f, 1.375f, 0.85f, 0.85f, -10f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]

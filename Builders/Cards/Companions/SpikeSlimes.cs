@@ -20,6 +20,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetStats(6, 2, 3)
                 .WithValue(50)
                 .SetTraits(TStack("Barrage", 1))
+                .WithEyes(FullID, (0.65f, 0.7f, 2.5f, 2.25f, 5f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -44,6 +45,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetStats(6, 2, 3)
                 .WithValue(50)
                 .SetTraits(TStack("Barrage", 1))
+                .WithEyes(FullID, (0.35f, 0.575f, 1.75f, 1.75f, 5f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
@@ -68,6 +70,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetStats(6, 2, 3)
                 .WithValue(50)
                 .SetTraits(TStack("Barrage", 1))
+                .WithEyes(FullID, (0.175f, 0.275f, 1.35f, 1.35f, 5f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]

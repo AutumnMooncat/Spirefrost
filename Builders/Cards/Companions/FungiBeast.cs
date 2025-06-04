@@ -19,6 +19,10 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/Fungi.png", "Units/FungiBG.png")
                 .SetStats(4, 0, 3)
                 .WithValue(50)
+                .WithEyes(FullID, 
+                (1.175f, 1f, 0.7f, 0.7f, -10f)/*,
+                (0.175f, 1.75f, 0.7f, 0.7f, -5f),
+                (0.5f, 1.725f, 0.65f, 0.65f, -5f)*/)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[] 

@@ -18,6 +18,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/Centurion.png", "Units/CenturionBG.png")
                 .SetStats(10, 3, 4)
                 .WithValue(50)
+                .WithEyes(FullID, (0.075f, 1.375f, 1.5f, 0.75f, -12.5f))
                 .SetStartWithEffect(SStack("On Turn Apply Shell To AllyBehind", 3));
         }
     }

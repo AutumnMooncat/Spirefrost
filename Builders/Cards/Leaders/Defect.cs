@@ -22,6 +22,9 @@ namespace Spirefrost.Builders.Cards.Leaders
                 .SetStats(7, 3, 4)
                 .WithValue(25)
                 .WithCardType("Leader")
+                .WithEyes(FullID, 
+                (0.45f, 1.7f, 0.7f, 0.7f, 5f),
+                (0.475f, 1.325f, 1.5f, 1.5f, 5f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     CardScriptRunnable defectScript = ScriptableObject.CreateInstance<CardScriptRunnable>();

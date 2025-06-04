@@ -19,6 +19,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 .SetSprites("Units/Reptomancer.png", "Units/ReptomancerBG.png")
                 .SetStats(8, 4, 0)
                 .WithValue(50)
+                .WithEyes(FullID, (0.0f, 1.6f, 0.85f, 0.85f, -10f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
