@@ -53,7 +53,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                             case 2:
                                 card.SetRandomHealth(6, 8);
                                 card.SetRandomDamage(4, 6);
-                                card.SetRandomCounter(5, 6);
+                                card.SetRandomCounter(5, 5);
                                 card.SetRandomPassive(OnCardPlayedAddHolyWaterToHand.ID, 1, 1);
                                 break;
 
