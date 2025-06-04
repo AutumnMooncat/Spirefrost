@@ -57,21 +57,14 @@ namespace Spirefrost.Patches
 
         internal static bool PlayingSTSLeader()
         {
-            //Debug.Log($"Checking if STS Leader:");
-            //Debug.Log($"Player exists? {References.Player != null}");
-            //Debug.Log($"Class id ({References.PlayerData?.classData?.id}) matches? {References.PlayerData?.classData?.id == SpireTribe.ClassID}");
             if (References.Player != null && References.PlayerData?.classData?.id == SpireTribe.ClassID)
             {
-                //Debug.Log($"Okay to replace!");
                 return true;
             }
-            //Debug.Log($"In select screen? {screenOpen}, Chose spire? {choseSpire}");
             if (screenOpen && choseSpire)
             {
-                //Debug.Log($"Okay to replace!");
                 return true;
             }
-            //Debug.Log($"Do not replace");
             return false;
         }
 
@@ -168,14 +161,15 @@ namespace Spirefrost.Patches
                     choseSpire = classData.id == SpireTribe.ClassID;
                     if (hadChoseSpire != choseSpire && currentPetSelect != null)
                     {
-                        Debug.Log($"Updating pet descriptions");
+                        Debug.Log($"Updating pets");
                         foreach (var item in currentPetSelect.pets)
                         {
-                            if (item.display is Card card)
-                            {
-                                card.SetDescription();
-                            }
+                            CardManager.ReturnToPool(item);
                         }
+                        currentPetSelect.pets.Clear();
+                        currentPetSelect.group.Clear();
+                        IEnumerator restart = currentPetSelect.SetUp();
+                        while (restart.MoveNext()) { }
                     }
                 }
             }
@@ -472,6 +466,62 @@ namespace Spirefrost.Patches
                         {
                             Debug.Log($"OnHitVFXPatch - Wrapping type in inverse replace check");
                             yield return new CodeInstruction(OpCodes.Call, check);
+                        }
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch]
+        internal class NoTargetSystemPatches
+        {
+            [HarmonyPatch(typeof(NoTargetTextSystem), nameof(NoTargetTextSystem.Run))]
+            internal static class RunPatch
+            {
+                static void Prefix(ref object[] args)
+                {
+                    if (args != null)
+                    {
+                        for (int i = 0; i < args.Length; i++)
+                        {
+                            if (args[i] is string str)
+                            {
+                                if (CheckIconReplace(instance.vulnReplace))
+                                {
+                                    str = str.Replace("=demonize", "=" + VulnerableIcon.SpriteID);
+                                    args[i] = str;
+                                }
+                                if (CheckIconReplace(instance.weakReplace))
+                                {
+                                    str = str.Replace("=frost", "=" + WeakIcon.SpriteID);
+                                    args[i] = str;
+                                }
+                                if (CheckIconReplace(instance.shackledReplace))
+                                {
+                                    str = str.Replace("=frost", "=" + ShackledIcon.SpriteID);
+                                    args[i] = str;
+                                }
+                                if (CheckIconReplace(instance.poisonReplace))
+                                {
+                                    str = str.Replace("=shroom", "=" + PoisonIcon.SpriteID);
+                                    args[i] = str;
+                                }
+                                if (CheckIconReplace(instance.thornsReplace))
+                                {
+                                    str = str.Replace("=teeth", "=" + ThornsIcon.SpriteID);
+                                    args[i] = str;
+                                }
+                                if (CheckIconReplace(instance.vigorReplace))
+                                {
+                                    str = str.Replace("=spice", "=" + VigorIcon.SpriteID);
+                                    args[i] = str;
+                                }
+                                if (CheckIconReplace(instance.confusedReplace))
+                                {
+                                    str = str.Replace("=haze", "=" + ConfusedIcon.SpriteID);
+                                    args[i] = str;
+                                }
+                            }
                         }
                     }
                 }
