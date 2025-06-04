@@ -77,6 +77,32 @@ namespace Spirefrost
         }
     }
 
+    internal static class StatusEffectDataExtensions
+    {
+        public static string SwapperKey => "effectSwapper";
+
+        internal static void WithSwappable(this StatusEffectData data, StatusEffectData swapTo, StatusEffectData swapToAttack = null, Vector2Int boost = new Vector2Int())
+        {
+            BattleGenerationScriptFinalBoss scriptFinalBoss = MainModFile.instance.TryGet<BattleData>("Final Boss").generationScript as BattleGenerationScriptFinalBoss;
+
+            if (SpirefrostUtils.GetNamedReference(data, SwapperKey) is FinalBossEffectSwapper old)
+            {
+                scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.Without(old);
+                old.Destroy();
+            }
+
+            FinalBossEffectSwapper swapper = ScriptableObject.CreateInstance<FinalBossEffectSwapper>();
+            swapper.effect = data;
+            swapper.replaceWithOptions = swapTo ? new StatusEffectData[] { swapTo } : new StatusEffectData[0];
+            swapper.replaceWithAttackEffect = swapToAttack;
+            swapper.boostRange = boost;
+            swapper.remove = true;
+            scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.With(swapper);
+
+            SpirefrostUtils.SetNamedReference(data, SwapperKey, swapper);
+        }
+    }
+
     internal static class CardDataBuilderExtensions
     {
         internal static CardDataBuilder WithEyes(this CardDataBuilder builder, string cardID, params (float posX, float posY, float sizeX, float sizeY, float rot)[] eyes)

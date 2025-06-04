@@ -43,6 +43,16 @@ namespace Spirefrost
             managedReferences.Remove(reference);
         }
 
+        internal static List<object> GetAllNamedReferences(string name)
+        {
+            return managedReferences.Values.Select(dict => dict[name]).Where(obj => obj != null).ToList();
+        }
+
+        internal static void FreeAllReferences()
+        {
+            managedReferences.Clear();
+        }
+
         internal class WeightedString : IComparable<WeightedString>
         {
             public WeightedString(string str, int weight)

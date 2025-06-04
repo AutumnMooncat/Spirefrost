@@ -269,6 +269,24 @@ namespace Spirefrost
                     pool.list.RemoveAllWhere((item) => item == null || item.ModAdded == this); //Find and remove everything that needs to be removed.
                 }
             }
+
+            List<FinalBossEffectSwapper> foundSwappers = new List<FinalBossEffectSwapper>();
+            foreach (var item in GetAllNamedReferences(StatusEffectDataExtensions.SwapperKey)) 
+            {
+                if (item is FinalBossEffectSwapper swapper)
+                {
+                    foundSwappers.Add(swapper);
+                }
+            }
+            BattleGenerationScriptFinalBoss scriptFinalBoss = TryGet<BattleData>("Final Boss").generationScript as BattleGenerationScriptFinalBoss;
+            scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.ToList().Except(foundSwappers).ToArray();
+            foreach (var item in foundSwappers)
+            {
+                item.Destroy();
+            }
+            foundSwappers.Clear();
+
+            FreeAllReferences();
         }
 
         internal T[] RemoveNulls<T>(T[] data) where T : DataFile
