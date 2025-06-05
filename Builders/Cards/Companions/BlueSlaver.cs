@@ -17,9 +17,9 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Slaver")
                 .SetSprites("Units/SlaverBlue.png", "Units/SlaverBlueBG.png")
-                .SetStats(6, 2, 5)
+                .SetStats(6, 6, 5)
                 .WithValue(50)
-                .SetTraits(TStack("Longshot", 1), TStack("Pull", 2))
+                .SetTraits(TStack("Longshot", 1))
                 .WithEyes(FullID, (0.475f, 0.75f, 0.55f, 0.55f, -35f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
