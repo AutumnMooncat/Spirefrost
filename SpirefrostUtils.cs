@@ -45,7 +45,7 @@ namespace Spirefrost
 
         internal static List<object> GetAllNamedReferences(string name)
         {
-            return managedReferences.Values.Select(dict => dict[name]).Where(obj => obj != null).ToList();
+            return managedReferences.Values.Where(dict => dict.ContainsKey(name)).Select(dict => dict[name]).ToList();
         }
 
         internal static void FreeAllReferences()
