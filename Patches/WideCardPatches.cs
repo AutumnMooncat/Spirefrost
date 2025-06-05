@@ -613,6 +613,15 @@ namespace Spirefrost.Patches
                     return true;
                 }
             }
+
+            [HarmonyPatch(typeof(Battle), nameof(Battle.GetOppositeRows))]
+            internal static class GetOppositeRowsPatch
+            {
+                static void Prefix(ref CardContainer[] rows)
+                {
+                    rows = rows.Distinct().ToArray();
+                }
+            }
         }
 
         internal static class BattleSaveLogic
@@ -749,6 +758,11 @@ namespace Spirefrost.Patches
             {
                 static bool Prefix(CardContainer __instance, Entity entity)
                 {
+                    if (entity == null)
+                    {
+                        Debug.LogError($"CardContainer Attempting to add null entity!");
+                        return false;
+                    }
                     if (entity.data.IsWide() && __instance.entities.Contains(entity))
                     {
                         return false;
