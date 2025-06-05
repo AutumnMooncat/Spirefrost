@@ -8,8 +8,10 @@ namespace Spirefrost.StatusEffects
         {
             if (MainModFile.instance.maskedSpries.TryGetValue(target.data.name, out Sprite sprite))
             {
-                target.data.mainSprite = sprite;
-                target.gameObject.GetComponent<Card>().mainImage.sprite = sprite;
+                if (target.display is Card card)
+                {
+                    card.mainImage.sprite = sprite;
+                }
             }
         }
     }
