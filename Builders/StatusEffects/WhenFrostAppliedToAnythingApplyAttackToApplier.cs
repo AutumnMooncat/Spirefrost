@@ -16,6 +16,8 @@ namespace Spirefrost.Builders.StatusEffects
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectApplyXToApplierWhenYAppliedTo>(ID)
                 .WithText($"Whenever anything is <keyword=frost>'d, add <+{{a}}><keyword=attack> to the applier")
+                .WithCanBeBoosted(true)
+                .WithStackable(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXToApplierWhenYAppliedTo>(data =>
                 {
                     data.whenAppliedToFlags = StatusEffectApplyX.ApplyToFlags.Self | StatusEffectApplyX.ApplyToFlags.Allies | StatusEffectApplyX.ApplyToFlags.Enemies;
