@@ -13,7 +13,7 @@ namespace Spirefrost.Builders.StatusEffects.TraitEffects
         {
             return new StatusEffectDataBuilder(MainModFile.instance)
                 .Create<StatusEffectSTSFocus>(ID)
-                .WithCanBeBoosted(false)
+                .WithCanBeBoosted(true)
                 .WithStackable(true);
         }
     }
