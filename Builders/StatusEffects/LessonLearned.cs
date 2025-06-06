@@ -17,7 +17,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithCanBeBoosted(false)
                 .SubscribeToAfterAllBuildEvent<StatusEffectLessonLearned>(data =>
                 {
-
+                    data.WithSwappable(TryGet<StatusEffectData>("On Card Played Apply Attack To Self"));
                 });
         }
     }

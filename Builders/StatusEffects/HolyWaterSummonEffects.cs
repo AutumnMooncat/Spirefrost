@@ -17,6 +17,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantSummonHolyWaterInHand.ID);
+                    data.WithSwappable(TryGet<StatusEffectData>("On Card Played Reduce Counter To Allies"));
                 });
         }
     }

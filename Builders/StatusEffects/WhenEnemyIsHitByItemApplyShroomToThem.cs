@@ -15,6 +15,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenUnitIsHit>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>("Shroom");
+                    data.WithSwappable(null, TryGet<StatusEffectData>("Shroom"), new UnityEngine.Vector2Int(2, 2));
                 });
         }
     }

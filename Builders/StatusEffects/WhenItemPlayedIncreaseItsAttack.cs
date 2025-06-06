@@ -25,6 +25,7 @@ namespace Spirefrost.Builders.StatusEffects
                         ScriptableObject.CreateInstance<TargetConstraintIsItem>(),
                         ScriptableObject.CreateInstance<TargetConstraintDoesDamage>()
                     };
+                    data.WithSwappable(TryGet<StatusEffectData>("When Hit Reduce Attack To Attacker"));
                 });
         }
     }

@@ -17,6 +17,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantSummonShivInHand.ID);
+                    data.WithSwappable(TryGet<StatusEffectData>("MultiHit"));
                 });
         }
     }

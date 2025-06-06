@@ -28,6 +28,7 @@ namespace Spirefrost.Builders.StatusEffects
                     };
                     data.noTargetType = NoTargetType.NoTargetForStatus;
                     data.noTargetTypeArgs = new string[] { MakeSpriteInsert(AmplifyIcon.SpriteID) };
+                    data.WithSwappable(TryGet<StatusEffectData>("On Card Played Boost To Allies & Enemies"));
                 });
         }
     }

@@ -18,6 +18,7 @@ namespace Spirefrost.Builders.StatusEffects
                 {
                     ScriptableSkillsInHand skills = ScriptableObject.CreateInstance<ScriptableSkillsInHand>();
                     data.scriptableAmount = skills;
+                    data.WithSwappable(TryGet<StatusEffectData>("On Hit Damage Damaged Target"), null, new Vector2Int(3, 3));
                 });
         }
     }

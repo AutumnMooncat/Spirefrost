@@ -28,6 +28,7 @@ namespace Spirefrost.Builders.StatusEffects
                     };
                     data.noTargetType = NoTargetType.NoTargetForStatus;
                     data.noTargetTypeArgs = new string[] { MakeSpriteInsert(DoubleTapIcon.SpriteID) };
+                    data.WithSwappable(TryGet<StatusEffectData>("On Card Played Destroy Rightmost Card In Hand"));
                 });
         }
     }

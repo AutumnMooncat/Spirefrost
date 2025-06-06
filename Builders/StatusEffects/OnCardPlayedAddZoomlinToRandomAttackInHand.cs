@@ -25,6 +25,7 @@ namespace Spirefrost.Builders.StatusEffects
                     {
                         damageItem
                     };
+                    data.WithSwappable(TryGet<StatusEffectData>("On Card Played Trigger RandomAlly"));
                 });
         }
     }
