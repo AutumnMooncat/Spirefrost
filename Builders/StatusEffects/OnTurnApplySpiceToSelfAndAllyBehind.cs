@@ -15,6 +15,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnTurn>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self | StatusEffectApplyX.ApplyToFlags.AllyBehind;
+                    data.WithSwappable(TryGet<StatusEffectData>("On Turn Apply Spice To Allies"));
                 });
         }
     }
