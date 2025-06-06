@@ -484,6 +484,7 @@
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
+    <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToRightmostCardInHand.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
     <Compile Include="Patches\ExtraCounterPatches.cs" />
@@ -823,6 +824,7 @@
     <Compile Include="StatusEffects\StatusEffectRedirectConsume.cs" />
     <Compile Include="StatusEffects\StatusEffectRetain.cs" />
     <Compile Include="StatusEffects\StatusEffectTempConvertAttackToYPreTrigger.cs" />
+    <Compile Include="StatusEffects\StatusEffectWhileActiveXCustom.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Builders\Cards\Summons\" />

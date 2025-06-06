@@ -37,7 +37,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomHealth(7, 9);
                                 card.SetRandomDamage(3, 4);
                                 card.SetRandomCounter(4, 4);
-                                card.SetRandomPassive("While Active Increase Attack To Items In Hand", 1, 1);
+                                card.SetRandomPassive(WhileActiveIncreaseAttackToRightmostCardInHand.ID, 2, 2);
                                 break;
 
                             // Envenom

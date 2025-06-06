@@ -76,6 +76,23 @@ namespace Spirefrost
         }
     }
 
+    public class TargetConstraintLastInHand : TargetConstraint
+    {
+        public override bool Check(Entity target)
+        {
+            if (target.InHand() && target.owner.handContainer.FirstOrDefault((Entity a) => a.alive) == target)
+            {
+                return !not;
+            }
+            return not;
+        }
+
+        public override bool Check(CardData targetData)
+        {
+            return false;
+        }
+    }
+
     public abstract class OwnerRelevantTargetConstraint : TargetConstraint
     {
         public Entity relevantEntity;
