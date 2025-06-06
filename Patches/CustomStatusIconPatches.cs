@@ -83,7 +83,7 @@ namespace Spirefrost.Patches
         {
             static void Prefix(StatusIcon __instance)
             {
-                SpirefrostUtils.FreeReference(__instance);
+                SpirefrostUtils.FreeReferences(__instance);
             }
         }
 

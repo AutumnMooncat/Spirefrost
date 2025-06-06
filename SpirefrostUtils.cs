@@ -38,7 +38,15 @@ namespace Spirefrost
             return managedReferences[reference][name];
         }
 
-        internal static void FreeReference(object reference)
+        internal static void FreeNamedReference(object reference, string name)
+        {
+            if (managedReferences.ContainsKey(reference))
+            {
+                managedReferences[reference].Remove(name);
+            }
+        }
+
+        internal static void FreeReferences(object reference)
         {
             managedReferences.Remove(reference);
         }

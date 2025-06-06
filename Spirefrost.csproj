@@ -487,6 +487,7 @@
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
     <Compile Include="Patches\ExtraCounterPatches.cs" />
+    <Compile Include="Patches\FreeReferencesPatches.cs" />
     <Compile Include="Patches\IconReplacementPatches.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
