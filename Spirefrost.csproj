@@ -489,6 +489,7 @@
     <Compile Include="Patches\ExtraCounterPatches.cs" />
     <Compile Include="Patches\FreeReferencesPatches.cs" />
     <Compile Include="Patches\IconReplacementPatches.cs" />
+    <Compile Include="Patches\TemporaryCharmPatches.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenDemonizeApplied.cs" />

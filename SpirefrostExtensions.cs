@@ -158,9 +158,57 @@ namespace Spirefrost
 
     internal static class EntityExtensions
     {
+        public static string MirroredKey => "mirroredData";
+
         internal static CardSlot[] GetContainingSlots(this Entity entity)
         {
             return entity.actualContainers.Select(cont => cont as CardSlot).Where(slot => slot != null).ToArray();
+        }
+
+        internal static CardData GetMirroredData(this Entity entity)
+        {
+            return SpirefrostUtils.GetNamedReference(entity, MirroredKey) as CardData;
+        }
+
+        internal static CardData GetOrMakeMirroredData(this Entity entity)
+        {
+            CardData mirror = entity.GetMirroredData();
+            if (mirror)
+            {
+                return mirror;
+            }
+            CardData original = entity.data;
+            mirror = original.Clone(false);
+            mirror.hp = original.hp;
+            mirror.damage = original.damage;
+            mirror.counter = original.counter;
+            mirror.uses = original.uses;
+            mirror.effectBonus = original.effectBonus;
+            mirror.effectFactor = original.effectFactor;
+            mirror.attackEffects = new CardData.StatusEffectStacks[original.attackEffects.Length];
+            for (int i = 0; i < original.attackEffects.Length; i++)
+            {
+                mirror.attackEffects[i] = original.attackEffects[i].Clone();
+            }
+            mirror.startWithEffects = new CardData.StatusEffectStacks[original.startWithEffects.Length];
+            for (int i = 0; i < original.startWithEffects.Length; i++)
+            {
+                mirror.startWithEffects[i] = original.startWithEffects[i].Clone();
+            }
+            mirror.traits = new List<CardData.TraitStacks>();
+            foreach (var item in original.traits)
+            {
+                mirror.traits.Add(new CardData.TraitStacks(item.data, item.count));
+            }
+            mirror.upgrades = new List<CardUpgradeData>();
+            foreach (var item in original.upgrades)
+            {
+                mirror.upgrades.Add(item.Clone());
+            }
+            mirror.charmSlots = original.charmSlots;
+
+            SpirefrostUtils.SetNamedReference(entity, MirroredKey, mirror);
+            return mirror;
         }
     }
 

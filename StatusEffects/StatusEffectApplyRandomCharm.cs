@@ -8,7 +8,7 @@ namespace Spirefrost.StatusEffects
 {
     public class StatusEffectApplyRandomCharm : StatusEffectInstant
     {
-        public bool useBanlist = false;
+        public bool useBanlist = true;
 
         private static readonly List<string> bannedCharms = new List<string>()
         {
@@ -44,13 +44,13 @@ namespace Spirefrost.StatusEffects
             public List<Entity.TraitStacks> deltaTraits;
         }
 
-        private bool HasRoom(Entity entity)
+        private bool HasRoom(CardData data)
         {
-            int filled = entity.data.upgrades.FindAll((a) => a.type == CardUpgradeData.Type.Charm && a.takeSlot).Count;
-            int slots = entity.data.charmSlots;
-            if (entity.data.customData != null)
+            int filled = data.upgrades.FindAll((a) => a.type == CardUpgradeData.Type.Charm && a.takeSlot).Count;
+            int slots = data.charmSlots;
+            if (data.customData != null)
             {
-                entity.data.TryGetCustomData("extraCharmSlots", out int found, 0);
+                data.TryGetCustomData("extraCharmSlots", out int found, 0);
                 slots += found;
             }
 
@@ -66,12 +66,15 @@ namespace Spirefrost.StatusEffects
         public override IEnumerator Process()
         {
             Card card = target.display as Card;
-            if (HasRoom(target) && card)
+            StatusEffectCustomSaveable saveable = StatusEffectCustomSaveable.GetOrMake(target);
+            CardData mirrorData = target.GetOrMakeMirroredData();
+            CardData originalData = target.data;
+            if (HasRoom(mirrorData) && card)
             {
                 List<CardUpgradeData> validUpgrades = new List<CardUpgradeData>();
                 foreach (CardUpgradeData upgrade in AddressableLoader.GetGroup<CardUpgradeData>("CardUpgradeData"))
                 {
-                    if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(useBanlist && bannedCharms.Contains(upgrade.name)) && upgrade.CanAssign(target))
+                    if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(useBanlist && bannedCharms.Contains(upgrade.name)) && upgrade.CanAssign(mirrorData))
                     {
                         validUpgrades.Add(upgrade);
                     }
@@ -80,6 +83,8 @@ namespace Spirefrost.StatusEffects
                 for (int i = 0; i < applyAmount; i++)
                 {
                     CardUpgradeData applyMe = validUpgrades.TakeRandom().Clone();
+                    saveable.MakeSaveable(typeof(TemporaryCharmPatches), nameof(TemporaryCharmPatches.OnLoad), applyMe.name);
+                    target.data = mirrorData;
                     StoreChanges();
                     Events.InvokeUpgradeAssign(target, applyMe);
                     applyMe.Assign(target.data);
@@ -91,6 +96,7 @@ namespace Spirefrost.StatusEffects
                     yield return target.UpdateTraits();
                     CardUpdateDataPatch.shortCircuitOnce = true;
                     yield return card.UpdateData();
+                    target.data = originalData;
                 }
             }
             yield return base.Process();
