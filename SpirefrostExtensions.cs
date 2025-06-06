@@ -81,7 +81,7 @@ namespace Spirefrost
     {
         public static string SwapperKey => "effectSwapper";
 
-        internal static void WithSwappable(this StatusEffectData data, StatusEffectData swapTo, StatusEffectData swapToAttack = null, Vector2Int boost = new Vector2Int())
+        internal static void WithSwappable(this StatusEffectData data, StatusEffectData swapTo, StatusEffectData swapToAttack = null, Vector2Int boost = new Vector2Int(), bool remove = true)
         {
             BattleGenerationScriptFinalBoss scriptFinalBoss = MainModFile.instance.TryGet<BattleData>("Final Boss").generationScript as BattleGenerationScriptFinalBoss;
 
@@ -96,7 +96,7 @@ namespace Spirefrost
             swapper.replaceWithOptions = swapTo ? new StatusEffectData[] { swapTo } : new StatusEffectData[0];
             swapper.replaceWithAttackEffect = swapToAttack;
             swapper.boostRange = boost;
-            swapper.remove = true;
+            swapper.remove = remove;
             scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.With(swapper);
 
             SpirefrostUtils.SetNamedReference(data, SwapperKey, swapper);
