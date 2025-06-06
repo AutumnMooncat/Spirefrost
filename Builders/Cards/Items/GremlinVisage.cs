@@ -19,7 +19,7 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Gremlin Visage")
                 .SetSprites("Items/GremlinVisage.png", "Items/GremlinVisageBG.png")
                 .WithValue(55)
-                .SetDamage(1)
+                .SetDamage(2)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.attackEffects = new CardData.StatusEffectStacks[]
