@@ -37,7 +37,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                             // Lightning
                             case 0:
                                 card.SetRandomHealth(7, 9);
-                                card.SetRandomDamage(0, 1);
+                                card.SetRandomDamage(1, 2);
                                 card.SetRandomCounter(4, 5);
                                 card.SetRandomPassive(OnCardPlayedChannelLightning.ID, 1, 1);
                                 break;
