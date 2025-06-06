@@ -478,6 +478,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\LinkedCards.cs" />
     <Compile Include="Builders\StatusEffects\OnHitDamageDemonizedTarget.cs" />
+    <Compile Include="Builders\StatusEffects\OnHitEqualDamageToFrostedTarget.cs" />
     <Compile Include="Builders\StatusEffects\OnKillApplyDemonizeToEnemies.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelfPermanently.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnApplySpiceToSelfAndAllyBehind.cs" />
@@ -773,6 +774,7 @@
     <Compile Include="SpirefrostVFXBuilder.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyMultipleWhenYAppliedTo.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXAtHalfHealth.cs" />
+    <Compile Include="StatusEffects\StatusEffectApplyXOnHitContext.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXToApplierWhenYAppliedTo.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenAlliesAttackOnBoard.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenAnyCardIsPlayed.cs" />
