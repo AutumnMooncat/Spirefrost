@@ -483,6 +483,7 @@
     <Compile Include="Builders\StatusEffects\OnTurnApplySpiceToSelfAndAllyBehind.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
+    <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
     <Compile Include="Patches\ExtraCounterPatches.cs" />
@@ -784,6 +785,7 @@
     <Compile Include="StatusEffects\StatusEffectApplyXWhenStatusAppliedToSelf.cs" />
     <Compile Include="StatusEffects\StatusEffectConvertXToYPreTrigger.cs" />
     <Compile Include="StatusEffects\StatusEffectCopyAttackEffectsPreTrigger.cs" />
+    <Compile Include="StatusEffects\StatusEffectCustomSaveable.cs" />
     <Compile Include="StatusEffects\StatusEffectDivision.cs" />
     <Compile Include="StatusEffects\StatusEffectExtraCounter.cs" />
     <Compile Include="StatusEffects\StatusEffectFeed.cs" />
