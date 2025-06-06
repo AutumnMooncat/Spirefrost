@@ -30,7 +30,7 @@ namespace Spirefrost.StatusEffects
         }
 
          private void CheckAction(PlayAction playAction)
-        {
+         {
             if (playAction is ActionReduceUses && primed)
             {
                 ActionQueue.Stack(new ActionSequence(DoStuff(entityRef, targetsRef))
@@ -38,7 +38,7 @@ namespace Spirefrost.StatusEffects
                     note = "StatusEffectApplyXWhenAnyCardIsPlayed"
                 }, fixedPosition: true);
             }
-        }
+         }
 
         public static CardContainer[] GetWasInRows(Entity entity, IEnumerable<Entity> targets)
         {
