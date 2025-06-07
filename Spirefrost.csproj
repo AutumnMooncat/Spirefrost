@@ -449,6 +449,7 @@
   <ItemGroup>
     <Compile Include="Builders\Cards\Companions\GiantHead.cs" />
     <Compile Include="Builders\Cards\Companions\GremlinLeader.cs" />
+    <Compile Include="Builders\Cards\Companions\Maw.cs" />
     <Compile Include="Builders\Cards\Companions\Nemesis.cs" />
     <Compile Include="Builders\Cards\Companions\Reptomancer.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
@@ -484,6 +485,7 @@
     <Compile Include="Builders\StatusEffects\OnHitDamageDemonizedTarget.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualDamageToFrostedTarget.cs" />
     <Compile Include="Builders\StatusEffects\OnKillApplyDemonizeToEnemies.cs" />
+    <Compile Include="Builders\StatusEffects\OnKillGainTargetAttackAndEffect.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelfPermanently.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnApplySpiceToSelfAndAllyBehind.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
@@ -804,6 +806,7 @@
     <Compile Include="StatusEffects\StatusEffectInstantPutIntoHand.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantIncreaseCounter.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantLoseHealth.cs" />
+    <Compile Include="StatusEffects\StatusEffectInstantTakeStatsAndEffects.cs" />
     <Compile Include="StatusEffects\StatusEffectJudgement.cs" />
     <Compile Include="StatusEffects\StatusEffectLessonLearned.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXWhenRetained.cs" />
