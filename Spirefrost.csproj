@@ -452,8 +452,10 @@
     <Compile Include="Builders\Cards\Companions\Nemesis.cs" />
     <Compile Include="Builders\Cards\Companions\Reptomancer.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
+    <Compile Include="Builders\Cards\Companions\Transient.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
     <Compile Include="Builders\Icons\ConfusedIcon.cs" />
+    <Compile Include="Builders\Icons\FadingIcon.cs" />
     <Compile Include="Builders\Icons\IntangibleIcon.cs" />
     <Compile Include="Builders\Icons\PoisonIcon.cs" />
     <Compile Include="Builders\Icons\RegrowIcon.cs" />
@@ -470,10 +472,12 @@
     <Compile Include="Builders\Keywords\SkillKeyword.cs" />
     <Compile Include="Builders\Keywords\ThornsKeyword.cs" />
     <Compile Include="Builders\Keywords\VigorKeyword.cs" />
+    <Compile Include="Builders\Keywords\FadingKeyword.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToMissingHealth.cs" />
     <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
     <Compile Include="Builders\StatusEffects\DoubleFrost.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\ExtraCounter.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\Fading.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
     <Compile Include="Builders\StatusEffects\LinkedCards.cs" />
@@ -485,6 +489,7 @@
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
+    <Compile Include="Builders\StatusEffects\WhenHitApplyFrostToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToRightmostCardInHand.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
@@ -806,6 +811,7 @@
     <Compile Include="StatusEffects\StatusEffectSTSAmplify.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSDoubleTap.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSEnergized.cs" />
+    <Compile Include="StatusEffects\StatusEffectSTSFading.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSFlight.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSIntangible.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSLifeLink.cs" />

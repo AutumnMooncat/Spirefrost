@@ -173,7 +173,7 @@ namespace Spirefrost
                 StatusEffectInstantKill kill = TryGet<StatusEffectData>("Kill") as StatusEffectInstantKill;
                 if (kill)
                 {
-                    kill.statusesToClear = kill.statusesToClear.With(Intangible.FullID);
+                    kill.statusesToClear = kill.statusesToClear.AddRangeToArray(new string[] { Intangible.FullID, Fading.FullID });
                 }
             }
 
