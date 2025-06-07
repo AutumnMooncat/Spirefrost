@@ -452,6 +452,7 @@
     <Compile Include="Builders\Cards\Companions\Maw.cs" />
     <Compile Include="Builders\Cards\Companions\Nemesis.cs" />
     <Compile Include="Builders\Cards\Companions\Reptomancer.cs" />
+    <Compile Include="Builders\Cards\Companions\ShelledParasite.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
     <Compile Include="Builders\Cards\Companions\Transient.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
@@ -484,6 +485,7 @@
     <Compile Include="Builders\StatusEffects\LinkedCards.cs" />
     <Compile Include="Builders\StatusEffects\OnHitDamageDemonizedTarget.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualDamageToFrostedTarget.cs" />
+    <Compile Include="Builders\StatusEffects\OnHitEqualHealToSelf.cs" />
     <Compile Include="Builders\StatusEffects\OnKillApplyDemonizeToEnemies.cs" />
     <Compile Include="Builders\StatusEffects\OnKillGainTargetAttackAndEffect.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelfPermanently.cs" />
