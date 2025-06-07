@@ -4,7 +4,7 @@ using static Spirefrost.SpirefrostUtils.AutoAdd;
 
 namespace Spirefrost.Builders.Cards.Companions
 {
-    [ToPoolList(PoolListType.Units)]
+    [ToPoolList(PoolListType.SilentUnits)]
     internal class Snecko : SpirefrostBuilder
     {
         internal static string ID => "snecko";
