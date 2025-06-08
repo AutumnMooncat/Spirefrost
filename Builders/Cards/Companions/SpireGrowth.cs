@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("When Hit Damage To EnemiesInRow", 2)
+                        SStack(WhileActiveConstrictedToFrontEnemy.ID, 1)
                     };
                 });
         }
