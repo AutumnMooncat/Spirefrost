@@ -499,6 +499,7 @@
     <Compile Include="Builders\StatusEffects\WhenHitApplyFrostToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToRightmostCardInHand.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveAttacksApplyShroom.cs" />
+    <Compile Include="Patches\CleansePatch.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
     <Compile Include="Patches\ExtraCounterPatches.cs" />

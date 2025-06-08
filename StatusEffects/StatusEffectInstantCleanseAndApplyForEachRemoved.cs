@@ -9,7 +9,7 @@ namespace Spirefrost.StatusEffects
 
         public override IEnumerator Process()
         {
-            int num = target.statusEffects.Select(status => status.IsNegativeStatusEffect() ? 1 : 0).Sum();
+            int num = target.statusEffects.Select(status => (status.IsNegativeStatusEffect() && status.count > status.temporary) ? 1 : 0).Sum();
             yield return base.Process();
             if (num > 0)
             {
