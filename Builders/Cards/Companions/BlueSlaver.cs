@@ -15,7 +15,7 @@ namespace Spirefrost.Builders.Cards.Companions
         internal static object GetBuilder()
         {
             return new CardDataBuilder(MainModFile.instance)
-                .CreateUnit(ID, "Slaver")
+                .CreateUnit(ID, "Blue Slaver")
                 .SetSprites("Units/SlaverBlue.png", "Units/SlaverBlueBG.png")
                 .SetStats(6, 6, 5)
                 .WithValue(50)
