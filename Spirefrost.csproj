@@ -447,6 +447,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\Cards\Clunkers\SnakePlant.cs" />
     <Compile Include="Builders\Cards\Clunkers\SpireGrowth.cs" />
     <Compile Include="Builders\Cards\Clunkers\WrithingMass.cs" />
     <Compile Include="Builders\Cards\Companions\GiantHead.cs" />
