@@ -25,7 +25,7 @@ namespace Spirefrost.Builders.Cards.Clunkers
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Scrap", 1),
-                        SStack(WhileActiveReduceEffectsToFrontEnemy.ID, 1)
+                        SStack("While Active Increase Effects To Allies & Enemies", 1)
                     };
                 });
         }
