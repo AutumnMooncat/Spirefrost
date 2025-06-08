@@ -24,8 +24,8 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("MultiHit", 2),
-                        SStack(WhenDeployedApplyFlightToSelf.ID, 3)
+                        SStack(WhenDeployedApplyFlightToSelf.ID, 3),
+                        SStack("MultiHit", 2)
                     };
                 });
         }
