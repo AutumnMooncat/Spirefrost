@@ -460,6 +460,7 @@
     <Compile Include="Builders\Cards\Companions\Transient.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
     <Compile Include="Builders\Icons\ConfusedIcon.cs" />
+    <Compile Include="Builders\Icons\ConstrictedIcon.cs" />
     <Compile Include="Builders\Icons\FadingIcon.cs" />
     <Compile Include="Builders\Icons\IntangibleIcon.cs" />
     <Compile Include="Builders\Icons\PoisonIcon.cs" />
@@ -469,6 +470,7 @@
     <Compile Include="Builders\Icons\VigorIcon.cs" />
     <Compile Include="Builders\Keywords\AttackKeyword.cs" />
     <Compile Include="Builders\Keywords\ConfusedKeyword.cs" />
+    <Compile Include="Builders\Keywords\ConstrictedKeyword.cs" />
     <Compile Include="Builders\Keywords\IntangibleKeyword.cs" />
     <Compile Include="Builders\Keywords\LinkedKeyword.cs" />
     <Compile Include="Builders\Keywords\PoisonKeyword.cs" />
@@ -481,6 +483,7 @@
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToMissingHealth.cs" />
     <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
     <Compile Include="Builders\StatusEffects\DoubleFrost.cs" />
+    <Compile Include="Builders\StatusEffects\IconEffects\Constricted.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\ExtraCounter.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Fading.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
@@ -821,6 +824,7 @@
     <Compile Include="StatusEffects\StatusEffectApplyXWhenRetained.cs" />
     <Compile Include="StatusEffects\StatusEffectLinkedCard.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSAmplify.cs" />
+    <Compile Include="StatusEffects\StatusEffectSTSConstricted.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSDoubleTap.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSEnergized.cs" />
     <Compile Include="StatusEffects\StatusEffectSTSFading.cs" />
