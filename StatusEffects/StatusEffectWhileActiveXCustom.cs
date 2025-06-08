@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
 namespace Spirefrost.StatusEffects
 {
@@ -7,6 +8,12 @@ namespace Spirefrost.StatusEffects
         public override void Init()
         {
             base.Init();
+            OnEntityDestroyed += DestroyCheck;
+        }
+
+        private IEnumerator DestroyCheck(Entity entity, DeathType deathType)
+        {
+            yield return Reset();
         }
 
         public override IEnumerator CardMove(Entity entity)
@@ -16,6 +23,11 @@ namespace Spirefrost.StatusEffects
                 yield return Reset();
             }
             yield return base.CardMove(entity);
+        }
+
+        public override bool RunEntityDestroyedEvent(Entity entity, DeathType deathType)
+        {
+            return active && affected.Contains(entity) && entity != target;
         }
 
         private IEnumerator Reset()
