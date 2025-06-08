@@ -496,6 +496,7 @@
     <Compile Include="Builders\StatusEffects\OnKillGainTargetAttackAndEffect.cs" />
     <Compile Include="Builders\StatusEffects\OnKillIncreaseHealthToSelfPermanently.cs" />
     <Compile Include="Builders\StatusEffects\OnTurnApplySpiceToSelfAndAllyBehind.cs" />
+    <Compile Include="Builders\StatusEffects\OnTurnEndConstrictedDamageFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
@@ -511,6 +512,7 @@
     <Compile Include="Patches\IconReplacementPatches.cs" />
     <Compile Include="Patches\TemporaryCharmPatches.cs" />
     <Compile Include="Patches\WhileActiveXPatches.cs" />
+    <Compile Include="StatusEffects\StatusEffectApplyXAfterTurn.cs" />
     <Compile Include="StatusEffects\StatusEffectOngoingAttackEffect.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
