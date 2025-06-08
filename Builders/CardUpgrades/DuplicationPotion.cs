@@ -47,7 +47,8 @@ namespace Spirefrost.Builders.CardUpgrades
                     };
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        MakeConstraint<TargetConstraintIsItem>()
+                        MakeConstraint<TargetConstraintIsItem>(),
+                        MakeConstraint<TargetConstraintIsInDeck>()
                     };
                     //data.takeSlot = false;
                 });
