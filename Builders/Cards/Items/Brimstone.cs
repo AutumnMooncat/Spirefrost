@@ -20,7 +20,6 @@ namespace Spirefrost.Builders.Cards.Items
                 .WithValue(50)
                 .CanPlayOnHand(true)
                 .NeedsTarget(false)
-                .SetTraits(TStack("Consume", 1))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
