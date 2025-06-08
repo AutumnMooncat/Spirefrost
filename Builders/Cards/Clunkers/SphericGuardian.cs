@@ -17,15 +17,14 @@ namespace Spirefrost.Builders.Cards.Clunkers
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Spheric Guardian")
                 .SetSprites("Units/SphericGuardian.png", "Units/SphericGuardianBG.png")
-                .SetStats(null, 2, 0)
+                .SetStats(null, 4, 0)
                 .WithCardType("Clunker")
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Scrap", 1),
-                        SStack("MultiHit", 1),
+                        SStack("Scrap", 3),
                         SStack(TriggerWhenShellAppliedToSelf.ID, 1)
                     };
                 });
