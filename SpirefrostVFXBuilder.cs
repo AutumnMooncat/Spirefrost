@@ -599,9 +599,19 @@ namespace Spirefrost
             {
                 return AnimationCurve.Constant(0, 1, values[0]);
             }
-            float outVal = smooth ? 0 : (values[1] - values[0]) * (values.Length - 1);
-            float inVal = smooth ? 0 : (values[values.Length - 1] - values[values.Length - 2]) * (values.Length - 1);
-            return new AnimationCurve(values.Select((val, i) => new Keyframe(((float)i)/(values.Length-1), val, (i == values.Length-1) ? inVal : 0, (i == 0) ? outVal : 0)).ToArray());
+            int max = values.Length - 1;
+            return new AnimationCurve(values.Select((val, i) => 
+            new Keyframe(
+                ((float)i)/max, 
+                val,
+                (i == 0 || (i == max && smooth)) ? 0 : GetSlope(values[i - 1], val, max), 
+                (i == max || (i == 0 && smooth)) ? 0 : GetSlope(val, values[i + 1], max))
+            ).ToArray());
+        }
+
+        private float GetSlope(float from, float to, int mult)
+        {
+            return (to - from) * mult;
         }
     }
 }
