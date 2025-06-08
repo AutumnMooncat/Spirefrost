@@ -16,16 +16,16 @@ namespace Spirefrost.Builders.Cards.Clunkers
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Spire Spear")
                 .SetSprites("Units/SpireSpear.png", "Units/SpireSpearBG.png")
-                .SetStats(null, 1, 0)
+                .SetStats(null, 0, 3)
                 .WithCardType("Clunker")
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Scrap", 3),
+                        SStack("Scrap", 2),
                         SStack("Bonus Damage Equal To Scrap On Board", 1),
-                        SStack("When Hit Trigger To Self", 1)
+                        SStack("MultiHit", 1)
                     };
                 });
         }
