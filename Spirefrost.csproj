@@ -498,12 +498,14 @@
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitApplyFrostToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToRightmostCardInHand.cs" />
+    <Compile Include="Builders\StatusEffects\WhileActiveAttacksApplyShroom.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
     <Compile Include="Patches\ExtraCounterPatches.cs" />
     <Compile Include="Patches\FreeReferencesPatches.cs" />
     <Compile Include="Patches\IconReplacementPatches.cs" />
     <Compile Include="Patches\TemporaryCharmPatches.cs" />
+    <Compile Include="StatusEffects\StatusEffectOngoingAttackEffect.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyTempXForTrigger.cs" />
     <Compile Include="Builders\StatusEffects\TriggerAgainstWhenDemonizeApplied.cs" />

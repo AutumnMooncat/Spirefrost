@@ -45,7 +45,8 @@ namespace Spirefrost.Builders.Cards.Leaders
                                 card.SetRandomHealth(8, 10);
                                 card.SetRandomDamage(2, 2);
                                 card.SetRandomCounter(4, 4);
-                                card.SetRandomPassive(WhenEnemyIsHitByItemApplyShroomToThem.ID, 1, 1);
+                                //card.SetRandomPassive(WhenEnemyIsHitByItemApplyShroomToThem.ID, 1, 1);
+                                card.SetRandomPassive(WhileActiveAttacksApplyShroom.ID, 1, 1);
                                 break;
 
                             // Grand Finale - Removed
