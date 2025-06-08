@@ -7,23 +7,13 @@ namespace Spirefrost.StatusEffects
     {
         public StatusEffectData effect;
 
-        private bool manuallyAdded;
+        private int _manuallyAdded;
 
-        public override object GetMidBattleData()
-        {
-            return manuallyAdded;
-        }
-
-        public override void RestoreMidBattleData(object data)
-        {
-            if (data is bool b)
-            {
-                manuallyAdded = b;
-            }
-        }
+        public int ManuallyAdded { get => _manuallyAdded; }
 
         public override IEnumerator Add(int add)
         {
+            _manuallyAdded += add;
             CardData.StatusEffectStacks found = target.attackEffects.FirstOrDefault(stack => stack.data == effect);
             if (found != null)
             {
@@ -31,7 +21,6 @@ namespace Spirefrost.StatusEffects
             }
             else
             {
-                manuallyAdded = true;
                 target.attackEffects.Add(new CardData.StatusEffectStacks(effect, add));
             }
 
@@ -45,11 +34,12 @@ namespace Spirefrost.StatusEffects
 
         public override IEnumerator Remove(int remove)
         {
+            _manuallyAdded -= remove;
             CardData.StatusEffectStacks found = target.attackEffects.FirstOrDefault(stack => stack.data == effect);
             if (found != null)
             {
                 found.count -= remove;
-                if (manuallyAdded && found.count <= 0)
+                if (_manuallyAdded == 0 && found.count <= 0)
                 {
                     target.attackEffects.Remove(found);
                 }
