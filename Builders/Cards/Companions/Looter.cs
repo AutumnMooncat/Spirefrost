@@ -29,7 +29,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     {
                         SStack("On Kill Apply Gold To Self", 5),
                         SStack(ExtraCounter.ID, 4),
-                        SStack(OnKillTriggerAgain.ID, 1)
+                        //SStack(OnKillTriggerAgain.ID, 1)
                     };
                 });
         }
