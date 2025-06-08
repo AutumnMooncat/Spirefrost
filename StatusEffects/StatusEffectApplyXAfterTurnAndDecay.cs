@@ -49,7 +49,7 @@ namespace Spirefrost.StatusEffects
 
         public override int GetAmount()
         {
-            if (!target || target.silenced && !ignoreSilence)
+            if (!target || (target.silenced && !ignoreSilence))
             {
                 return 0;
             }
