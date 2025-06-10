@@ -140,7 +140,7 @@ namespace Spirefrost
         public override string GUID => "autumnmooncat.wildfrost.spirefrost";
         public override string[] Depends => new string[] { "hope.wildfrost.vfx" };
         public override string Title => "Spirefrost";
-        public override string Description => "Adds a new tribe featuring Characters and Monsters from Slay the Spire.\r\n\r\n" +
+        public override string Description => "Adds a new tribe featuring Characters and Monsters from Slay the Spire.\r\n\r\n\r\n" +
             "[h1]New Leaders[/h1]\r\n" +
             "Adds a new tribe with 4 new Leaders, each having 7 different configurations they can generate from, offering different stats and effects. " +
             "Play as an Alchemize Silent and generate charms mid combat, or enjoy Judging enemies as Watcher! " +
