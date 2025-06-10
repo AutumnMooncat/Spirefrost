@@ -67,7 +67,7 @@ namespace Spirefrost
             On
         }
 
-        [ConfigItem(ReplaceType.Off, "Give <Junk> a \"fitting\" depricated relic image", "Replace Junk Image")]
+        //[ConfigItem(ReplaceType.Off, "Give <Junk> a \"fitting\" depricated relic image", "Replace Junk Image")]
         public ReplaceType junkReplace = ReplaceType.Off;
 
         [ConfigItem(false, "Should Cultist Mask play sfx", "Caw Caw?")]
