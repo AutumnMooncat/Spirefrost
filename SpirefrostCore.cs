@@ -140,7 +140,27 @@ namespace Spirefrost
         public override string GUID => "autumnmooncat.wildfrost.spirefrost";
         public override string[] Depends => new string[] { "hope.wildfrost.vfx" };
         public override string Title => "Spirefrost";
-        public override string Description => "Adds a new tribe featuring Characters and Monsters from Slay the Spire.\r\n\r\n[h1]New Leaders[/h1]\r\nAdds a new tribe with 4 new Leaders, each having 7 different configurations they can generate from, offering different stats and effects. Play as an Alchemize Silent and generate charms mid combat, or enjoy Judging enemies as Watcher! Leader effects are based on some of their more iconic cards from Slay the Spire.\r\n\r\n[h1]New Cards[/h1]\r\nMonsters, Relics, and Potions have been translated over to act as new Companions, Items, and Charms you can find while playing as the Spire tribe, many of which are leader specific, giving each leader their own unique flavour.\r\nIncludes a total of 40 new relic themed Items, 31 new Companions, 10 new Clunkers, 8 new Charms, and 1 new Pet!\r\n\r\n[h1]Vanilla Changes[/h1]\r\nSpirefrost makes a few adjustments to vanilla mechanics in order to make some of its new effects work. If the game is behaving slightly different than you would expect, check the following list to see if Spirefrost is responsible for the change:[list]\r\n[*] Frenzy now activates when additional triggers happen while the unit was already triggered (such as Nova losing Block on Teeth)\r\n[*] Cards now receive credit from kills while in the discard or draw piles (such as an Item applying Shroom that then kills after the turn phase)\r\n[*] The shove system has been rewritten to support Wide cards that take 2 slots in a row\r\n[*] Cleanse no longer removes temporary debuffs applied by While Active effects from other units (as you would otherwise just move the units to reapply the effect anyway)\r\n[*] When checking if an Item is valid to play on a entity, the current Attack stat of the card is checked as opposed to its base Attack\r\n[/list]\r\n\r\n[h1]Configurable Changes[/h1]\r\nBy default, while playing a run as a leader from the Spire tribe, certain status effects are changed to be their Slay the Spire power counterparts, such as Demonize being Vulnerable or Shroom being Poison. These changes are strictly cosmetic and no mechanical changes occur. These changes can be individually toggled in the mods config settings if you happen to have Config Manager installed!";
+        public override string Description => "Adds a new tribe featuring Characters and Monsters from Slay the Spire.\r\n\r\n" +
+            "[h1]New Leaders[/h1]\r\n" +
+            "Adds a new tribe with 4 new Leaders, each having 7 different configurations they can generate from, offering different stats and effects. " +
+            "Play as an Alchemize Silent and generate charms mid combat, or enjoy Judging enemies as Watcher! " +
+            "Leader effects are based on some of their more iconic cards from Slay the Spire.\r\n\r\n" +
+            "[h1]New Cards[/h1]\r\n" +
+            "Monsters, Relics, and Potions have been translated over to act as new Companions, Items, and Charms you can find while playing as the Spire tribe, many of which are leader specific, giving each leader their own unique flavour.\r\n" +
+            "Includes a total of 40 new relic themed Items, 31 new Companions, 10 new Clunkers, 8 new Charms, and 1 new Pet!\r\n\r\n" +
+            "[h1]Vanilla Changes[/h1]\r\n" +
+            "Spirefrost makes a few adjustments to vanilla mechanics in order to make some of its new effects work. " +
+            "If the game is behaving slightly different than you would expect, check the following list to see if Spirefrost is responsible for the change:" +
+            "[list]\r\n" +
+            "[*] Frenzy now activates when additional triggers happen while the unit was already triggered (such as Nova losing Block on Teeth)\r\n" +
+            "[*] Cards now receive credit from kills while in the discard or draw piles (such as an Item applying Shroom that then kills after the turn phase)\r\n" +
+            "[*] The shove system has been rewritten to support Wide cards that take 2 slots in a row\r\n" +
+            "[*] Cleanse no longer removes temporary debuffs applied by While Active effects from other units (as you would otherwise just move the units to reapply the effect anyway)\r\n" +
+            "[*] When checking if an Item is valid to play on a entity, the current Attack stat of the card is checked as opposed to its base Attack\r\n" +
+            "[/list]\r\n\r\n" +
+            "[h1]Configurable Changes[/h1]\r\n" +
+            "By default, while playing a run as a leader from the Spire tribe, certain status effects are changed to be their Slay the Spire power counterparts, such as Demonize being Vulnerable or Shroom being Poison. " +
+            "These changes are strictly cosmetic and no mechanical changes occur. These changes can be individually toggled in the mods config settings if you happen to have Config Manager installed!";
 
         public override void Load()
         {
