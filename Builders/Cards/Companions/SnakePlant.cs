@@ -16,7 +16,7 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Snake Plant")
                 .SetSprites("Units/SnakePlant.png", "Units/SnakePlantBG.png")
-                .SetStats(8, 1, 5)
+                .SetStats(6, 1, 5)
                 .WithValue(50)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
