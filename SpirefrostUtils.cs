@@ -22,7 +22,7 @@ namespace Spirefrost
 
         internal static void SetNamedReference(object reference, string name, object value)
         {
-            if (!managedReferences.ContainsKey(reference))
+            if (reference != null && !managedReferences.ContainsKey(reference))
             {
                 managedReferences[reference] = new Dictionary<string, object>();
             }
@@ -31,7 +31,7 @@ namespace Spirefrost
 
         internal static object GetNamedReference(object reference, string name)
         {
-            if (!managedReferences.ContainsKey(reference) || !managedReferences[reference].ContainsKey(name))
+            if (reference == null || !managedReferences.ContainsKey(reference) || !managedReferences[reference].ContainsKey(name))
             {
                 return null;
             }
@@ -40,7 +40,7 @@ namespace Spirefrost
 
         internal static void FreeNamedReference(object reference, string name)
         {
-            if (managedReferences.ContainsKey(reference))
+            if (reference != null && managedReferences.ContainsKey(reference))
             {
                 managedReferences[reference].Remove(name);
             }
@@ -48,7 +48,10 @@ namespace Spirefrost
 
         internal static void FreeReferences(object reference)
         {
-            managedReferences.Remove(reference);
+            if (reference != null)
+            {
+                managedReferences.Remove(reference);
+            }
         }
 
         internal static List<object> GetAllNamedReferences(string name)
