@@ -11,8 +11,7 @@ using System.Collections;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Pool;
-using static Spirefrost.Patches.WideCardBoardLogic.CardControllerLogic;
-using static Targets;
+using static UnityEngine.Rendering.VolumeComponent;
 
 namespace Spirefrost.Patches
 {
@@ -1052,6 +1051,227 @@ namespace Spirefrost.Patches
 
     internal class WideCardInventoryLogic
     {
+        internal static class CardContainerGridLogic
+        {
+            [HarmonyPatch(typeof(CardContainerGrid), nameof(CardContainerGrid.GetChildPosition))]
+            internal static class GetChildPositionPatch
+            {
+                static void Logic(CardContainerGrid __instance, Entity child)
+                {
+                    // To fix:
+                    // Wide cards need to be positioned between 2 columns
+                    // Wide cards need to occupy 2 slots for pushing other cards 
+                    // Wide cards on new row if it already has 4 cards
+                    int index = __instance.IndexOf(child);
+                    // index +1 for each previous card that was wide
+                    // index +1 for each previous wide card shoved to new row
+                    int colIndex = index % __instance.columnCount;
+                    int rowIndex = Mathf.FloorToInt(index / __instance.columnCount);
+                    // If entity is wide and in last column, colIndex = 0, rowIndex += 1
+                    int rowCount = __instance.RowCount(rowIndex);
+                    float startX = (float)rowCount * __instance.cellSize.x + (float)(rowCount - 1) * __instance.spacing.x;
+                    Vector2 sizeDelta = __instance.rectTransform.sizeDelta;
+                    Vector2 vector = new Vector2(0f - sizeDelta.x, sizeDelta.y) * 0.5f;
+                    switch (__instance.align)
+                    {
+                        case TextAlignment.Center:
+                            vector.x = (0f - startX) * 0.5f;
+                            break;
+                        case TextAlignment.Right:
+                            vector.x = sizeDelta.x * 0.5f - startX;
+                            break;
+                    }
 
+                    vector.x += __instance.cellSize.x * 0.5f + __instance.spacing.x;
+                    vector.y -= __instance.cellSize.y * 0.5f + __instance.spacing.y;
+                    Vector2 vector2 = vector;
+                    // If entity is wide, colIndex += 0.5 (have to make a float to use)
+                    vector2.x += (float)colIndex * __instance.cellSize.x + (float)(colIndex - 1) * __instance.spacing.x;
+                    vector2.y -= (float)rowIndex * __instance.cellSize.y + (float)(rowIndex - 1) * __instance.spacing.y;
+                    //return (Vector3)vector2 + Vector3.Scale(child.random3, __instance.randomOffset);
+                }
+
+                static int GetEffectiveIndex(int index, CardContainerGrid __instance)
+                {
+                    int wideSpacing = 0;
+                    int currColumnIndex = 0;
+                    for (int i = 0; i < index; i++)
+                    {
+                        if (__instance[i].data.IsWide())
+                        {
+                            wideSpacing++;
+                            currColumnIndex++;
+                            if (currColumnIndex >= __instance.columnCount)
+                            {
+                                wideSpacing++;
+                                currColumnIndex = 1;
+                            }
+                        }
+
+                        currColumnIndex++;
+                        currColumnIndex %= __instance.columnCount;
+                    }
+                    return index + wideSpacing;
+                }
+
+                static void WideCardToNewRowCheck(CardContainerGrid __instance, Entity entity, ref int colIndex, ref int rowIndex)
+                {
+                    if (entity.data.IsWide() && colIndex == __instance.columnCount - 1)
+                    {
+                        colIndex = 0;
+                        rowIndex += 1;
+                    }
+                }
+
+                static float AdjustWideCard(Entity entity)
+                {
+                    return entity.data.IsWide() ? 0.5f : 0f;
+                }
+
+                static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+                {
+                    List<CodeInstruction> codes = instructions.ToList();
+                    MethodInfo indexOf = AccessTools.Method(typeof(CardContainer), nameof(CardContainer.IndexOf));
+                    MethodInfo effectiveIndex = AccessTools.Method(typeof(GetChildPositionPatch), nameof(GetEffectiveIndex));
+                    MethodInfo newRowCheck = AccessTools.Method(typeof(GetChildPositionPatch), nameof(WideCardToNewRowCheck));
+                    MethodInfo adjustWide = AccessTools.Method(typeof(GetChildPositionPatch), nameof(AdjustWideCard));
+                    bool newRowCheckInserted = false;
+                    for (int i = 0; i < codes.Count; i++)
+                    {
+                        yield return codes[i];
+                        if (codes[i].opcode == OpCodes.Callvirt && codes[i].operand as MethodInfo == indexOf)
+                        {
+                            // index on stack, need instance
+                            Debug.Log($"GetChildPositionPatch - Match found, adjusting index");
+                            yield return new CodeInstruction(OpCodes.Ldarg_0);
+                            yield return new CodeInstruction(OpCodes.Call, effectiveIndex);
+                        }
+                        if (!newRowCheckInserted && codes[i].opcode == OpCodes.Stloc_1)
+                        {
+                            Debug.Log($"GetChildPositionPatch - Match found, inserting new row check");
+                            newRowCheckInserted = true;
+                            yield return new CodeInstruction(OpCodes.Ldarg_0); // instance
+                            yield return new CodeInstruction(OpCodes.Ldarg_1); // Entity
+                            yield return new CodeInstruction(OpCodes.Ldloca, 0); // colIndex
+                            yield return new CodeInstruction(OpCodes.Ldloca, 1); // rowIndex
+                            yield return new CodeInstruction(OpCodes.Call, newRowCheck);
+                        }
+                        if (codes[i].opcode == OpCodes.Conv_R4)
+                        {
+                            if (i - 1 >= 0 && codes[i - 1].opcode == OpCodes.Ldloc_0)
+                            {
+                                Debug.Log($"GetChildPositionPatch - Match found, adjusting wide card position");
+                                yield return new CodeInstruction(OpCodes.Ldarg_1);
+                                yield return new CodeInstruction(OpCodes.Call, adjustWide);
+                                yield return new CodeInstruction(OpCodes.Add);
+                            }
+                            if (i - 3 >= 0 && codes[i - 3].opcode == OpCodes.Ldloc_0)
+                            {
+                                Debug.Log($"GetChildPositionPatch - Match found, adjusting wide card position");
+                                yield return new CodeInstruction(OpCodes.Ldarg_1);
+                                yield return new CodeInstruction(OpCodes.Call, adjustWide);
+                                yield return new CodeInstruction(OpCodes.Add);
+                            }
+                        }
+                    }
+                }
+            }
+
+            [HarmonyPatch(typeof(CardContainerGrid), nameof(CardContainerGrid.RowCount))]
+            internal static class RowCountPatch
+            {
+                static void Postfix(CardContainerGrid __instance, int rowIndex, ref int __result)
+                {
+                    int currColumnCount = 0;
+                    int currRowIndex = 0;
+                    for (int i = 0; i < __instance.Count; i++)
+                    {
+                        if (__instance[i].data.IsWide())
+                        {
+                            currColumnCount += 2;
+                            if (currColumnCount > __instance.columnCount)
+                            {
+                                currColumnCount -= 2;
+                                currRowIndex++;
+                                if (currRowIndex == rowIndex + 1)
+                                {
+                                    __result = currColumnCount;
+                                    break;
+                                }
+
+                                currColumnCount = 2;
+                            }
+                            else if (currColumnCount == __instance.columnCount)
+                            {
+                                currRowIndex++;
+                                if (currRowIndex == rowIndex + 1)
+                                {
+                                    __result = currColumnCount;
+                                    break;
+                                }
+
+                                currColumnCount = 0;
+                            }
+                        }
+                        else
+                        {
+                            currColumnCount++;
+                            if (currColumnCount == __instance.columnCount)
+                            {
+                                currRowIndex++;
+                                if (currRowIndex == rowIndex + 1)
+                                {
+                                    __result = currColumnCount;
+                                    return;
+                                }
+                                currColumnCount = 0;
+                            }
+                        }   
+                    }
+                    __result = currColumnCount;
+                }
+            }
+
+            [HarmonyPatch(typeof(CardContainerGrid), nameof(CardContainerGrid.GetColumnCount))]
+            internal static class GetColumnCountPatch
+            {
+                static void Postfix(CardContainerGrid __instance, ref int __result)
+                {
+                    __result = Mathf.Min(__instance.columnCount, __instance.Count + __instance.Where(e => e.data.IsWide()).Count());
+                }
+            }
+
+            [HarmonyPatch(typeof(CardContainerGrid), nameof(CardContainerGrid.GetRowCount))]
+            internal static class GetRowCountPatch
+            {
+                static void Postfix(CardContainerGrid __instance, ref int __result)
+                {
+                    int currColumnCount = 0;
+                    int currRowCount = __instance.Count > 0 ? 1 : 0;
+                    for (int i = 0; i < __instance.Count; i++)
+                    {
+                        if (__instance[i].data.IsWide())
+                        {
+                            currColumnCount += 2;
+                            if (currColumnCount > __instance.columnCount)
+                            {
+                                currRowCount++;
+                                currColumnCount = 2;
+                            }
+                        }
+                        else
+                        {
+                            currColumnCount++;
+                            if (currColumnCount > __instance.columnCount)
+                            {
+                                currRowCount++;
+                                currColumnCount = 1;
+                            }
+                        }
+                    }
+                    __result = currRowCount;
+                }
+            }
+        }
     }
 }
