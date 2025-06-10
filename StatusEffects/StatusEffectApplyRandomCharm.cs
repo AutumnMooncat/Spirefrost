@@ -221,15 +221,15 @@ namespace Spirefrost.StatusEffects
                 }
             }
 
-            List<StatusEffectData> foundOrbs = new List<StatusEffectData>();
+            List<StatusEffectData> foundUnstackables = new List<StatusEffectData>();
             foreach (var item in restore.deltaEffects)
             {
-                StatusEffectData found = target.statusEffects.Where(effect => effect.name == item.name && !foundOrbs.Contains(effect)).FirstOrDefault();
+                StatusEffectData found = target.statusEffects.Where(effect => effect.name == item.name && !foundUnstackables.Contains(effect)).FirstOrDefault();
                 if (found != null)
                 {
-                    if (found is StatusEffectOrb)
+                    if (found is INonStackingStatusEffect)
                     {
-                        foundOrbs.Add(found);
+                        foundUnstackables.Add(found);
                     }
                     found.count += item.count;
                     found.temporary += item.temporary;
