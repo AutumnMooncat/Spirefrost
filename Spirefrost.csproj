@@ -500,6 +500,7 @@
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
+    <Compile Include="Builders\StatusEffects\WhenCardDestroyedRecoverHealthToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitApplyFrostToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveConstrictedToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToRightmostCardInHand.cs" />

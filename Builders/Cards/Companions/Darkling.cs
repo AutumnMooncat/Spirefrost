@@ -1,4 +1,5 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using Spirefrost.Builders.StatusEffects;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
@@ -29,7 +30,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack(Regrow.ID, 2),
-                        SStack("When Card Destroyed, Gain Attack & Health", 1)
+                        SStack(WhenCardDestroyedRecoverHealthToSelf.ID, 1)
                     };
                 });
         }
