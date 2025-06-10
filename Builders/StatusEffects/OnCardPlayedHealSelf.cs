@@ -11,7 +11,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("On Card Played Heal & Cleanse To Allies", ID)
-                .WithText($"Restore <{{a}}><keyword=health>")
+                .WithText($"Restore <{{a}}><keyword=health> to self")
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Self;
