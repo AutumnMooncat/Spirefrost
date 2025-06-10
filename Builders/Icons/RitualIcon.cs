@@ -2,6 +2,7 @@
 using Spirefrost.Builders.Keywords;
 using TMPro;
 using UnityEngine;
+using WildfrostHopeMod.SFX;
 using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.Icons
@@ -13,6 +14,8 @@ namespace Spirefrost.Builders.Icons
         internal static string FullID => Extensions.PrefixGUID(ID, MainModFile.instance);
 
         internal static string SpriteID => "spirefrost.stsritual";
+
+        internal static string CawCawID => "trigger." + SpriteID;
 
         internal static object GetBuilder()
         {
@@ -36,6 +39,12 @@ namespace Spirefrost.Builders.Icons
                     .WithDuration(1f)
                     .Build();
                     vfx.RegisterAsApplyEffect(icon.type);
+
+                    SFXLoader loader = VFXMod.instance?.SFX;
+                    if (loader != null)
+                    {
+                        SFXLoader.RegisterSoundToGlobal(CawCawID, loader.LoadSoundFromPath(MainModFile.instance.ImagePath("SFX/CawCaw.ogg")), 0.05f);
+                    }
                 });
         }
     }

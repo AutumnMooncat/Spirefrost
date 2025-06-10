@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Spirefrost.Builders.Icons;
+using UnityEngine;
 
 namespace Spirefrost.StatusEffects
 {
@@ -12,6 +13,11 @@ namespace Spirefrost.StatusEffects
                 {
                     card.mainImage.sprite = sprite;
                 }
+            }
+
+            if (!BattleSaveSystem.instance.loading && MainModFile.instance.cawCaw)
+            {
+                SpirefrostUtils.PlayGlobalSound(RitualIcon.CawCawID);
             }
         }
     }
