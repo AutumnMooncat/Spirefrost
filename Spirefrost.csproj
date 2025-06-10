@@ -505,6 +505,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveConstrictedToFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToRightmostCardInHand.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveAttacksApplyShroom.cs" />
+    <Compile Include="Builders\StatusEffects\WhileActiveIncreaseEffectsToAlliesAndEnemiesNoBoosting.cs" />
     <Compile Include="Patches\BattleEntityDataPatch.cs" />
     <Compile Include="Patches\CleansePatch.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
