@@ -29,7 +29,7 @@ namespace Spirefrost.Builders.StatusEffects
         internal static object GetBuilder()
         {
             return StatusCopy("While Active Pigheaded To Enemies", ID)
-                .WithText("While active, add <{a}> <keyword=explode> to all allies")
+                .WithText("While active, add <keyword=explode {a}> to all allies")
                 .WithStackable(true)
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data => {
