@@ -16,6 +16,22 @@ namespace Spirefrost.Patches
         internal static string HasLinkedKey => "hasLinkedData";
         internal static string LinkedKey => "linkedData";
 
+        // Return false if we should remove
+        internal static bool LinkedCheck(StatusIcon __instance)
+        {
+
+            if (__instance.HasLinkedStatus())
+            {
+                StatusEffectData linked = __instance.GetLinkedStatus();
+                if (linked == null || !__instance.target.statusEffects.Contains(linked))
+                {
+                    MainModFile.Print($"Linked Status not found, we should remove");
+                    return false;
+                }
+            }
+            return true;
+        }
+
         [HarmonyPatch]
         internal static class CustomLogicInsert
         {
@@ -90,39 +106,52 @@ namespace Spirefrost.Patches
         [HarmonyPatch(typeof(StatusIcon), nameof(StatusIcon.CheckRemove))]
         internal static class IconCheckRemovePatch
         {
-            // Return false if we should remove
-            static bool LinkedCheck(StatusIcon __instance)
-            {
-
-                if (__instance.HasLinkedStatus())
-                {
-                    StatusEffectData linked = __instance.GetLinkedStatus();
-                    if (linked == null || !__instance.target.statusEffects.Contains(linked))
-                    {
-                        MainModFile.Print($"Linked Status not found, we should remove");
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
             {
                 List<CodeInstruction> codes = instructions.ToList();
-                MethodInfo opImp = AccessTools.Method(typeof(UnityEngine.Object), "op_Implicit");
-                MethodInfo linkCheck = AccessTools.Method(typeof(IconCheckRemovePatch), nameof(LinkedCheck));
-                bool checkInserted = false;
+                Label jump = generator.DefineLabel();
+                MethodInfo linkCheck = AccessTools.Method(typeof(CustomStatusIconPatches), nameof(LinkedCheck));
+                bool jumpInserted = false;
+                yield return new CodeInstruction(OpCodes.Ldarg_0);
+                yield return new CodeInstruction(OpCodes.Call, linkCheck);
+                yield return new CodeInstruction(OpCodes.Brfalse, jump);
                 for (int i = 0; i < codes.Count; i++)
                 {
-                    yield return codes[i];
-                    if (!checkInserted && codes[i].opcode == OpCodes.Call && codes[i].operand as MethodInfo == opImp)
+                    if (!jumpInserted && codes[i].opcode == OpCodes.Ldarg_0 && i + 2 < codes.Count && codes[i + 2].opcode == OpCodes.Initobj)
                     {
-                        Debug.Log($"IconCheckRemovePatch match found, inserted check");
-                        checkInserted = true;
-                        yield return new CodeInstruction(OpCodes.Ldarg_0);
-                        yield return new CodeInstruction(OpCodes.Call, linkCheck);
-                        yield return new CodeInstruction(OpCodes.And);
+                        Debug.Log($"IconCheckRemovePatch match found, inserting jump");
+                        jumpInserted = true;
+                        codes[i].labels.Add(jump);
+
                     }
+                    yield return codes[i];
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(StatusIcon), nameof(StatusIcon.CheckDestroy))]
+        internal static class IconCheckDestroyPatch
+        {
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                List<CodeInstruction> codes = instructions.ToList();
+                Label jump = generator.DefineLabel();
+                MethodInfo linkCheck = AccessTools.Method(typeof(CustomStatusIconPatches), nameof(LinkedCheck));
+                MethodInfo destroy = AccessTools.Method(typeof(StatusIcon), nameof(StatusIcon.Destroy));
+                bool jumpInserted = false;
+                yield return new CodeInstruction(OpCodes.Ldarg_0);
+                yield return new CodeInstruction(OpCodes.Call, linkCheck);
+                yield return new CodeInstruction(OpCodes.Brfalse, jump);
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    if (!jumpInserted && codes[i].opcode == OpCodes.Ldarg_0 && i + 1 < codes.Count && codes[i + 1].operand as MethodInfo == destroy)
+                    {
+                        Debug.Log($"IconCheckDestroyPatch match found, inserting jump");
+                        jumpInserted = true;
+                        codes[i].labels.Add(jump);
+
+                    }
+                    yield return codes[i];
                 }
             }
         }
@@ -162,7 +191,6 @@ namespace Spirefrost.Patches
                         if (data is INonStackingStatusEffect nonStacking)
                         {
                             nonStacking.Icon = statusIcon;
-                            statusIcon.persistent = false;
                         }
 
                         if (data is StatusEffectExtraCounter)
