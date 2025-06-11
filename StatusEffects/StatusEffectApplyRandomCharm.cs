@@ -1,4 +1,5 @@
-﻿using Spirefrost.Patches;
+﻿using Spirefrost.Builders.CardUpgrades;
+using Spirefrost.Patches;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,17 +13,19 @@ namespace Spirefrost.StatusEffects
 
         private static readonly List<string> bannedCharms = new List<string>()
         {
-            "CardUpgradeBalanced",
-            "CardUpgradeBombskull",
-            "CardUpgradeAttackRemoveEffects",
-            "CardUpgradeBlue",
-            "CardUpgradePig",
-            "CardUpgradeBootleg",
-            "CardUpgradeMime",
-            "CardUpgradeFlameberry",
-            "CardUpgradeGlass",
-            "CardUpgradeShroomReduceHealth",
-            "CardUpgradeFrenzyReduceAttack"
+            "CardUpgradeBalanced", // Lowers HP
+            "CardUpgradeBombskull", // Useless
+            "CardUpgradeAttackRemoveEffects", // Troll
+            "CardUpgradeBlue", // Lowers HP
+            "CardUpgradePig", // Useless
+            "CardUpgradeBootleg", // Lowers HP
+            "CardUpgradeMime", // Troll
+            "CardUpgradeFlameberry", // Lowers HP
+            "CardUpgradeGlass", // Lowers HP
+            "CardUpgradeShroomReduceHealth", // Lowers HP
+            "CardUpgradeFrenzyReduceAttack", // Lowers HP
+            "CardUpgradeHook", // Useless
+            StancePotion.FullID // Applies Demonize
         };
 
         private RestoreData restore;
@@ -74,7 +77,7 @@ namespace Spirefrost.StatusEffects
                 List<CardUpgradeData> validUpgrades = new List<CardUpgradeData>();
                 foreach (CardUpgradeData upgrade in AddressableLoader.GetGroup<CardUpgradeData>("CardUpgradeData"))
                 {
-                    if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(useBanlist && bannedCharms.Contains(upgrade.name)) && upgrade.CanAssign(mirrorData))
+                    if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(useBanlist && bannedCharms.Contains(upgrade.name)) && upgrade.CanAssign(mirrorData) && !ClassBasedBanCheck(upgrade))
                     {
                         validUpgrades.Add(upgrade);
                     }
@@ -100,6 +103,19 @@ namespace Spirefrost.StatusEffects
                 }
             }
             yield return base.Process();
+        }
+
+        private bool ClassBasedBanCheck(CardUpgradeData upgrade)
+        {
+            if (upgrade.effects.Any(stack => stack.data is StatusEffectApplyXWhenDeployed || stack.data is StatusEffectTriggerWhenDeployed))
+            {
+                return true;
+            }
+            if (upgrade.giveTraits.Any(stack => stack.data.effects.Any(data => data is StatusEffectApplyXWhenDeployed || data is StatusEffectTriggerWhenDeployed)))
+            {
+                return true;
+            }
+            return false;
         }
 
         private void StoreChanges()
@@ -158,6 +174,16 @@ namespace Spirefrost.StatusEffects
                     CardData.StatusEffectStacks copy = item.Clone();
                     copy.data.count = -item.count;
                     restore.deltaEffects.Add(copy.data);
+                }
+            }
+
+            foreach (var traitStack in target.traits)
+            {
+                foreach (var effect in traitStack.passiveEffects)
+                {
+                    restore.deltaEffects.Remove(effect);
+                    StatusEffectSystem.activeEffects.Remove(effect);
+                    Destroy(effect);
                 }
             }
 
@@ -236,6 +262,8 @@ namespace Spirefrost.StatusEffects
                     if (found.count <= 0 && found.temporary <= 0)
                     {
                         target.statusEffects.Remove(found);
+                        StatusEffectSystem.activeEffects.Remove(found);
+                        Destroy(found);
                     }
                 }
                 else
