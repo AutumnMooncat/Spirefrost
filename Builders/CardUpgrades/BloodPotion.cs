@@ -21,7 +21,7 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/BloodCharm.png")
                 .WithTitle("Blood Potion")
-                .WithText($"Restore <{Amount}><keyword=health>")
+                .WithText($"Restore <{Amount}><keyword=health> to self")
                 .WithTier(2)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
