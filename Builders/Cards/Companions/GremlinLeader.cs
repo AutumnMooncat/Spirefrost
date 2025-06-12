@@ -14,7 +14,7 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Gremlin Leader")
                 .SetSprites("Units/GremlinLeader.png", "Units/GremlinLeaderBG.png")
-                .SetStats(9, 0, 5)
+                .SetStats(7, 0, 5)
                 .WithValue(50)
                 .WithEyes(FullID, 
                 (0.025f, 1.4f, 0.8f, 0.8f, -10f),
