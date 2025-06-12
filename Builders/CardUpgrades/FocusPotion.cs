@@ -15,6 +15,8 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static int Amount => 2;
 
+        internal static int DebuffAmount => -2;
+
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
@@ -22,8 +24,9 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/FocusCharm.png")
                 .WithTitle("Focus Potion")
-                .WithText($"Gain <keyword={FocusKeyword.FullID} {Amount}>")
+                .WithText($"Gain <keyword={FocusKeyword.FullID} {Amount}>\n<{DebuffAmount}><keyword=health>")
                 .WithTier(2)
+                .ChangeHP(DebuffAmount)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
