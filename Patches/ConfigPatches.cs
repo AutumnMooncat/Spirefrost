@@ -110,19 +110,54 @@ namespace Spirefrost.Patches
         {
             private static Type configItemType;
             private static MethodBase configItemSVL;
+            private static FieldInfo conField;
+            private static FieldInfo parentField;
+            private static Type parentType;
+            private static EventInfo configEvent;
+            private static MethodInfo addMethod;
+            private static Type configSetType;
+            private static Type visiblityDelClassType;
+            private static FieldInfo itemsField;
+            private static FieldInfo hidersField;
+            private static FieldInfo showersField;
 
             static bool Prepare(MethodBase original)
             {
                 if (original == null)
                 {
                     configItemType = Type.GetType("WildfrostHopeMod.Configs.ConfigItem,Config Manager");
-                    configItemSVL = AccessTools.Method(configItemType, "SetVisibilityListeners");
-                    if (configItemSVL != null)
+                    if (configItemType != null)
                     {
-                        MainModFile.Print($"Config Manager ConfigItem.SetVisibilityListeners patched");
-                        return true;
+                        try
+                        {
+                            configItemSVL = AccessTools.Method(configItemType, "SetVisibilityListeners");
+                            conField = AccessTools.Field(configItemType, "con");
+                            parentField = AccessTools.Field(configItemType, "parent");
+                            parentType = parentField.FieldType;
+                            configEvent = parentType.GetEvent("OnConfigChanged", AccessTools.all);
+                            addMethod = configEvent.AddMethod;
+                            configSetType = typeof(HashSet<>).MakeGenericType(configItemType);
+                            visiblityDelClassType = typeof(VisibilityDelClass<,>).MakeGenericType(configItemType, typeof(object));
+                            itemsField = AccessTools.Field(parentType, "items");
+                            hidersField = AccessTools.Field(configItemType, "hiders");
+                            showersField = AccessTools.Field(configItemType, "showers");
+                            List<FieldInfo> nullFields = AccessTools.GetDeclaredFields(typeof(SetVisibilityListenersPatch)).Where(fi => fi.GetValue(null) == null).ToList();
+                            if (nullFields.Count > 0)
+                            {
+                                MainModFile.Print($"Config Manager ConfigItem.SetVisibilityListeners not patched, got null fields:");
+                                MainModFile.Print(nullFields.Join());
+                                return false;
+                            }
+                            MainModFile.Print($"Config Manager ConfigItem.SetVisibilityListeners patched");
+                            return true;
+                        }
+                        catch (Exception e)
+                        {
+                            MainModFile.Print($"Patching Config Manager Failed:");
+                            Debug.Log(e);
+                        }
                     }
-                    MainModFile.Print($"Config Manager ConfigItem.SetVisibilityListeners not patched");
+                    MainModFile.Print($"Config Manager ConfigItem.SetVisibilityListeners not patched, type not found");
                     return false;
                 }
                 return true;
@@ -135,18 +170,13 @@ namespace Spirefrost.Patches
 
             static void Postfix(object __instance)
             {
-                (ConfigItemAttribute attr, FieldInfo fld) = ((ConfigItemAttribute, FieldInfo))AccessTools.Field(configItemType, "con").GetValue(__instance);
+                (ConfigItemAttribute attr, FieldInfo fld) = ((ConfigItemAttribute, FieldInfo))conField.GetValue(__instance);
                 ConfigManagerVisibilitySetting[] settings = Attribute.GetCustomAttributes(fld, typeof(ConfigManagerVisibilitySetting)) as ConfigManagerVisibilitySetting[];
-                string fieldName = (string)AccessTools.Field(configItemType, "fieldName").GetValue(__instance);
-                Type parentType = AccessTools.Field(configItemType, "parent").FieldType;
-                object parentObj = AccessTools.Field(configItemType, "parent").GetValue(__instance);
-                IDictionary items = AccessTools.Field(parentType, "items").GetValue(parentObj) as IDictionary;
-                IDictionary hiders = AccessTools.Field(configItemType, "hiders").GetValue(__instance) as IDictionary;
-                IDictionary showers = AccessTools.Field(configItemType, "showers").GetValue(__instance) as IDictionary;
-                Type configSetType = typeof(HashSet<>).MakeGenericType(configItemType);
-                EventInfo configEvent = parentType.GetEvent("OnConfigChanged", AccessTools.all);
-                MethodInfo addMethod = configEvent.AddMethod;
-                Type visiblityDelClassType = typeof(VisibilityDelClass<,>).MakeGenericType(configItemType, typeof(object));
+                string fieldName = fld.Name;
+                object parentObj = parentField.GetValue(__instance);
+                IDictionary items = itemsField.GetValue(parentObj) as IDictionary;
+                IDictionary hiders = hidersField.GetValue(__instance) as IDictionary;
+                IDictionary showers = showersField.GetValue(__instance) as IDictionary;
                 foreach (var item in settings)
                 {
                     if (item.listeningTo != fieldName && items.Contains(item.listeningTo))
@@ -227,7 +257,7 @@ namespace Spirefrost.Patches
         {
             private static Type configItemType;
             private static MethodBase configItemCreateItem;
-            
+            private static FieldInfo conField;
             private static FieldInfo parentField;
             private static Type parentType;
             private static FieldInfo itemsField;
@@ -235,7 +265,6 @@ namespace Spirefrost.Patches
             private static Type optionType;
             private static EventInfo configEvent;
             private static MethodInfo invokeChange;
-            private static MethodInfo tryGet;
             private static MethodInfo updateLabel;
             private static PropertyInfo currentProp;
             private static FieldInfo buttonField;
@@ -245,24 +274,38 @@ namespace Spirefrost.Patches
                 if (original == null)
                 {
                     configItemType = Type.GetType("WildfrostHopeMod.Configs.ConfigItem,Config Manager");
-                    configItemCreateItem = AccessTools.Method(configItemType, "CreateItem");
-                    parentField = AccessTools.Field(configItemType, "parent");
-                    parentType = parentField.FieldType;
-                    itemsField = AccessTools.Field(parentType, "items");
-                    optionProp = AccessTools.Property(configItemType, "optionsAtr");
-                    optionType = optionProp.PropertyType;
-                    configEvent = parentType.GetEvent("OnConfigChanged", AccessTools.all);
-                    invokeChange = AccessTools.Method(parentType, "InvokeConfigChanged");
-                    tryGet = AccessTools.Method(parentType, "TryGetItem");
-                    updateLabel = AccessTools.Method(configItemType, "UpdateLabel");
-                    currentProp = AccessTools.Property(configItemType, "currentValue");
-                    buttonField = AccessTools.Field(configItemType, "button");
-                    if (configItemCreateItem != null)
+                    if (configItemType != null)
                     {
-                        MainModFile.Print($"Config Manager ConfigItem CreateItem patched");
-                        return true;
+                        try 
+                        {
+                            configItemCreateItem = AccessTools.Method(configItemType, "CreateItem");
+                            conField = AccessTools.Field(configItemType, "con");
+                            parentField = AccessTools.Field(configItemType, "parent");
+                            parentType = parentField.FieldType;
+                            itemsField = AccessTools.Field(parentType, "items");
+                            optionProp = AccessTools.Property(configItemType, "optionsAtr");
+                            optionType = optionProp.PropertyType;
+                            configEvent = parentType.GetEvent("OnConfigChanged", AccessTools.all);
+                            invokeChange = AccessTools.Method(parentType, "InvokeConfigChanged");
+                            updateLabel = AccessTools.Method(configItemType, "UpdateLabel");
+                            currentProp = AccessTools.Property(configItemType, "currentValue");
+                            buttonField = AccessTools.Field(configItemType, "button");
+                            List<FieldInfo> nullFields = AccessTools.GetDeclaredFields(typeof(ConfigItemCreateItemPatch)).Where(fi => fi.GetValue(null) == null).ToList();
+                            if (nullFields.Count > 0)
+                            {
+                                MainModFile.Print($"Config Manager ConfigItem.CreateItem not patched, got null fields:");
+                                MainModFile.Print(nullFields.Join());
+                                return false;
+                            }
+                            MainModFile.Print($"Config Manager ConfigItem.CreateItem patched");
+                            return true;
+                        } catch (Exception e)
+                        {
+                            MainModFile.Print($"Patching Config Manager Failed:");
+                            Debug.Log(e);
+                        }
                     }
-                    MainModFile.Print($"Config Manager ConfigItem CreateItem not patched");
+                    MainModFile.Print($"Config Manager ConfigItem.CreateItem not patched, type not found");
                     return false;
                 }
                 return true;
@@ -275,7 +318,7 @@ namespace Spirefrost.Patches
 
             static void Prefix(object __instance)
             {
-                (ConfigItemAttribute attr, FieldInfo fld) = ((ConfigItemAttribute, FieldInfo))AccessTools.Field(configItemType, "con").GetValue(__instance);
+                (ConfigItemAttribute attr, FieldInfo fld) = ((ConfigItemAttribute, FieldInfo))conField.GetValue(__instance);
                 Type containingClass = fld.DeclaringType;
                 ConfigManagerCallbackSetting[] callbackSettings = Attribute.GetCustomAttributes(fld, typeof(ConfigManagerCallbackSetting)) as ConfigManagerCallbackSetting[];
                 ConfigManagerExclusiveSetting[] exclusiveSettings = Attribute.GetCustomAttributes(fld, typeof(ConfigManagerExclusiveSetting)) as ConfigManagerExclusiveSetting[];
