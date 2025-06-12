@@ -15,6 +15,8 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static int Amount => 2;
 
+        internal static int DebuffAmount => 2;
+
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
@@ -22,8 +24,9 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithType(CardUpgradeData.Type.Charm)
                 .WithImage("Charms/CultistCharm.png")
                 .WithTitle("Cultist Potion")
-                .WithText($"Start with <{Amount}>{MakeKeywordInsert(RitualKeyword.FullID)}")
+                .WithText($"Increase <keyword=counter> by <{DebuffAmount}>\nStart with <{Amount}>{MakeKeywordInsert(RitualKeyword.FullID)}")
                 .WithTier(2)
+                .ChangeCounter(DebuffAmount)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     data.targetConstraints = new TargetConstraint[]
