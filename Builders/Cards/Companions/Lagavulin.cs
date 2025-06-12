@@ -17,7 +17,7 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Lagavulin")
                 .SetSprites("Units/Lagavulin.png", "Units/LagavulinBG.png")
-                .SetStats(8, 4, 0)
+                .SetStats(9, 4, 0)
                 .WithValue(50)
                 .SetTraits(TStack("Smackback", 1))
                 .WithEyes(FullID, (0.45f, -0.05f, 0.85f, 0.85f, 0f))
@@ -26,7 +26,6 @@ namespace Spirefrost.Builders.Cards.Companions
                     MainModFile.instance.maskedSpries[data.name] = MainModFile.instance.ImagePath("Units/LagavulinMask.png").ToSprite();
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("Shell", 4),
                         SStack(OnHitEqualDamageToFrostedTarget.ID, 1)
                         //SStack(WhenHitByFrostedCardGainFrenzy.ID, 1)
                     };
