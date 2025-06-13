@@ -1,5 +1,6 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
+using Spirefrost.StatusEffects;
 using UnityEngine;
 
 namespace Spirefrost.Builders.StatusEffects
@@ -12,12 +13,14 @@ namespace Spirefrost.Builders.StatusEffects
 
         internal static object GetBuilder()
         {
-            return StatusCopy("Bonus Damage Equal To Gold Factor 0.02", ID)
+            return new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectLessJankyBonusDamageEqualToX>(ID)
                 .WithText($"Deal additional damage equal to {MakeKeywordInsert(SkillKeyword.FullID)}<s >in hand")
-                .SubscribeToAfterAllBuildEvent<StatusEffectBonusDamageEqualToX>(data =>
+                .SubscribeToAfterAllBuildEvent<StatusEffectLessJankyBonusDamageEqualToX>(data =>
                 {
                     ScriptableSkillsInHand skills = ScriptableObject.CreateInstance<ScriptableSkillsInHand>();
                     data.scriptableAmount = skills;
+                    data.on = StatusEffectLessJankyBonusDamageEqualToX.On.ScriptableAmount;
                     data.WithSwappable(TryGet<StatusEffectData>("On Hit Damage Damaged Target"), null, new Vector2Int(3, 3));
                 });
         }
