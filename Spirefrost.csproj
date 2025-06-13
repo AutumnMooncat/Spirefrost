@@ -481,6 +481,7 @@
     <Compile Include="Builders\Keywords\VigorKeyword.cs" />
     <Compile Include="Builders\Keywords\FadingKeyword.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToMissingHealth.cs" />
+    <Compile Include="Builders\StatusEffects\BonusDamageEqualToSpiceCustom.cs" />
     <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
     <Compile Include="Builders\StatusEffects\DoubleFrost.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Constricted.cs" />
@@ -516,6 +517,7 @@
     <Compile Include="Patches\TemporaryCharmPatches.cs" />
     <Compile Include="Patches\WhileActiveXPatches.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXAfterTurn.cs" />
+    <Compile Include="StatusEffects\StatusEffectLessJankyBonusDamageEqualToX.cs" />
     <Compile Include="StatusEffects\StatusEffectOngoingAttackEffect.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyTempXForTrigger.cs" />

@@ -27,7 +27,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("On Turn Apply Shell To Self", 2),
-                        SStack(BonusShellEqualToSpice.ID, 1)
+                        SStack(BonusDamageEqualToSpiceCustom.ID, 1)
                     };
                 });
         }
