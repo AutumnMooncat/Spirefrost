@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Companions
                 {
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(TriggerWhenSpiceAppliedToSelf.ID, 1)
+                        SStack("When Hit Apply Spice To AlliesInRow", 2)
                     };
                 });
         }
