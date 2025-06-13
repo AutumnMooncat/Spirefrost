@@ -59,10 +59,10 @@ namespace Spirefrost.Builders.Cards.Leaders
 
                             // Wreath of Flame
                             case 3:
-                                card.SetRandomHealth(7, 10);
+                                card.SetRandomHealth(8, 11);
                                 card.SetRandomDamage(3, 4);
                                 card.SetRandomCounter(4, 5);
-                                card.SetRandomPassive(OnTurnApplySpiceToSelfAndAllyBehind.ID, 2, 2);
+                                card.SetRandomPassive("When Enemy Is Killed Apply Spice To Attacker", 2, 2);
                                 break;
 
                             // Follow Up
