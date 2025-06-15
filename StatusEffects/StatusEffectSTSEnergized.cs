@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEngine;
 
 namespace Spirefrost.StatusEffects
 {
@@ -12,6 +13,21 @@ namespace Spirefrost.StatusEffects
         public void OnDestroy()
         {
             SpirefrostEvents.OnCounterReset -= CounterTrigger;
+        }
+
+        public override int GetAmount()
+        {
+            if (!target)
+            {
+                return 0;
+            }
+
+            if (!canBeBoosted)
+            {
+                return count;
+            }
+
+            return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
         }
 
         private void CounterTrigger(Entity entity)
