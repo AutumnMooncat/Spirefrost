@@ -21,7 +21,7 @@ namespace Spirefrost.Patches
                 if (ActionQueue.current == item.Value)
                 {
                     //Debug.Log($"FrenzyCardPlayedPatch - Action found in action map");
-                    if (__instance.additionalTriggers.Contains(item.Key))
+                    if (__instance.additionalTriggers != null && __instance.additionalTriggers.Contains(item.Key))
                     {
                         //Debug.Log($"FrenzyCardPlayedPatch - Action found in {__instance}, count down");
                         return true;
