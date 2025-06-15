@@ -21,7 +21,7 @@ namespace Spirefrost.Patches
 
         static IEnumerator Postfix(IEnumerator values, StatusEffectApplyX __instance)
         {
-            while (values.MoveNext())
+            while (values != null && values.MoveNext())
             {
                 yield return values.Current;
             }
