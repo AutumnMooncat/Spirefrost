@@ -15,7 +15,7 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static int Amount => 2;
 
-        internal static int DebuffAmount => 2;
+        internal static int DebuffAmount => 1;
 
         internal static object GetBuilder()
         {
