@@ -25,7 +25,9 @@ namespace Spirefrost.StatusEffects
             "CardUpgradeShroomReduceHealth", // Lowers HP
             "CardUpgradeFrenzyReduceAttack", // Lowers HP
             "CardUpgradeHook", // Useless
-            StancePotion.FullID // Applies Demonize
+            StancePotion.FullID, // Applies Demonize
+            EntropicPotion.FullID, // Can pull banned charms, also buggy
+            DuplicationPotion.FullID, // This is probably invalid anyway but to be safe
         };
 
         private RestoreData restore;
