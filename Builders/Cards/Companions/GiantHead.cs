@@ -18,7 +18,7 @@ namespace Spirefrost.Builders.Cards.Companions
             return new CardDataBuilder(MainModFile.instance)
                 .CreateUnit(ID, "Giant Head")
                 .SetSprites("Units/GiantHead.png", "Units/GiantHeadBG2.png")
-                .SetStats(10, 3, 0)
+                .SetStats(15, 3, 5)
                 .WithValue(50)
                 .WithEyes(FullID, 
                 (0.3f, 0.775f, 1.5f, 1.5f, 10f),
@@ -28,8 +28,7 @@ namespace Spirefrost.Builders.Cards.Companions
                     data.SetWide();
                     data.startWithEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack("On Card Played Apply Attack To Self", 2),
-                        SStack(TriggerWhenStatusApplied.ID, 1)
+                        SStack("On Card Played Apply Attack To Self", 2)
                     };
                 });
         }
