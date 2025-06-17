@@ -18,12 +18,11 @@ namespace Spirefrost.Builders.Cards.Items
                 .CreateItem(ID, "Dolly's Mirror")
                 .SetSprites("Items/Mirror.png", "Items/MirrorBG.png")
                 .WithValue(50)
-                .SetDamage(0)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.startWithEffects = new CardData.StatusEffectStacks[]
+                    data.attackEffects = new CardData.StatusEffectStacks[]
                     {
-                        SStack(PreTriggerCopyTargetAttackEffects.ID, 1)
+                        SStack(InstantHitSelfForXDamage.ID, 5)
                     };
                 });
         }

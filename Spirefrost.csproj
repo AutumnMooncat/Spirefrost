@@ -490,6 +490,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Fading.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="Builders\StatusEffects\InstantHitSelfForXDamage.cs" />
     <Compile Include="Builders\StatusEffects\LinkedCards.cs" />
     <Compile Include="Builders\StatusEffects\OnHitDamageDemonizedTarget.cs" />
     <Compile Include="Builders\StatusEffects\OnHitEqualDamageToFrostedTarget.cs" />
@@ -518,6 +519,7 @@
     <Compile Include="Patches\TemporaryCharmPatches.cs" />
     <Compile Include="Patches\WhileActiveXPatches.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXAfterTurn.cs" />
+    <Compile Include="StatusEffects\StatusEffectInstantHitSelfForXDamage.cs" />
     <Compile Include="StatusEffects\StatusEffectLessJankyBonusDamageEqualToX.cs" />
     <Compile Include="StatusEffects\StatusEffectOngoingAttackEffect.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
