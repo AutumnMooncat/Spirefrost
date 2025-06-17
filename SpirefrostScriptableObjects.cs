@@ -209,4 +209,67 @@ namespace Spirefrost
             return Mathf.RoundToInt((float)amount * multiplier);
         }
     }
+
+    public class ScriptableOwnedCards : ScriptableAmount
+    {
+        public TargetConstraint[] constraints;
+
+        public bool includeDeck = true;
+
+        public bool includeReserve = true;
+
+        public override int Get(Entity entity)
+        {
+            int found = 0;
+            if (References.Player)
+            {
+                if (includeDeck)
+                {
+                    foreach (var data in References.PlayerData.inventory.deck)
+                    {
+                        bool valid = true;
+                        if (constraints != null && constraints.Length > 0)
+                        {
+                            foreach (var con in constraints)
+                            {
+                                if (!con.Check(data))
+                                {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (valid)
+                        {
+                            found++;
+                        }
+                    }
+                }
+
+                if (includeReserve)
+                {
+                    foreach (var data in References.PlayerData.inventory.reserve)
+                    {
+                        bool valid = true;
+                        if (constraints != null && constraints.Length > 0)
+                        {
+                            foreach (var con in constraints)
+                            {
+                                if (!con.Check(data))
+                                {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (valid)
+                        {
+                            found++;
+                        }
+                    }
+                }
+            }
+            return found;
+        }
+    }
 }

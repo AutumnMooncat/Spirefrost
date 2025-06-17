@@ -18,6 +18,8 @@ namespace Spirefrost.StatusEffects
 
         public bool add = true;
 
+        public bool scaleByCount;
+
         public bool health;
 
         public string effectType = "shell";
@@ -49,6 +51,10 @@ namespace Spirefrost.StatusEffects
         public IEnumerator Gain(Entity entity, Entity[] targets)
         {
             int num = Find();
+            if (scaleByCount)
+            {
+                num *= GetAmount();
+            }
             if (!toReset || num != currentAmount)
             {
                 if (toReset)

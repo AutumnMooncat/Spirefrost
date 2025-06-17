@@ -480,6 +480,7 @@
     <Compile Include="Builders\Keywords\ThornsKeyword.cs" />
     <Compile Include="Builders\Keywords\VigorKeyword.cs" />
     <Compile Include="Builders\Keywords\FadingKeyword.cs" />
+    <Compile Include="Builders\StatusEffects\BonusDamageForEachCrownedCard.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToMissingHealth.cs" />
     <Compile Include="Builders\StatusEffects\BonusDamageEqualToSpiceCustom.cs" />
     <Compile Include="Builders\StatusEffects\BonusShellEqualToSpice.cs" />
