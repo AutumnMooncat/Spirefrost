@@ -585,7 +585,6 @@
     <Compile Include="Builders\Cards\Companions\SpikeSlimes.cs" />
     <Compile Include="Builders\Cards\Items\Anchor.cs" />
     <Compile Include="Builders\Cards\Items\Ashes.cs" />
-    <Compile Include="Builders\Cards\Items\Bark.cs" />
     <Compile Include="Builders\Cards\Items\Battery.cs" />
     <Compile Include="Builders\Cards\Items\Brimstone.cs" />
     <Compile Include="Builders\Cards\Items\BurningBlood.cs" />
