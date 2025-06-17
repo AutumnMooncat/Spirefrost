@@ -31,17 +31,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     {
                         MakeConstraint<TargetConstraintPseudoBarrage>(t => t.doesDamage = true)
                     };
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 })
                 .Subscribe_WithStatusIcon(DarkIcon.ID);
         }

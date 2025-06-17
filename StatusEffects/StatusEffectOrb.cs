@@ -168,5 +168,20 @@ namespace Spirefrost.StatusEffects
             applyToFlags = evokeFlags;
             applyConstraints = evokeApplyConstraints;
         }
+
+        internal static TargetConstraint[] OrbConstraints()
+        {
+            TargetConstraintOr or = CreateInstance<TargetConstraintOr>();
+            TargetConstraintMaxCounterMoreThan hasCounter = CreateInstance<TargetConstraintMaxCounterMoreThan>();
+            TargetConstraintHasReaction hasReaction = CreateInstance<TargetConstraintHasReaction>();
+            or.constraints = new TargetConstraint[]
+            {
+                hasCounter, hasReaction
+            };
+            return new TargetConstraint[]
+            {
+                or
+            };
+        }
     }
 }

@@ -28,17 +28,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                     data.evokeEffect = TryGet<StatusEffectData>("Reduce Counter");
                     data.evokeFlags = StatusEffectApplyX.ApplyToFlags.AlliesInRow;
                     data.evokeSFXKey = PlasmaIcon.EvokeID;
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 })
                 .Subscribe_WithStatusIcon(PlasmaIcon.ID);
         }

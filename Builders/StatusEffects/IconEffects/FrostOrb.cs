@@ -35,17 +35,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                         MakeConstraint<TargetConstraintPseudoFrontEnemy>()
                     };
                     data.evokeSFXKey = FrostIcon.EvokeID;
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 })
                 .Subscribe_WithStatusIcon(FrostIcon.ID);
         }

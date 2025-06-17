@@ -2,7 +2,6 @@
 using Spirefrost.Builders.Keywords;
 using Spirefrost.Builders.StatusEffects.IconEffects;
 using Spirefrost.StatusEffects;
-using static Steamworks.InventoryItem;
 
 namespace Spirefrost.Builders.StatusEffects
 {
@@ -21,17 +20,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantChannelLightning.ID);
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -51,17 +40,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantChannelFrost.ID);
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -81,17 +60,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantChannelDark.ID);
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -111,17 +80,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXOnCardPlayed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantChannelPlasma.ID);
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -140,17 +99,7 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDeployed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantChannelDark.ID);
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -171,17 +120,7 @@ namespace Spirefrost.Builders.StatusEffects
                 {
                     data.orbToChannel = (StatusEffectOrb)TryGet<StatusEffectData>(LightningOrb.ID);
                     data.orbAmount = LightningOrb.ApplyAmount;
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -202,17 +141,7 @@ namespace Spirefrost.Builders.StatusEffects
                 {
                     data.orbToChannel = (StatusEffectOrb)TryGet<StatusEffectData>(FrostOrb.ID);
                     data.orbAmount = FrostOrb.ApplyAmount;
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -233,17 +162,7 @@ namespace Spirefrost.Builders.StatusEffects
                 {
                     data.orbToChannel = (StatusEffectOrb)TryGet<StatusEffectData>(DarkOrb.ID);
                     data.orbAmount = DarkOrb.ApplyAmount;
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
@@ -264,17 +183,7 @@ namespace Spirefrost.Builders.StatusEffects
                 {
                     data.orbToChannel = (StatusEffectOrb)TryGet<StatusEffectData>(PlasmaOrb.ID);
                     data.orbAmount = PlasmaOrb.ApplyAmount;
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }

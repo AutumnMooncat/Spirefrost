@@ -1,6 +1,7 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
 using Spirefrost.Builders.StatusEffects;
+using Spirefrost.StatusEffects;
 using static Spirefrost.MainModFile;
 using static Spirefrost.SpirefrostUtils.AutoAdd;
 
@@ -26,17 +27,7 @@ namespace Spirefrost.Builders.CardUpgrades
                 .WithTier(2)
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
-                    data.targetConstraints = new TargetConstraint[]
-                    {
-                        MakeConstraint<TargetConstraintOr>(or =>
-                        {
-                            or.constraints = new TargetConstraint[]
-                            {
-                                MakeConstraint<TargetConstraintMaxCounterMoreThan>(c => c.moreThan = 0),
-                                MakeConstraint<TargetConstraintHasReaction>()
-                            };
-                        })
-                    };
+                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                     data.effects = new CardData.StatusEffectStacks[]
                     {
                         SStack(WhenDeployedChannelDark.ID, Amount)
