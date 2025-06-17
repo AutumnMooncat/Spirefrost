@@ -99,7 +99,6 @@ namespace Spirefrost.Builders.StatusEffects
                 .SubscribeToAfterAllBuildEvent<StatusEffectApplyXWhenDeployed>(data =>
                 {
                     data.effectToApply = TryGet<StatusEffectData>(InstantChannelDark.ID);
-                    data.targetConstraints = StatusEffectOrb.OrbConstraints();
                 });
         }
     }
