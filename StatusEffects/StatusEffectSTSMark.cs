@@ -33,16 +33,25 @@ namespace Spirefrost.StatusEffects
                 if (markAmount > 0)
                 {
                     // Hit em
-                    Hit hit = new Hit(GetDamager(), entity, markAmount)
+                    ActionQueue.Stack(new ActionSequence(PerformHit(entity, markAmount))
                     {
-                        screenShake = 0.25f,
-                        canRetaliate = false,
-                        damageType = MarkIcon.DamageID
-                    };
-                    yield return hit.Process();
-                    yield return Sequences.Wait(0.2f);
+                        fixedPosition = true,
+                        note = "Mark Damage"
+                    });
                 }
             }
+        }
+
+        private IEnumerator PerformHit(Entity entity, int markAmount)
+        {
+            Hit hit = new Hit(GetDamager(), entity, markAmount)
+            {
+                screenShake = 0.25f,
+                canRetaliate = false,
+                damageType = MarkIcon.DamageID
+            };
+            yield return hit.Process();
+            yield return Sequences.Wait(0.2f);
         }
     }
 }
