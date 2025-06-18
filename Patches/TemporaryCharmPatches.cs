@@ -1,53 +1,36 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Reflection.Emit;
+using UnityEngine;
 
 namespace Spirefrost.Patches
 {
     [HarmonyPatch]
     internal class TemporaryCharmPatches
     {
-        internal static void OnLoad(Entity entity, string charmID)
+        [HarmonyPatch(typeof(InjurySystem), nameof(InjurySystem.EntityKilled))]
+        internal class EntityKilledPatch
         {
-            CardData mirror = entity.GetOrMakeMirroredData();
-            CardUpgradeData charm = MainModFile.instance.TryGet<CardUpgradeData>(charmID).Clone();
-            charm.Assign(mirror);
-            charm.Display(entity);
-        }
-
-        [HarmonyPatch]
-        internal static class InspectSystemPatches
-        {
-            [HarmonyPatch(typeof(InspectSystem), nameof(InspectSystem.Inspect))]
-            internal static class InspectPatch
+            static CardData GetActualCardData(CardData got, Entity entity)
             {
-                static void Postfix(InspectSystem __instance)
-                {
-                    CardData mirror = __instance.inspect.GetMirroredData();
-                    if (mirror)
-                    {
-                        __instance.hasAnyCharms = mirror.upgrades.Any(data => data.type == CardUpgradeData.Type.Charm);
-                        __instance.inspectCharmsLayout.SetActive(__instance.hasAnyCharms);
-                    }
-                }
+                return entity.GetOriginalData() ?? got;
             }
-        }
 
-        [HarmonyPatch]
-        internal static class InspectCharmsSystemPatch
-        {
-            [HarmonyPatch(typeof(InspectCharmsSystem), nameof(InspectCharmsSystem.Create))]
-            internal static class CreatePatch
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                static void Prefix(InspectCharmsSystem __instance, ref CardUpgradeData[] cardUpgrades)
+                List<CodeInstruction> codes = instructions.ToList();
+                MethodInfo getActual = AccessTools.Method(typeof(EntityKilledPatch), nameof(GetActualCardData));
+                MethodInfo dataGetter = AccessTools.PropertyGetter(typeof(Entity), nameof(Entity.data));
+                for (int i = 0; i < codes.Count; i++)
                 {
-                    CardData mirror = __instance.inspectSystem.inspect.GetMirroredData();
-                    if (mirror)
+                    yield return codes[i];
+                    if (codes[i].opcode == OpCodes.Callvirt && codes[i].operand as MethodInfo == dataGetter)
                     {
-                        cardUpgrades = mirror.upgrades.Where(data => data.type == CardUpgradeData.Type.Charm).ToArray();
+                        Debug.Log($"EntityKilledPatch - match found, wrapping data in check");
+                        yield return new CodeInstruction(OpCodes.Ldarg_1);
+                        yield return new CodeInstruction(OpCodes.Call, getActual);
                     }
                 }
             }

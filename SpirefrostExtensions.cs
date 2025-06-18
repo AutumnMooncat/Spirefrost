@@ -159,6 +159,7 @@ namespace Spirefrost
     internal static class EntityExtensions
     {
         public static string MirroredKey => "mirroredData";
+        public static string OriginalKey => "originalData";
 
         internal static CardSlot[] GetContainingSlots(this Entity entity)
         {
@@ -168,6 +169,11 @@ namespace Spirefrost
         internal static CardData GetMirroredData(this Entity entity)
         {
             return SpirefrostUtils.GetNamedReference(entity, MirroredKey) as CardData;
+        }
+
+        internal static CardData GetOriginalData(this Entity entity)
+        {
+            return SpirefrostUtils.GetNamedReference(entity, OriginalKey) as CardData;
         }
 
         internal static CardData GetOrMakeMirroredData(this Entity entity)
@@ -208,6 +214,7 @@ namespace Spirefrost
             mirror.charmSlots = original.charmSlots;
 
             SpirefrostUtils.SetNamedReference(entity, MirroredKey, mirror);
+            SpirefrostUtils.SetNamedReference(entity, OriginalKey, original);
             return mirror;
         }
     }

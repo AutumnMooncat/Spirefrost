@@ -1,5 +1,4 @@
 ﻿using Spirefrost.Builders.CardUpgrades;
-using Spirefrost.Patches;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,23 +29,18 @@ namespace Spirefrost.StatusEffects
             DuplicationPotion.FullID, // This is probably invalid anyway but to be safe
         };
 
-        private RestoreData restore;
-
-        private class RestoreData
+        private class CardDataBackup
         {
-            public int deltaMaxDamage;
-            public int deltaDamage;
-            public int deltaMaxHP;
-            public int deltaHP;
-            public int deltaMaxCounter;
-            public int deltaCounter;
-            public int deltaMaxUses;
-            public int deltaUses;
-            public int deltaEffectBonus;
-            public float deltaEffectFactor;
-            public List<CardData.StatusEffectStacks> deltaAttackEffects;
-            public List<StatusEffectData> deltaEffects;
-            public List<Entity.TraitStacks> deltaTraits;
+            public CardDataBackup(CardData data)
+            {
+                save = data.Save();
+                effectbonus = data.effectBonus;
+                effectFactor = data.effectFactor;
+            }
+
+            public CardSaveData save;
+            public int effectbonus;
+            public float effectFactor;
         }
 
         private bool HasRoom(CardData data)
@@ -71,15 +65,14 @@ namespace Spirefrost.StatusEffects
         public override IEnumerator Process()
         {
             Card card = target.display as Card;
-            StatusEffectCustomSaveable saveable = StatusEffectCustomSaveable.GetOrMake(target);
-            CardData mirrorData = target.GetOrMakeMirroredData();
-            CardData originalData = target.data;
-            if (HasRoom(mirrorData) && card)
+            if (HasRoom(target.data) && card)
             {
+                target.data = target.GetOrMakeMirroredData();
+
                 List<CardUpgradeData> validUpgrades = new List<CardUpgradeData>();
                 foreach (CardUpgradeData upgrade in AddressableLoader.GetGroup<CardUpgradeData>("CardUpgradeData"))
                 {
-                    if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(useBanlist && bannedCharms.Contains(upgrade.name)) && upgrade.CanAssign(mirrorData) && !ClassBasedBanCheck(upgrade))
+                    if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(useBanlist && bannedCharms.Contains(upgrade.name)) && upgrade.CanAssign(target) && !ClassBasedBanCheck(upgrade))
                     {
                         validUpgrades.Add(upgrade);
                     }
@@ -87,21 +80,14 @@ namespace Spirefrost.StatusEffects
                 int applyAmount = Math.Min(count, validUpgrades.Count);
                 for (int i = 0; i < applyAmount; i++)
                 {
+                    CardDataBackup dataBackup = new CardDataBackup(target.data);
                     CardUpgradeData applyMe = validUpgrades.TakeRandom().Clone();
-                    saveable.MakeSaveable(typeof(TemporaryCharmPatches), nameof(TemporaryCharmPatches.OnLoad), applyMe.name);
-                    target.data = mirrorData;
-                    StoreChanges();
                     Events.InvokeUpgradeAssign(target, applyMe);
                     applyMe.Assign(target.data);
-                    // Manually call clear to prevent onRemove from firing, as we will add back without firing onApply
-                    target.statusEffects.Clear();
-                    target.startingEffectsApplied = false;
-                    yield return card.UpdateData();
-                    RestoreChanges();
-                    yield return target.UpdateTraits();
-                    CardUpdateDataPatch.shortCircuitOnce = true;
-                    yield return card.UpdateData();
-                    target.data = originalData;
+                    applyMe.Display(target);
+                    yield return ReflectChanges(dataBackup);
+                    card.promptUpdateDescription = true;
+                    target.PromptUpdate();
                 }
             }
             yield return base.Process();
@@ -109,194 +95,186 @@ namespace Spirefrost.StatusEffects
 
         private bool ClassBasedBanCheck(CardUpgradeData upgrade)
         {
-            if (upgrade.effects.Any(stack => stack.data is StatusEffectApplyXWhenDeployed || stack.data is StatusEffectTriggerWhenDeployed))
+            if (upgrade.effects.Any(stack => ClassBasedBanCheck(stack.data)))
             {
                 return true;
             }
-            if (upgrade.giveTraits.Any(stack => stack.data.effects.Any(data => data is StatusEffectApplyXWhenDeployed || data is StatusEffectTriggerWhenDeployed)))
+            if (upgrade.giveTraits.Any(stack => stack.data.effects.Any(data => ClassBasedBanCheck(data))))
             {
                 return true;
             }
             return false;
         }
 
-        private void StoreChanges()
+        private bool ClassBasedBanCheck(StatusEffectData data)
         {
-            restore = new RestoreData()
+            if (data is StatusEffectApplyXWhenDeployed)
             {
-                deltaMaxDamage = target.damage.max - target.data.damage,
-                deltaDamage = target.damage.current - target.damage.max,
-                deltaMaxHP = target.hp.max - target.data.hp,
-                deltaHP = target.hp.current - target.data.hp,
-                deltaMaxCounter = target.counter.max - target.data.counter,
-                deltaCounter = target.counter.current - target.counter.max,
-                deltaMaxUses = target.uses.max - target.data.uses,
-                deltaUses = target.uses.current - target.uses.max,
-                deltaEffectBonus = target.effectBonus - target.data.effectBonus,
-                deltaEffectFactor = target.effectFactor - target.data.effectFactor,
-                deltaAttackEffects = new List<CardData.StatusEffectStacks>(),
-                deltaEffects = new List<StatusEffectData>(),
-                deltaTraits = new List<Entity.TraitStacks>()
-            };
-
-            restore.deltaAttackEffects.AddRange(target.attackEffects);
-            foreach (var item in target.data.attackEffects)
-            {
-                CardData.StatusEffectStacks found = restore.deltaAttackEffects.Where(effect => effect.data.name == item.data.name).FirstOrDefault();
-                if (found != null)
-                {
-                    found.count -= item.count;
-                    if (found.count == 0)
-                    {
-                        restore.deltaAttackEffects.Remove(found);
-                    }
-                } 
-                else
-                {
-                    CardData.StatusEffectStacks copy = item.Clone();
-                    item.count *= -1;
-                    restore.deltaAttackEffects.Add(copy);
-                }
+                return true;
             }
-
-            restore.deltaEffects.AddRange(target.statusEffects);
-            foreach (var item in target.data.startWithEffects)
+            if (data is StatusEffectTriggerWhenDeployed)
             {
-                StatusEffectData found = restore.deltaEffects.Where(effect => effect.name == item.data.name).FirstOrDefault();
-                if (found != null)
-                {
-                    found.count -= item.count;
-                    if (found.count == 0 && found.temporary == 0)
-                    {
-                        restore.deltaEffects.Remove(found);
-                    }
-                }
-                else
-                {
-                    CardData.StatusEffectStacks copy = item.Clone();
-                    copy.data.count = -item.count;
-                    restore.deltaEffects.Add(copy.data);
-                }
+                return true;
             }
-
-            foreach (var traitStack in target.traits)
-            {
-                foreach (var effect in traitStack.passiveEffects)
-                {
-                    restore.deltaEffects.Remove(effect);
-                    StatusEffectSystem.activeEffects.Remove(effect);
-                    Destroy(effect);
-                }
-            }
-
-            restore.deltaTraits.AddRange(target.traits);
-            foreach (var item in target.data.traits)
-            {
-                Entity.TraitStacks found = restore.deltaTraits.Where(trait => trait.data.name == item.data.name).FirstOrDefault();
-                if (found != null)
-                {
-                    found.count -= item.count;
-                    if (found.count == 0)
-                    {
-                        restore.deltaTraits.Remove(found);
-                    }
-                }
-                else
-                {
-                    Entity.TraitStacks copyish = new Entity.TraitStacks(item.data, -item.count);
-                    restore.deltaTraits.Add(copyish);
-                }
-            }
+            return false;
         }
 
-        private void RestoreChanges()
+        private IEnumerator ReflectChanges(CardDataBackup backup)
         {
-            target.hp.max += restore.deltaMaxHP;
-            bool hadHP = target.hp.current > 0;
-            target.hp.current += restore.deltaHP;
+            CardSaveData original = backup.save;
+
+            // Check for changes to hp
+            int deltaHP = target.data.hp - original.hp;
+            bool hadHP = original.hp > 0;
+            target.hp.max += deltaHP;
+            target.hp.current += deltaHP;
+            if (target.hp.max <= 0 && hadHP)
+            {
+                target.hp.max = 1;
+            }
             if (target.hp.current <= 0 && hadHP)
             {
                 target.hp.current = 1;
             }
-            target.damage.max += restore.deltaMaxDamage;
-            target.damage.current += restore.deltaDamage;
-            bool hadCounter = target.counter.max > 0;
-            target.counter.max += restore.deltaMaxCounter;
+
+            // Check for changes to damage
+            int deltaDamage = target.data.damage - original.damage;
+            target.damage.max += deltaDamage;
+            target.damage.current += deltaDamage;
+            if (target.damage.max < 0)
+            {
+                target.damage.max = 0;
+            }
+
+            // Check for changes to counter
+            int deltaCounter = target.data.counter - original.counter;
+            bool hadCounter = original.counter > 0;
+            target.counter.max += deltaCounter;
+            target.counter.current += deltaCounter;
             if (target.counter.max <= 0 && hadCounter)
             {
                 target.counter.max = 1;
             }
-            target.counter.current += restore.deltaCounter;
-            target.uses.max += restore.deltaMaxUses;
-            target.uses.current += restore.deltaUses;
-            target.effectBonus += restore.deltaEffectBonus;
-            target.effectFactor += restore.deltaEffectFactor;
-
-            foreach (var item in restore.deltaAttackEffects)
+            if (target.counter.current < 0)
             {
-                CardData.StatusEffectStacks found = target.attackEffects.Where(effect => effect.data.name == item.data.name).FirstOrDefault();
-                if (found != null)
+                target.counter.current = 0;
+            }
+            foreach (var item in target.statusEffects)
+            {
+                if (item is StatusEffectExtraCounter extra)
                 {
-                    found.count += item.count;
-                    if (found.count <= 0)
-                    {
-                        target.attackEffects.Remove(found);
-                    }
-                }
-                else
-                {
-                    target.attackEffects.Add(item);
+                    extra.ModifyMaxCounter(deltaCounter);
                 }
             }
 
-            List<StatusEffectData> foundUnstackables = new List<StatusEffectData>();
-            foreach (var item in restore.deltaEffects)
+            // Check for changes to effect affectors
+            int deltaEffectBonus = target.data.effectBonus - backup.effectbonus;
+            target.effectBonus += deltaEffectBonus;
+            float deltaEffectFactor = target.data.effectFactor - backup.effectFactor;
+            target.effectFactor += deltaEffectFactor;
+
+            // Check for missing or modified attack effects
+            foreach (var item in original.attackEffects)
             {
-                StatusEffectData found = target.statusEffects.Where(effect => effect.name == item.name && !foundUnstackables.Contains(effect)).FirstOrDefault();
-                if (found != null)
+                var found = target.data.attackEffects.Where(effect => effect.data.name == item.name).FirstOrDefault();
+                var active = target.attackEffects.Where(effect => effect.data.name == item.name).FirstOrDefault();
+                if (active != null)
                 {
-                    if (found is INonStackingStatusEffect)
+                    if (found == null)
                     {
-                        foundUnstackables.Add(found);
+                        // Remove from entity
+                        target.attackEffects.Remove(active);
                     }
-                    found.count += item.count;
-                    found.temporary += item.temporary;
-                    if (found.count <= 0 && found.temporary <= 0)
+                    else
                     {
-                        target.statusEffects.Remove(found);
-                        StatusEffectSystem.activeEffects.Remove(found);
-                        Destroy(found);
+                        // Check for number changes
+                        int delta = found.count - item.count;
+                        active.count += delta;
                     }
-                }
-                else
-                {
-                    target.statusEffects.Add(item);
                 }
             }
 
-            foreach (var item in restore.deltaTraits)
+            // Check for new attack effects
+            foreach (var item in target.data.attackEffects)
             {
-                Entity.TraitStacks found = target.traits.Where(trait => trait.data.name == item.data.name).FirstOrDefault();
-                if (found != null)
+                var found = original.attackEffects.Where(effect => effect.name == item.data.name).FirstOrDefault();
+                if (found == null)
                 {
-                    found.count += item.count;
-                    if (found.count <= 0)
-                    {
-                        target.traits.Remove(found);
-                    }
-                }
-                else
-                {
-                    target.traits.Add(item);
+                    target.attackEffects.Add(item.Clone());
                 }
             }
 
-            Card card = target.display as Card;
-            card.currentEffectBonus += restore.deltaEffectBonus;
-            card.currentEffectFactor += restore.deltaEffectFactor;
-            card.currentSilenced = target.silenced;
+            // Check for missing or modified starter effects
+            foreach (var item in original.startWithEffects)
+            {
+                var found = target.data.startWithEffects.Where(effect => effect.data.name == item.name).FirstOrDefault();
+                var active = target.statusEffects.Where(effect => effect.name == item.name).FirstOrDefault();
+                if (active != null)
+                {
+                    if (found == null)
+                    {
+                        // Remove from entity
+                        yield return active.Remove();
+                    }
+                    else
+                    {
+                        // Check for number changes
+                        int delta = found.count - item.count;
+                        if (delta > 0)
+                        {
+                            yield return StatusEffectSystem.Apply(target, target, active, delta);
+                        }
+                        else if (delta < 0)
+                        {
+                            yield return active.RemoveStacks(-delta, false);
+                        }
+                    }
+                }
+            }
 
-            restore = null;
+            // Check for new starter effects
+            foreach (var item in target.data.startWithEffects)
+            {
+                var found = original.startWithEffects.Where(effect => effect.name == item.data.name).FirstOrDefault();
+                if (found == null)
+                {
+                    yield return StatusEffectSystem.Apply(target, null, item.data, item.count, temporary: false, null, fireEvents: true, applyEvenIfZero: true);
+                }
+            }
+
+            // Check for missing or modified traits
+            foreach (var item in original.traits)
+            {
+                var found = target.data.traits.Where(effect => effect.data.name == item.name).FirstOrDefault();
+                var active = target.traits.Where(effect => effect.data.name == item.name).FirstOrDefault();
+                if (active != null)
+                {
+                    if (found == null)
+                    {
+                        // Remove from entity
+                        active.count = 0;
+                    }
+                    else
+                    {
+                        // Check for number changes
+                        int delta = found.count - item.count;
+                        active.count += delta;
+                    }
+                }
+            }
+
+            // Check for new traits
+            foreach (var item in target.data.traits)
+            {
+                var found = original.traits.Where(trait => trait.name == item.data.name).FirstOrDefault();
+                if (found == null)
+                {
+                    target.traits.Add(new Entity.TraitStacks(item.data, item.count));
+                }
+            }
+
+            // Perform required updates
+            yield return target.UpdateTraits();
         }
     }
 }
