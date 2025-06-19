@@ -459,6 +459,7 @@
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
     <Compile Include="Builders\Cards\Companions\Transient.cs" />
     <Compile Include="Builders\Cards\Items\Capacitor.cs" />
+    <Compile Include="Builders\Cards\Items\Kite.cs" />
     <Compile Include="Builders\Cards\Items\MagicFlower.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
     <Compile Include="Builders\Cards\Items\VioletLotus.cs" />
