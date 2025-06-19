@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Spirefrost.StatusEffects
 {
@@ -13,6 +14,7 @@ namespace Spirefrost.StatusEffects
         public override void Init()
         {
             Events.OnEntityPostHit += CheckCounter;
+            SpirefrostEvents.OnMovedByDiscarder += DiscardCheck;
             maxCount = count;
             type = "counter";
             iconGroupName = "counter";
@@ -22,9 +24,18 @@ namespace Spirefrost.StatusEffects
         public void OnDestroy()
         {
             Events.OnEntityPostHit -= CheckCounter;
+            SpirefrostEvents.OnMovedByDiscarder -= DiscardCheck;
         }
 
-        // Called via Battle patch
+        private void DiscardCheck(Entity entity)
+        {
+            if (entity == target)
+            {
+                ResetCounter();
+            }
+        }
+
+        // Also called via Battle patch
         internal void ResetCounter()
         {
             count = maxCount;
