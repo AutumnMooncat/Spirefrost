@@ -18,16 +18,15 @@ namespace Spirefrost.Builders.StatusEffects
                 .WithCanBeBoosted(true)
                 .SubscribeToAfterAllBuildEvent<StatusEffectInstantIncreaseCounter>(data =>
                 {
-                    TargetConstraintMaxCounterMoreThan hasCounter = ScriptableObject.CreateInstance<TargetConstraintMaxCounterMoreThan>();
-                    hasCounter.moreThan = 0;
-                    TargetConstraintHasStatus doesntHaveSnow = ScriptableObject.CreateInstance<TargetConstraintHasStatus>();
-                    doesntHaveSnow.not = true;
-                    doesntHaveSnow.status = TryGet<StatusEffectData>("Snow");
                     data.targetConstraints = new TargetConstraint[]
                     {
-                        hasCounter,
-                        doesntHaveSnow,
-                        ScriptableObject.CreateInstance<TargetConstraintOnBoard>()
+                        MakeConstraint<TargetConstraintMaxCounterMoreThan>(),
+                        MakeConstraint<TargetConstraintHasStatus>(t =>
+                        {
+                            t.status = TryGet<StatusEffectData>("Snow");
+                            t.not = true;
+                        }),
+                        MakeConstraint<TargetConstraintOnBoard>()
                     };
                 });
         }

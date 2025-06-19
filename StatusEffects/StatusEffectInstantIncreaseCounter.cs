@@ -6,8 +6,12 @@ namespace Spirefrost.StatusEffects
     {
         public override IEnumerator Process()
         {
-            target.counter.current += GetAmount();
-            target.PromptUpdate();
+            Hit hit = new Hit(applier, target, 0)
+            {
+                countsAsHit = false,
+                counterReduction = -GetAmount()
+            };
+            yield return hit.Process();
             yield return base.Process();
         }
     }
