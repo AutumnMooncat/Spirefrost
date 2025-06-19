@@ -458,6 +458,7 @@
     <Compile Include="Builders\Cards\Companions\ShelledParasite.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
     <Compile Include="Builders\Cards\Companions\Transient.cs" />
+    <Compile Include="Builders\Cards\Items\Capacitor.cs" />
     <Compile Include="Builders\Cards\Items\MagicFlower.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
     <Compile Include="Builders\Cards\Items\VioletLotus.cs" />
@@ -494,6 +495,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Fading.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="Builders\StatusEffects\InstantGainBarrage.cs" />
     <Compile Include="Builders\StatusEffects\InstantHitSelfForXDamage.cs" />
     <Compile Include="Builders\StatusEffects\LinkedCards.cs" />
     <Compile Include="Builders\StatusEffects\OnCardPlayedAddAttack.cs" />
