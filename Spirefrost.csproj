@@ -458,6 +458,7 @@
     <Compile Include="Builders\Cards\Companions\ShelledParasite.cs" />
     <Compile Include="Builders\Cards\Companions\Taskmaster.cs" />
     <Compile Include="Builders\Cards\Companions\Transient.cs" />
+    <Compile Include="Builders\Cards\Items\MagicFlower.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
     <Compile Include="Builders\Icons\ConfusedIcon.cs" />
     <Compile Include="Builders\Icons\ConstrictedIcon.cs" />
@@ -512,6 +513,7 @@
     <Compile Include="Builders\StatusEffects\OnTurnEndConstrictedDamageFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
+    <Compile Include="Builders\StatusEffects\TemporaryFlourish.cs" />
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedRecoverHealthToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitApplyFrostToSelf.cs" />
