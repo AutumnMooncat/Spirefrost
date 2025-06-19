@@ -629,7 +629,6 @@
     <Compile Include="Builders\Cards\Items\MarkOfPain.cs" />
     <Compile Include="Builders\Cards\Items\Melange.cs" />
     <Compile Include="Builders\Cards\Items\Mirror.cs" />
-    <Compile Include="Builders\Cards\Items\NinjaScroll.cs" />
     <Compile Include="Builders\Cards\Items\PureWater.cs" />
     <Compile Include="Builders\Cards\Items\RedMask.cs" />
     <Compile Include="Builders\Cards\Items\RedSkull.cs" />
