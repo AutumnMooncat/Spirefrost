@@ -462,6 +462,7 @@
     <Compile Include="Builders\Cards\Items\Kite.cs" />
     <Compile Include="Builders\Cards\Items\MagicFlower.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
+    <Compile Include="Builders\Cards\Items\Tingsha.cs" />
     <Compile Include="Builders\Cards\Items\VioletLotus.cs" />
     <Compile Include="Builders\Icons\ConfusedIcon.cs" />
     <Compile Include="Builders\Icons\ConstrictedIcon.cs" />
@@ -517,6 +518,8 @@
     <Compile Include="Builders\StatusEffects\OnTurnEndConstrictedDamageFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
+    <Compile Include="Builders\StatusEffects\RunnableResetBombard.cs" />
+    <Compile Include="Builders\StatusEffects\TemporaryBombard.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryFlourish.cs" />
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedRecoverHealthToSelf.cs" />
@@ -526,6 +529,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveAttacksApplyShroom.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseEffectsToAlliesAndEnemiesNoBoosting.cs" />
     <Compile Include="Patches\BattleEntityDataPatch.cs" />
+    <Compile Include="Patches\BombardPatches.cs" />
     <Compile Include="Patches\CleansePatch.cs" />
     <Compile Include="Patches\CustomStatusIconPatches.cs" />
     <Compile Include="Patches\DynamicTextPatches.cs" />
@@ -536,6 +540,7 @@
     <Compile Include="Patches\WhileActiveXPatches.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXAfterTurn.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantHitSelfForXDamage.cs" />
+    <Compile Include="StatusEffects\StatusEffectInstantRunnable.cs" />
     <Compile Include="StatusEffects\StatusEffectLessJankyBonusDamageEqualToX.cs" />
     <Compile Include="StatusEffects\StatusEffectOngoingAttackEffect.cs" />
     <Compile Include="StatusEffects\INonStackingStatusEffect.cs" />
