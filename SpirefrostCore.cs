@@ -199,11 +199,16 @@ namespace Spirefrost
 
             // Let our sprites automatically show up for icon descriptions
             SpriteAsset.RegisterSpriteAsset();
+
+            // Add safety before load
             ApplySafetyPatches();
             base.Load();
+
             SpirefrostStrings.CreateLocalizedStrings();
+
             GameMode gameMode = TryGet<GameMode>("GameModeNormal"); //GameModeNormal is the standard game mode. 
             gameMode.classes = gameMode.classes.Append(TryGet<ClassData>(SpireTribe.ID)).ToArray();
+
             Events.OnEntityCreated += FixImage;
             Events.PostBattle += CleanUpBattleEnd;
             Events.OnBackToMainMenu += CleanUpTemp;
@@ -223,13 +228,20 @@ namespace Spirefrost
 
         public override void Unload()
         {
+            // Free references and call any unload actions
+            CleanUp();
+
             // Prevent our icons from accidentally showing up in descriptions when not loaded
             SpriteAsset.UnRegisterSpriteAsset();
+
+            // Remove safety after unload
             base.Unload();
             RemoveSafetyPatches();
+
             GameMode gameMode = TryGet<GameMode>("GameModeNormal");
-            gameMode.classes = RemoveNulls(gameMode.classes); //Without this, a non-restarted game would crash on tribe selection
+            gameMode.classes = RemoveNulls(gameMode.classes); // Without this, a non-restarted game would crash on tribe selection
             UnloadFromClasses();
+
             Events.OnEntityCreated -= FixImage;
             Events.PostBattle -= CleanUpBattleEnd;
             Events.OnBackToMainMenu -= CleanUpTemp;
@@ -289,24 +301,6 @@ namespace Spirefrost
                     pool.list.RemoveAllWhere((item) => item == null || item.ModAdded == this); //Find and remove everything that needs to be removed.
                 }
             }
-
-            List<FinalBossEffectSwapper> foundSwappers = new List<FinalBossEffectSwapper>();
-            foreach (var item in GetAllNamedReferences(StatusEffectDataExtensions.SwapperKey)) 
-            {
-                if (item is FinalBossEffectSwapper swapper)
-                {
-                    foundSwappers.Add(swapper);
-                }
-            }
-            BattleGenerationScriptFinalBoss scriptFinalBoss = TryGet<BattleData>("Final Boss").generationScript as BattleGenerationScriptFinalBoss;
-            scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.ToList().Except(foundSwappers).ToArray();
-            foreach (var item in foundSwappers)
-            {
-                item.Destroy();
-            }
-            foundSwappers.Clear();
-
-            FreeAllReferences();
         }
 
         internal T[] RemoveNulls<T>(T[] data) where T : DataFile

@@ -20,6 +20,12 @@ namespace Spirefrost
     {
         private static readonly Dictionary<object, Dictionary<string, object>> managedReferences = new Dictionary<object, Dictionary<string, object>>();
 
+        private static readonly List<(object obj, UnloadAction action)> unloadActions = new List<(object obj, UnloadAction action)>();
+
+        internal static string UnloadActionKey => "UnloadAction";
+
+        internal delegate void UnloadAction();
+
         internal static void SetNamedReference(object reference, string name, object value)
         {
             if (reference != null && !managedReferences.ContainsKey(reference))
@@ -50,6 +56,7 @@ namespace Spirefrost
         {
             if (reference != null)
             {
+                RunUnloadAction(reference);
                 managedReferences.Remove(reference);
             }
         }
@@ -59,9 +66,31 @@ namespace Spirefrost
             return managedReferences.Values.Where(dict => dict.ContainsKey(name)).Select(dict => dict[name]).ToList();
         }
 
-        internal static void FreeAllReferences()
+        internal static void CleanUp()
         {
+            foreach (var item in unloadActions.ToList())
+            {
+                MainModFile.Print($"Running UnloadAction for {item.obj}");
+                unloadActions.Remove(item);
+                item.action.Invoke();
+            }
             managedReferences.Clear();
+        }
+
+        internal static void RunUnloadAction(object reference)
+        {
+            foreach (var item in unloadActions.Where(pair => pair.obj == reference).ToList())
+            {
+                MainModFile.Print($"Running UnloadAction for {item.obj}");
+                unloadActions.Remove(item);
+                item.action.Invoke();
+            }
+        }
+
+        internal static void AddUnloadAction(object reference, UnloadAction act)
+        {
+            MainModFile.Print($"Adding UnloadAction for {reference} -> {act}");
+            unloadActions.Add((reference, act));
         }
 
         internal class WeightedString : IComparable<WeightedString>

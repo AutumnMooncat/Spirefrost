@@ -1,17 +1,10 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
-using Spirefrost.Builders.Icons;
 using Spirefrost.Patches;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using WildfrostHopeMod.Utils;
-using WildfrostHopeMod.VFX;
 using static Spirefrost.Patches.CustomStatusIconPatches;
 
 namespace Spirefrost
@@ -87,7 +80,6 @@ namespace Spirefrost
 
             if (SpirefrostUtils.GetNamedReference(data, SwapperKey) is FinalBossEffectSwapper old)
             {
-                scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.Without(old);
                 old.Destroy();
             }
 
@@ -100,6 +92,31 @@ namespace Spirefrost
             scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.With(swapper);
 
             SpirefrostUtils.SetNamedReference(data, SwapperKey, swapper);
+            SpirefrostUtils.AddUnloadAction(swapper, () =>
+            {
+                scriptFinalBoss.settings.effectSwappers = scriptFinalBoss.settings.effectSwappers.Without(swapper);
+            });
+        }
+    }
+
+    internal static class TraitDataExtensions
+    {
+        internal static void MakeExclusiveWith(this TraitData trait, params TraitData[] exclusiveWith)
+        {
+            trait.overrides = exclusiveWith;
+
+            foreach (var item in exclusiveWith)
+            {
+                item.overrides = item.overrides.With(trait);
+            }
+
+            SpirefrostUtils.AddUnloadAction(trait, () =>
+            {
+                foreach (var item in exclusiveWith)
+                {
+                    item.overrides = item.overrides.Without(trait);
+                }
+            });
         }
     }
 
