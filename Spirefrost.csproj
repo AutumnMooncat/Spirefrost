@@ -462,6 +462,7 @@
     <Compile Include="Builders\Cards\Items\Kite.cs" />
     <Compile Include="Builders\Cards\Items\MagicFlower.cs" />
     <Compile Include="Builders\Cards\Items\ReptoDagger.cs" />
+    <Compile Include="Builders\Cards\Items\Specimen.cs" />
     <Compile Include="Builders\Cards\Items\Tingsha.cs" />
     <Compile Include="Builders\Cards\Items\VioletLotus.cs" />
     <Compile Include="Builders\Icons\ConfusedIcon.cs" />
@@ -497,6 +498,7 @@
     <Compile Include="Builders\StatusEffects\IconEffects\Fading.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Intangible.cs" />
     <Compile Include="Builders\StatusEffects\IconEffects\Regrow.cs" />
+    <Compile Include="Builders\StatusEffects\InstantApplyCurrentShroomToRandomEnemy.cs" />
     <Compile Include="Builders\StatusEffects\InstantGainBarrage.cs" />
     <Compile Include="Builders\StatusEffects\InstantHitSelfForXDamage.cs" />
     <Compile Include="Builders\StatusEffects\LinkedCards.cs" />
@@ -636,7 +638,6 @@
     <Compile Include="Builders\Cards\Items\Shovel.cs" />
     <Compile Include="Builders\Cards\Items\Shuriken.cs" />
     <Compile Include="Builders\Cards\Items\SnakeRing.cs" />
-    <Compile Include="Builders\Cards\Items\SneckoSkull.cs" />
     <Compile Include="Builders\Cards\Items\Sundial.cs" />
     <Compile Include="Builders\Cards\Items\SymbioticVirus.cs" />
     <Compile Include="Builders\Cards\Items\TeardropLocket.cs" />
