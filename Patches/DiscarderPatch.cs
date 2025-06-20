@@ -9,6 +9,7 @@ namespace Spirefrost.Patches
         static void Prefix(Discarder __instance, Entity entity)
         {
             SpirefrostEvents.InvokeMovedByDiscarder(entity);
+            BombardPatches.OnDiscard(entity);
         }
     }
 }

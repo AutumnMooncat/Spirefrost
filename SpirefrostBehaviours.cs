@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spirefrost.Patches;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Spirefrost
         public void Update()
         {
             MainModFile.instance.updated = false;
+            BombardPatches.BombardArrowSystem.Update();
         }
     }
 }

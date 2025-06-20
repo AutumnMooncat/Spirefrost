@@ -25,8 +25,7 @@ namespace Spirefrost.Builders.Cards.Items
                     data.attackEffects = new CardData.StatusEffectStacks[]
                     {
                         SStack("Reduce Max Health", 3),
-                        SStack(InstantGainBombard.ID, 1),
-                        SStack(RunnableResetBombard.ID, 1)
+                        SStack(InstantGainAndResetBombard.ID, 1)
                     };
                 });
         }

@@ -520,9 +520,9 @@
     <Compile Include="Builders\StatusEffects\OnTurnEndConstrictedDamageFrontEnemy.cs" />
     <Compile Include="Builders\StatusEffects\PreTriggerGainTempFrenzyIfTargetHasWeak.cs" />
     <Compile Include="Builders\StatusEffects\ReptoDaggerSummonEffects.cs" />
-    <Compile Include="Builders\StatusEffects\RunnableResetBombard.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryBombard.cs" />
     <Compile Include="Builders\StatusEffects\TemporaryFlourish.cs" />
+    <Compile Include="Builders\StatusEffects\TraitEffects\CustomBombardEffect.cs" />
     <Compile Include="Builders\StatusEffects\Utility\CustomSaveable.cs" />
     <Compile Include="Builders\StatusEffects\WhenCardDestroyedRecoverHealthToSelf.cs" />
     <Compile Include="Builders\StatusEffects\WhenHitApplyFrostToSelf.cs" />
@@ -530,6 +530,7 @@
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseAttackToRightmostCardInHand.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveAttacksApplyShroom.cs" />
     <Compile Include="Builders\StatusEffects\WhileActiveIncreaseEffectsToAlliesAndEnemiesNoBoosting.cs" />
+    <Compile Include="Builders\Traits\CustomBombardTrait.cs" />
     <Compile Include="Patches\BattleEntityDataPatch.cs" />
     <Compile Include="Patches\BombardPatches.cs" />
     <Compile Include="Patches\CleansePatch.cs" />
@@ -541,6 +542,8 @@
     <Compile Include="Patches\TemporaryCharmPatches.cs" />
     <Compile Include="Patches\WhileActiveXPatches.cs" />
     <Compile Include="StatusEffects\StatusEffectApplyXAfterTurn.cs" />
+    <Compile Include="StatusEffects\StatusEffectBetterInstantMultiple.cs" />
+    <Compile Include="StatusEffects\StatusEffectBombardCustom.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantHitSelfForXDamage.cs" />
     <Compile Include="StatusEffects\StatusEffectInstantRunnable.cs" />
     <Compile Include="StatusEffects\StatusEffectLessJankyBonusDamageEqualToX.cs" />

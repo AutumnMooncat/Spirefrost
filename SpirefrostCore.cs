@@ -14,6 +14,7 @@ using Spirefrost.Builders.StatusEffects.IconEffects;
 using static Spirefrost.Patches.ConfigPatches;
 using Spirefrost.Patches;
 using Spirefrost.StatusEffects;
+using static Spirefrost.Patches.BombardPatches;
 
 
 namespace Spirefrost
@@ -67,6 +68,13 @@ namespace Spirefrost
             On
         }
 
+        public enum BombardSetting
+        {
+            Off,
+            If_Needed,
+            On
+        }
+
         //[ConfigItem(ReplaceType.Off, "Give <Junk> a \"fitting\" depricated relic image", "Replace Junk Image")]
         public ReplaceType junkReplace = ReplaceType.Off;
 
@@ -74,6 +82,16 @@ namespace Spirefrost
         [ConfigManagerCallbackSetting("CawCawCallback")]
         [ConfigManagerOptionSetting(new string[] { "No", "Caw Caw!" }, new object[] { false, true })]
         public bool cawCaw = false;
+
+        [ConfigItem(BombardSetting.On, "Colour enemy and ally Bombard targets differently", "Bombard Colours")]
+        [ConfigManagerOptionSetting(new string[] { "Off", "If Relevant", "On" }, new object[] { BombardSetting.Off, BombardSetting.If_Needed, BombardSetting.On })]
+        public BombardSetting bombardColors = BombardSetting.On;
+
+        [ConfigItem(BombardSetting.If_Needed, "Show arrows for each Bombardier targeting a hovered slot", "Bombard Arrows (In)")]
+        public BombardSetting bombardArrowsIn = BombardSetting.If_Needed;
+
+        [ConfigItem(BombardSetting.If_Needed, "Show arrows for each slot being targeted by a hovered Bombardier", "Bombard Arrows (Out)")]
+        public BombardSetting bombardArrowsOut = BombardSetting.If_Needed;
 
         [ConfigItem(ReplaceType.If_StS_Leader, "Replace <sprite=demonize> with <sprite=spirefrost.stsvuln>", "Demonize is Vulnerable")]
         public ReplaceType vulnReplace = ReplaceType.If_StS_Leader;
@@ -213,6 +231,13 @@ namespace Spirefrost
             Events.PostBattle += CleanUpBattleEnd;
             Events.OnBackToMainMenu += CleanUpTemp;
             Events.OnEntityChosen += PickupCheck;
+            Events.OnEntityHover += BombardArrowSystem.OnHoverEntity;
+            Events.OnEntityUnHover += BombardArrowSystem.OnUnHoverEntity;
+            Events.OnSlotHover += BombardArrowSystem.OnHoverSlot;
+            Events.OnSlotUnHover += BombardArrowSystem.OnUnHoverSlot;
+            Events.OnEntityDrag += BombardArrowSystem.OnDrag;
+            Events.OnDeckpackOpen += BombardArrowSystem.CleanUp;
+            Events.OnInspect += BombardArrowSystem.OnInspect;
 
             managedObjects = new GameObject(Title+".ManagedObjects");
             UnityEngine.Object.DontDestroyOnLoad(managedObjects);
@@ -246,6 +271,14 @@ namespace Spirefrost
             Events.PostBattle -= CleanUpBattleEnd;
             Events.OnBackToMainMenu -= CleanUpTemp;
             Events.OnEntityChosen -= PickupCheck;
+            Events.OnEntityHover -= BombardArrowSystem.OnHoverEntity;
+            Events.OnEntityUnHover -= BombardArrowSystem.OnUnHoverEntity;
+            Events.OnSlotHover -= BombardArrowSystem.OnHoverSlot;
+            Events.OnSlotUnHover -= BombardArrowSystem.OnUnHoverSlot;
+            Events.OnEntityDrag -= BombardArrowSystem.OnDrag;
+            Events.OnDeckpackOpen -= BombardArrowSystem.CleanUp;
+            Events.OnInspect -= BombardArrowSystem.OnInspect;
+
             managedObjects.Destroy();
             managedObjects = null;
             tempObjects.Destroy();

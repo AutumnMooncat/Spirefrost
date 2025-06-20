@@ -1,10 +1,8 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Spirefrost.Patches
 {
@@ -17,13 +15,45 @@ namespace Spirefrost.Patches
 
         internal static bool initColours;
 
-        internal static Color originalColor;
+        internal static Color originalColour;
 
-        internal static Color allyColor;
+        internal static Color allyColour;
 
-        internal static Color bothColor;
+        internal static Color bothColour;
+
+        internal static bool isColoured;
 
         internal static readonly List<(StatusEffectBombard effect, CardContainer container, GameObject obj, bool ally)> bombardInformation = new List<(StatusEffectBombard, CardContainer, GameObject, bool)>();
+
+        internal static bool ShouldColour(bool hasEnemyAndAlly)
+        {
+            var setting = MainModFile.instance.bombardColors;
+            if (setting == MainModFile.BombardSetting.If_Needed)
+            {
+                return hasEnemyAndAlly;
+            }
+            return setting == MainModFile.BombardSetting.On;
+        }
+
+        internal static bool ShouldArrowIn(bool hasEnemyAndAlly, bool multipleBombardiersOnTeam)
+        {
+            var setting = MainModFile.instance.bombardArrowsIn;
+            if (setting == MainModFile.BombardSetting.If_Needed)
+            {
+                return multipleBombardiersOnTeam || (hasEnemyAndAlly && !ShouldColour(hasEnemyAndAlly));
+            }
+            return setting == MainModFile.BombardSetting.On;
+        }
+
+        internal static bool ShouldArrowOut(bool hasEnemyAndAlly, bool multipleBombardiersOnTeam)
+        {
+            var setting = MainModFile.instance.bombardArrowsOut;
+            if (setting == MainModFile.BombardSetting.If_Needed)
+            {
+                return multipleBombardiersOnTeam || (hasEnemyAndAlly && !ShouldColour(hasEnemyAndAlly));
+            }
+            return setting == MainModFile.BombardSetting.On;
+        }
 
         internal static void SetCurrent(StatusEffectBombard bombard)
         {
@@ -31,33 +61,44 @@ namespace Spirefrost.Patches
             isAlly = bombard.target?.owner == References.Player;
         }
 
-        internal static void ResolveColours(CardContainer slot)
+        internal static void ResolveTargets(CardContainer slot)
         {
-            bool hasEnemy = bombardInformation.Any(info => info.container == slot && !info.ally);
-            bool hasAlly = bombardInformation.Any(info => info.container == slot && info.ally);
+            BombardArrowSystem.UpdateContainer(slot);
+            bool hasEnemyBombardier = bombardInformation.Any(info => !info.ally);
+            bool hasAllyBombardier = bombardInformation.Any(info => info.ally);
 
-            foreach (var (_, container, obj, ally) in bombardInformation)
+            if (ShouldColour(hasEnemyBombardier && hasAllyBombardier))
             {
-                if (container == slot)
+                isColoured = true;
+                foreach (var (_, container, obj, ally) in bombardInformation)
                 {
-                    if (hasAlly && hasEnemy)
+                    bool targetedByBothTeams = bombardInformation.Any(info => info.container == container && info.ally != ally);
+                    if (targetedByBothTeams)
                     {
-                        SetColour(obj, bothColor);
+                        SetColour(obj, bothColour);
                     }
                     else
                     {
-                        SetColour(obj, ally ? allyColor : originalColor);
+                        SetColour(obj, ally ? allyColour : originalColour);
                     }
+                }
+            }
+            else if (isColoured)
+            {
+                isColoured = false;
+                foreach (var (_, _, obj, _) in bombardInformation)
+                {
+                    SetColour(obj, originalColour);
                 }
             }
         }
 
-        private static void SetColour(GameObject obj, Color color)
+        private static void SetColour(GameObject obj, Color colour)
         {
             SpriteRenderer renderer = GetRenderer(obj);
             if (renderer)
             {
-                renderer.color = color;
+                renderer.color = colour;
             }
         }
 
@@ -65,6 +106,220 @@ namespace Spirefrost.Patches
         {
             return obj.transform.GetComponentInChildren<SpriteRenderer>();
         }
+
+        internal static void OnDiscard(Entity entity)
+        {
+            foreach (var item in entity.statusEffects)
+            {
+                if (item is StatusEffectBombard)
+                {
+                    item.RunDisableEvent(entity);
+                }
+            }
+        }
+
+        internal class BombardArrowSystem
+        {
+            private static bool didInit;
+
+            private static GameObject system;
+
+            private static GameObject asset;
+
+            private static readonly List<GameObject> inArrows = new List<GameObject>();
+
+            private static readonly List<GameObject> outArrows = new List<GameObject>();
+
+            internal static bool HasInArrows { get => inArrows.Count > 0; }
+
+            internal static bool HasOutArrows { get => outArrows.Count > 0; }
+
+            private static Entity dragging;
+
+            private static void Init()
+            {
+                if (system == null)
+                {
+                    Scene s = SceneManager.Loaded["Campaign"];
+                    GameObject[] gameObjects = s.GetRootGameObjects();
+                    foreach (var item in gameObjects)
+                    {
+                        if (item.name == "Systems")
+                        {
+                            system = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (asset == null)
+                {
+                    if (system)
+                    {
+                        foreach (var item in system.transform.GetAllChildren())
+                        {
+                            if (item.gameObject.TryGetComponent<TargetingArrow>(out TargetingArrow _))
+                            {
+                                asset = item.gameObject;
+                                didInit = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            internal static void Update()
+            {
+                if (dragging && !dragging.dragging)
+                {
+                    OnHoverEntity(dragging);
+                    dragging = null;
+                }
+            }
+
+            internal static void OnDrag(Entity entity)
+            {
+                dragging = entity;
+                CleanUp();
+            }
+
+            internal static void OnHoverEntity(Entity entity)
+            {
+                Debug.Log($"Hovered {entity}");
+                if (!didInit)
+                {
+                    Init();
+                }
+
+                if (didInit && !SkipArrows() && entity)
+                {
+                    var found = bombardInformation.Where(info => info.effect.target == entity).FirstOrDefault();
+                    if (found.effect?.target == entity)
+                    {
+                        bool multipleBombardiers = bombardInformation.Any(info => info.effect.target != entity && info.ally == found.ally);
+                        bool hasEnemyAndAlly = bombardInformation.Any(info => info.ally != found.ally);
+                        if (ShouldArrowOut(hasEnemyAndAlly, multipleBombardiers))
+                        {
+                            foreach (var (effect, container, _, _) in bombardInformation)
+                            {
+                                if (effect.target == entity)
+                                {
+                                    MakeArow(entity.transform.position, container.transform.position, false);
+                                }
+                            }
+                        }
+                    }
+
+                    if (HasOutArrows)
+                    {
+                        if (entity.display.hover.pop?.popped ?? false)
+                        {
+                            entity.display.hover.pop.UnPop();
+                        }
+                    }
+                }
+            }
+
+            internal static void OnUnHoverEntity(Entity entity)
+            {
+                foreach (var item in outArrows)
+                {
+                    item.Destroy();
+                }
+                outArrows.Clear();
+            }
+
+            internal static void OnHoverSlot(CardContainer cont)
+            {
+                if (!didInit)
+                {
+                    Init();
+                }
+
+                if (didInit && !SkipArrows() && cont)
+                {
+                    int allyCount = bombardInformation.Where(info => info.ally).Select(info => info.effect.target).Distinct().Count();
+                    int enemyCount = bombardInformation.Where(info => !info.ally).Select(info => info.effect.target).Distinct().Count();
+                    bool hasEnemyAndAlly = allyCount > 0 && enemyCount > 0;
+                    foreach (var (effect, container, _, ally) in bombardInformation)
+                    {
+                        if (container == cont && ShouldArrowIn(hasEnemyAndAlly, (allyCount > 1 && ally) || (enemyCount > 1 && !ally)))
+                        {
+                            MakeArow(effect.target.transform.position, cont.transform.position, true);
+                        }
+                    }
+                }
+            }
+
+            private static bool SkipArrows()
+            {
+                if (Deckpack.IsOpen || InspectSystem.IsActive() || dragging)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            private static void MakeArow(Vector3 from, Vector3 to, bool isInArrow)
+            {
+                GameObject arrowObj = UnityEngine.Object.Instantiate(asset, system.transform);
+                arrowObj.name = asset.name;
+                arrowObj.SetActive(true);
+                TargetingArrow arrow = arrowObj.GetComponent<TargetingArrow>();
+                arrow.SetStyle("Default");
+                Vector3 offset = to - from;
+                offset *= 0.1f;
+                arrow.UpdatePosition(from, to - offset);
+                if (isInArrow)
+                {
+                    inArrows.Add(arrowObj);
+                }
+                else
+                {
+                    outArrows.Add(arrowObj);
+                }
+            }
+
+            internal static void OnUnHoverSlot(CardContainer _)
+            {
+                foreach (var item in inArrows)
+                {
+                    item.Destroy();
+                }
+                inArrows.Clear();
+            }
+
+            internal static void UpdateContainer(CardContainer cont)
+            {
+                if (HasInArrows)
+                {
+                    OnUnHoverSlot(cont);
+                    OnHoverSlot(cont);
+                }
+            }
+
+            internal static void OnInspect(Entity _)
+            {
+                CleanUp();
+            }
+
+            internal static void CleanUp()
+            {
+                foreach (var item in inArrows)
+                {
+                    item.Destroy();
+                }
+                inArrows.Clear();
+
+                foreach (var item in outArrows)
+                {
+                    item.Destroy();
+                }
+                outArrows.Clear();
+            }
+        }
+
 
         [HarmonyPatch(typeof(StatusEffectBombard), nameof(StatusEffectBombard.SetTargets))]
         internal class SetTargetsPatch
@@ -107,7 +362,7 @@ namespace Spirefrost.Patches
                     bombardInformation.Add((current, container, obj, isAlly));
                     if (initColours)
                     {
-                        ResolveColours(container);
+                        ResolveTargets(container);
                     }
                     else
                     {
@@ -115,10 +370,10 @@ namespace Spirefrost.Patches
                         if (renderer)
                         {
                             initColours = true;
-                            originalColor = renderer.color;
-                            allyColor = new Color(originalColor.g, originalColor.r, originalColor.b, originalColor.a);
-                            bothColor = new Color(originalColor.r, originalColor.r, originalColor.b, originalColor.a);
-                            ResolveColours(container);
+                            originalColour = renderer.color;
+                            allyColour = new Color(originalColour.g, originalColour.r, originalColour.b, originalColour.a);
+                            bothColour = new Color(originalColour.r, originalColour.r, originalColour.b, originalColour.a);
+                            ResolveTargets(container);
                         }
                     }
                 }
@@ -136,15 +391,21 @@ namespace Spirefrost.Patches
                     // If we arent tracking it, let ATS handle it
                     return true;
                 }
+
                 // Untrack as its going to be destroyed
                 bombardInformation.Remove(found);
-                ResolveColours(container);
-                GameObject tocheck = __instance.currentTargets?[container];
-                if (found.obj == tocheck)
+                ResolveTargets(container);
+
+                // If ATS is going to destroy the correct one, let it
+                if (__instance.currentTargets?.ContainsKey(container) ?? false)
                 {
-                    // If ATS is going to remove the correct one, let it
-                    return true;
+                    GameObject tocheck = __instance.currentTargets[container];
+                    if (found.obj == tocheck)
+                    {
+                        return true;
+                    }
                 }
+
                 // Else handle it manually
                 found.obj.Destroy();
                 return false;
@@ -161,6 +422,16 @@ namespace Spirefrost.Patches
                     obj.Destroy();
                 }
                 bombardInformation.Clear();
+                BombardArrowSystem.CleanUp();
+            }
+        }
+
+        [HarmonyPatch(typeof(CardPopUpTarget), nameof(CardPopUpTarget.Pop))]
+        internal class PopPatch
+        {
+            static bool Prefix()
+            {
+                return !BombardArrowSystem.HasOutArrows;
             }
         }
     }
