@@ -177,8 +177,12 @@ namespace Spirefrost
             "[*] When checking if an Item is valid to play on a entity, the current Attack stat of the card is checked as opposed to its base Attack\r\n" +
             "[/list]\r\n\r\n" +
             "[h1]Configurable Changes[/h1]\r\n" +
-            "By default, while playing a run as a leader from the Spire tribe, certain status effects are changed to be their Slay the Spire power counterparts, such as Demonize being Vulnerable or Shroom being Poison. " +
-            "These changes are strictly cosmetic and no mechanical changes occur. These changes can be individually toggled in the mods config settings if you happen to have Config Manager installed!";
+            "These changes can be individually toggled in the mods config settings if you happen to have Config Manager installed:[list]\r\n" +
+            "[*] While playing a run as a leader from the Spire tribe, certain status effects are changed to be their Slay the Spire power counterparts, such as Demonize being Vulnerable or Shroom being Poison. These changes are strictly cosmetic and no mechanical changes occur.\r\n" +
+            "[*] While an allied unit has Bombard, its target icons will appear green to distinguish from enemy Bombard icons. Slots targeted by both an ally and enemy bombard unit will appear yellow.\r\n" +
+            "[*] While hovering a Bombard target icon, arrows will render pointing from the Bombard unit to it if it is ambiguous who is targeting that slot.\r\n" +
+            "[*] While hovering a Bombard unit, arrows will render pointing from it to all slots it is targeting if it is ambiguous who is targeting each slot.\r\n" +
+            "[/list]";
 
         public override void Load()
         {
