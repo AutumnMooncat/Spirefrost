@@ -25,6 +25,11 @@ namespace Spirefrost.Patches
 
         internal static readonly List<(StatusEffectBombard effect, CardContainer container, GameObject obj, bool ally)> bombardInformation = new List<(StatusEffectBombard, CardContainer, GameObject, bool)>();
 
+        internal static bool IsTracked(Entity entity)
+        {
+            return bombardInformation.Any(info => info.effect.target == entity);
+        }
+
         internal static bool ShouldColour(bool hasEnemyAndAlly)
         {
             var setting = MainModFile.instance.bombardColors;
