@@ -150,7 +150,11 @@ namespace Spirefrost.StatusEffects
             int deltaCounter = target.data.counter - original.counter;
             bool hadCounter = original.counter > 0;
             target.counter.max += deltaCounter;
-            target.counter.current += deltaCounter;
+            if (target.counter.current > 0)
+            {
+                // Dont modify if we just triggered
+                target.counter.current += deltaCounter;
+            }
             if (target.counter.max <= 0 && hadCounter)
             {
                 target.counter.max = 1;
