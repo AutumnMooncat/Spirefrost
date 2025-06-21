@@ -138,7 +138,7 @@ namespace Spirefrost.Patches
 
             private static void Init()
             {
-                if (system == null)
+                if (system == null && SceneManager.Loaded.ContainsKey("Campaign"))
                 {
                     Scene s = SceneManager.Loaded["Campaign"];
                     GameObject[] gameObjects = s.GetRootGameObjects();
