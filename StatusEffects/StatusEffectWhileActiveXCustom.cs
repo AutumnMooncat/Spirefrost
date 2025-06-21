@@ -18,7 +18,7 @@ namespace Spirefrost.StatusEffects
 
         public override IEnumerator CardMove(Entity entity)
         {
-            if (active && entity != target && affected.Contains(entity) || affected.Count == 0)
+            if (active && entity != target && (affected.Contains(entity) || affected.Count == 0))
             {
                 yield return Reset();
             }

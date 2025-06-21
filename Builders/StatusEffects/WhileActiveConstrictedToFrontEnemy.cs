@@ -1,6 +1,7 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
 using Spirefrost.Builders.Keywords;
 using Spirefrost.Builders.StatusEffects.IconEffects;
+using Spirefrost.StatusEffects;
 using UnityEngine;
 
 namespace Spirefrost.Builders.StatusEffects
@@ -13,11 +14,12 @@ namespace Spirefrost.Builders.StatusEffects
 
         internal static object GetBuilder()
         {
-            return StatusCopy("While Active Increase Effects To FrontAlly", ID)
+            return new StatusEffectDataBuilder(MainModFile.instance)
+                .Create<StatusEffectWhileActiveXCustom>(ID)
                 .WithText($"While active, add <{{a}}>{MakeKeywordInsert(ConstrictedKeyword.FullID)} to the front enemy")
                 .WithStackable(true)
                 .WithCanBeBoosted(true)
-                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveX>(data => {
+                .SubscribeToAfterAllBuildEvent<StatusEffectWhileActiveXCustom>(data => {
                     data.effectToApply = TryGet<StatusEffectData>(Constricted.ID);
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.FrontEnemy;
                 });
