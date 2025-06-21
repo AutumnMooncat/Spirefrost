@@ -621,6 +621,15 @@ namespace Spirefrost.Patches
                     rows = rows.Distinct().ToArray();
                 }
             }
+
+            [HarmonyPatch(typeof(Battle), nameof(Battle.GetRowIndices), typeof(Entity))]
+            internal static class GetRowIndicesPatch
+            {
+                static void Postfix(ref int[] __result)
+                {
+                    __result = __result.Distinct().ToArray();
+                }
+            }
         }
 
         internal static class BattleSaveLogic
@@ -1270,6 +1279,45 @@ namespace Spirefrost.Patches
                         }
                     }
                     __result = currRowCount;
+                }
+            }
+        }
+    }
+
+    internal class WideCardTargetingLogic
+    {
+        [HarmonyPatch]
+        internal class GetTargetsPatch
+        {
+            static CardContainer[] CheckWideContainers(CardContainer[] orig, Entity entity)
+            {
+                if (entity.data.IsWide() && orig.Length > 1)
+                {
+                    return new CardContainer[] { orig[0] };
+                }
+                return orig;
+            }
+
+            static IEnumerable<MethodBase> TargetMethods()
+            {
+                yield return AccessTools.Method(typeof(TargetModeRandom), nameof(TargetModeRandom.GetTargets));
+                yield return AccessTools.Method(typeof(TargetModeRandom), nameof(TargetModeRandom.GetPotentialTargets));
+                yield return AccessTools.Method(typeof(TargetModeRow), nameof(TargetModeRow.GetPotentialTargets));
+            }
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> codes = instructions.ToList();
+                MethodInfo get = AccessTools.PropertyGetter(typeof(Entity), nameof(Entity.containers));
+                MethodInfo check = AccessTools.Method(typeof(GetTargetsPatch), nameof(CheckWideContainers));
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    yield return codes[i];
+                    if (codes[i].operand as MethodInfo == get && i - 1 >= 0)
+                    {
+                        yield return codes[i - 1];
+                        yield return new CodeInstruction(OpCodes.Call, check);
+                    }
                 }
             }
         }
