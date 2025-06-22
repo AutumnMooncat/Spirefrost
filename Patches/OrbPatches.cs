@@ -61,61 +61,6 @@ namespace Spirefrost.Patches
         }
     }
 
-    [HarmonyPatch]
-    internal static class StopRemovingMyStuff
-    {
-        private static readonly List<MethodInfo> methods = new List<MethodInfo>();
-        public static bool Prepare(MethodBase original)
-        {
-            if (original == null)
-            {
-                Type statusPredicate = Type.GetType("WildfrostHopeMod.CommandsConsole.ConsoleCustom+CommandAddStatus+<>c,Commands Console");
-                MethodInfo statusPredicateMethod = statusPredicate?.FindMethod("<Routine>b__6_2");
-                if (statusPredicateMethod != null)
-                {
-                    MainModFile.Print($"Patching add status command");
-                    methods.Add(statusPredicateMethod);
-                }
-                Type effectPredicate = Type.GetType("WildfrostHopeMod.CommandsConsole.ConsoleCustom+CommandAddEffect+<>c,Commands Console");
-                MethodInfo effectPredicateMethod = effectPredicate?.FindMethod("<Routine>b__6_2");
-                if (effectPredicateMethod != null)
-                {
-                    MainModFile.Print($"Patching add effect command");
-                    methods.Add(effectPredicateMethod);
-                }
-                if (methods.Count == 0)
-                {
-                    MainModFile.Print($"Commands Console not patched");
-                }
-                return methods.Count > 0;
-            }
-            return true;
-        }
-
-        public static IEnumerable<MethodBase> TargetMethods()
-        {
-            return methods;
-        }
-
-        public static void Postfix(StatusEffectData s, ref bool __result)
-        {
-            if (s is StatusEffectOrb)
-            {
-                __result = false;
-            }
-        }
-
-        public static Exception Cleanup(MethodBase original, Exception exception)
-        {
-            if (exception != null)
-            {
-                MainModFile.Print($"Patching Commands Console Failed:");
-                Debug.Log(exception);
-            }
-            return null;
-        }
-    }
-
     internal class CircularLayoutGroup : LayoutGroup
     {
         public float spacing;
