@@ -38,16 +38,18 @@ namespace Spirefrost
             onCardsRetained(entities);
         }
 
-        internal static event UnityAction<Entity> OnCounterReset;
+        internal delegate IEnumerator CounterResetHandler(Entity entity);
 
-        internal static void InvokeCounterReset(Entity entity)
+        internal static event CounterResetHandler OnCounterReset;
+
+        internal static IEnumerator CounterResetRoutine(Entity entity)
         {
-            UnityAction<Entity> onCounterReset = OnCounterReset;
-            if (onCounterReset == null)
-            {
-                return;
-            }
-            onCounterReset(entity);
+            return OnCounterReset(entity);
+        }
+
+        internal static bool HasCounterReset()
+        {
+            return OnCounterReset != null;
         }
 
         internal delegate void StatusReductionEvent(StatusEffectData status, ref int amount, bool temporary);

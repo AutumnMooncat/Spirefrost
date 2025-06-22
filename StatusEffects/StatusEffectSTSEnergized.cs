@@ -30,29 +30,15 @@ namespace Spirefrost.StatusEffects
             return Mathf.Max(0, Mathf.RoundToInt((float)(count + target.effectBonus) * target.effectFactor));
         }
 
-        private void CounterTrigger(Entity entity)
+        private IEnumerator CounterTrigger(Entity entity)
         {
-            if (entity == target && target.alive)
-            {
-                IEnumerator logic = TriggerLogic();
-                while (logic.MoveNext()) 
-                {
-                    object _ = logic.Current;
-                }
-            }
-        }
-
-        private IEnumerator TriggerLogic()
-        {
-            Routine.Clump clump = new Routine.Clump();
             Hit hit = new Hit(applier, target, 0)
             {
                 countsAsHit = false,
                 counterReduction = GetAmount()
             };
-            clump.Add(hit.Process());
-            clump.Add(CountDown());
-            yield return clump.WaitForEnd();
+            yield return hit.Process();
+            yield return CountDown();
         }
 
         public IEnumerator CountDown()

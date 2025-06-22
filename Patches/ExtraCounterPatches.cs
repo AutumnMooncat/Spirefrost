@@ -23,7 +23,7 @@ namespace Spirefrost.Patches
 
         internal static StatusEffectExtraCounter NextCustomCounterAtZero(Entity entity)
         {
-            return GetCustomCounterIcons(entity).Select(icon => icon.GetLinkedStatus()).Where(status => status is StatusEffectExtraCounter && status.count == 0).FirstOrDefault() as StatusEffectExtraCounter;
+            return entity.statusEffects.Where(status => status is StatusEffectExtraCounter && status.count == 0).FirstOrDefault() as StatusEffectExtraCounter;
         }
 
         [HarmonyPatch(typeof(StatusEffectInstantReduceMaxCounter), nameof(StatusEffectInstantReduceMaxCounter.Process))]

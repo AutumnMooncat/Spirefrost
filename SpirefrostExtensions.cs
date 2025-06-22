@@ -1,9 +1,11 @@
 ﻿using Deadpan.Enums.Engine.Components.Modding;
+using HarmonyLib;
 using Spirefrost.Patches;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using UnityEngine;
 using static Spirefrost.Patches.CustomStatusIconPatches;
 
@@ -443,6 +445,29 @@ namespace Spirefrost
         internal static StatusEffectData GetLinkedStatus(this StatusIcon icon)
         {
             return SpirefrostUtils.GetNamedReference(icon, LinkedKey) as StatusEffectData;
+        }
+    }
+
+    internal static class CodeInstructionExtensions
+    {
+        internal static bool IsLeave(this CodeInstruction code)
+        {
+            return code.opcode == OpCodes.Leave || code.opcode == OpCodes.Leave_S;
+        }
+
+        internal static bool IsBr(this CodeInstruction code)
+        {
+            return code.opcode == OpCodes.Br || code.opcode == OpCodes.Br_S;
+        }
+
+        internal static bool IsBrfalse(this CodeInstruction code)
+        {
+            return code.opcode == OpCodes.Brfalse || code.opcode == OpCodes.Brfalse_S;
+        }
+
+        internal static bool IsBrtrue(this CodeInstruction code)
+        {
+            return code.opcode == OpCodes.Brtrue || code.opcode == OpCodes.Brtrue_S;
         }
     }
 }
