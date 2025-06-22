@@ -287,7 +287,6 @@ namespace Spirefrost.Patches
                         yield return new CodeInstruction(OpCodes.Brtrue, jumpBackLabel);
                         // Put Ldarg0 back on the stack
                         yield return new CodeInstruction(OpCodes.Ldarg_0);
-                        yield return new CodeInstruction(OpCodes.Ldfld, codes[i].operand);
                     }
                 }
                 if (!skipInserted && codes[i].opcode == OpCodes.Ldarg_0 && i + 3 < codes.Count)
