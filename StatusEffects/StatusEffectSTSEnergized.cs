@@ -32,13 +32,16 @@ namespace Spirefrost.StatusEffects
 
         private IEnumerator CounterTrigger(Entity entity)
         {
-            Hit hit = new Hit(applier, target, 0)
+            if (entity == target)
             {
-                countsAsHit = false,
-                counterReduction = GetAmount()
-            };
-            yield return hit.Process();
-            yield return CountDown();
+                Hit hit = new Hit(applier, target, 0)
+                {
+                    countsAsHit = false,
+                    counterReduction = GetAmount()
+                };
+                yield return hit.Process();
+                yield return CountDown();
+            }
         }
 
         public IEnumerator CountDown()

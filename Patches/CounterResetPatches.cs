@@ -36,9 +36,10 @@ namespace Spirefrost.Patches
                 toProcess.ResetCounter();
             }
 
-            // Now that a counter has been reset (either the main or an extra), fire the hook for on reset
-            if (SpirefrostEvents.HasCounterReset())
+            // If a counter has been reset (either the main or an extra), fire the hook for on reset
+            if (SpirefrostEvents.HasCounterReset() && (willNormalTrigger || toProcess))
             {
+                Debug.Log($"Fire counter reset");
                 yield return SpirefrostEvents.CounterResetRoutine(entity);
                 yield return Sequences.Wait(0.167f);
             }
