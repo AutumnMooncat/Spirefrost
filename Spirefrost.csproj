@@ -573,7 +573,7 @@
     <Compile Include="Patches\AlreadyAttackingPatches.cs" />
     <Compile Include="Patches\BarragePatch.cs" />
     <Compile Include="Patches\CardPatches.cs" />
-    <Compile Include="Patches\CardPocketPatch.cs" />
+    <Compile Include="Patches\EntityEnabledPatches.cs" />
     <Compile Include="Patches\ConfigPatches.cs" />
     <Compile Include="Patches\DontTriggerPatch.cs" />
     <Compile Include="Patches\FrenzyPatches.cs" />
