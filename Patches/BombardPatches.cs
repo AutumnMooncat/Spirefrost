@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Spirefrost.Patches
 
         internal static bool IsTracked(Entity entity)
         {
-            return bombardInformation.Any(info => info.effect.target == entity);
+            return bombardInformation.Any(info => info.effect?.target == entity);
         }
 
         internal static bool ShouldColour(bool hasEnemyAndAlly)
@@ -109,12 +110,12 @@ namespace Spirefrost.Patches
 
         internal static SpriteRenderer GetRenderer(GameObject obj)
         {
-            return obj.transform.GetComponentInChildren<SpriteRenderer>();
+            return obj?.transform.GetComponentInChildren<SpriteRenderer>();
         }
 
         internal static void OnDiscard(Entity entity)
         {
-            foreach (var item in entity.statusEffects)
+            foreach (var item in entity?.statusEffects)
             {
                 if (item is StatusEffectBombard)
                 {
@@ -125,8 +126,6 @@ namespace Spirefrost.Patches
 
         internal class BombardArrowSystem
         {
-            private static bool didInit;
-
             private static GameObject system;
 
             private static GameObject asset;
@@ -141,8 +140,13 @@ namespace Spirefrost.Patches
 
             private static Entity dragging;
 
-            private static void Init()
+            private static bool Init()
             {
+                if (system && asset)
+                {
+                    return true;
+                }
+
                 if (system == null && SceneManager.Loaded.ContainsKey("Campaign"))
                 {
                     Scene s = SceneManager.Loaded["Campaign"];
@@ -166,12 +170,13 @@ namespace Spirefrost.Patches
                             if (item.gameObject.TryGetComponent<TargetingArrow>(out TargetingArrow _))
                             {
                                 asset = item.gameObject;
-                                didInit = true;
                                 break;
                             }
                         }
                     }
                 }
+
+                return system && asset;
             }
 
             internal static void Update()
@@ -191,24 +196,18 @@ namespace Spirefrost.Patches
 
             internal static void OnHoverEntity(Entity entity)
             {
-                Debug.Log($"Hovered {entity}");
-                if (!didInit)
+                if (Init() && !SkipArrows() && entity)
                 {
-                    Init();
-                }
-
-                if (didInit && !SkipArrows() && entity)
-                {
-                    var found = bombardInformation.Where(info => info.effect.target == entity).FirstOrDefault();
+                    var found = bombardInformation.Where(info => info.effect?.target == entity).FirstOrDefault();
                     if (found.effect?.target == entity)
                     {
-                        bool multipleBombardiers = bombardInformation.Any(info => info.effect.target != entity && info.ally == found.ally);
+                        bool multipleBombardiers = bombardInformation.Any(info => (info.effect?.target ?? entity) != entity && info.ally == found.ally);
                         bool hasEnemyAndAlly = bombardInformation.Any(info => info.ally != found.ally);
                         if (ShouldArrowOut(hasEnemyAndAlly, multipleBombardiers))
                         {
                             foreach (var (effect, container, _, _) in bombardInformation)
                             {
-                                if (effect.target == entity)
+                                if (effect?.target == entity && container)
                                 {
                                     MakeArow(entity.transform.position, container.transform.position, false);
                                 }
@@ -218,7 +217,7 @@ namespace Spirefrost.Patches
 
                     if (HasOutArrows)
                     {
-                        if (entity.display.hover.pop?.popped ?? false)
+                        if (entity.display?.hover?.pop?.popped ?? false)
                         {
                             entity.display.hover.pop.UnPop();
                         }
@@ -230,26 +229,21 @@ namespace Spirefrost.Patches
             {
                 foreach (var item in outArrows)
                 {
-                    item.Destroy();
+                    item?.Destroy();
                 }
                 outArrows.Clear();
             }
 
             internal static void OnHoverSlot(CardContainer cont)
             {
-                if (!didInit)
+                if (Init() && !SkipArrows() && cont)
                 {
-                    Init();
-                }
-
-                if (didInit && !SkipArrows() && cont)
-                {
-                    int allyCount = bombardInformation.Where(info => info.ally).Select(info => info.effect.target).Distinct().Count();
-                    int enemyCount = bombardInformation.Where(info => !info.ally).Select(info => info.effect.target).Distinct().Count();
+                    int allyCount = bombardInformation.Where(info => info.ally && info.effect?.target).Select(info => info.effect.target).Distinct().Count();
+                    int enemyCount = bombardInformation.Where(info => !info.ally && info.effect?.target).Select(info => info.effect.target).Distinct().Count();
                     bool hasEnemyAndAlly = allyCount > 0 && enemyCount > 0;
                     foreach (var (effect, container, _, ally) in bombardInformation)
                     {
-                        if (container == cont && ShouldArrowIn(hasEnemyAndAlly, (allyCount > 1 && ally) || (enemyCount > 1 && !ally)))
+                        if (effect && effect.target && container == cont && ShouldArrowIn(hasEnemyAndAlly, (allyCount > 1 && ally) || (enemyCount > 1 && !ally)))
                         {
                             MakeArow(effect.target.transform.position, cont.transform.position, true);
                         }
@@ -290,7 +284,7 @@ namespace Spirefrost.Patches
             {
                 foreach (var item in inArrows)
                 {
-                    item.Destroy();
+                    item?.Destroy();
                 }
                 inArrows.Clear();
             }
@@ -313,15 +307,28 @@ namespace Spirefrost.Patches
             {
                 foreach (var item in inArrows)
                 {
-                    item.Destroy();
+                    item?.Destroy();
                 }
                 inArrows.Clear();
 
                 foreach (var item in outArrows)
                 {
-                    item.Destroy();
+                    item?.Destroy();
                 }
                 outArrows.Clear();
+            }
+
+            internal static void OnSceneChange(Scene _)
+            {
+                Uninitialize();
+            }
+
+            internal static void Uninitialize()
+            {
+                CleanUp();
+                system = null;
+                asset = null;
+                bombardInformation.Clear();
             }
         }
 
@@ -349,7 +356,7 @@ namespace Spirefrost.Patches
         {
             static void Prefix(StatusEffectBombard __instance, Entity entity)
             {
-                if (entity == __instance.target)
+                if (entity == __instance?.target)
                 {
                     SetCurrent(__instance);
                 }
@@ -361,7 +368,7 @@ namespace Spirefrost.Patches
         {
             static void Postfix(AbilityTargetSystem __instance, CardContainer container)
             {
-                GameObject obj = __instance.currentTargets?[container];
+                GameObject obj = __instance?.currentTargets?[container];
                 if (obj)
                 {
                     bombardInformation.Add((current, container, obj, isAlly));
@@ -412,7 +419,7 @@ namespace Spirefrost.Patches
                 }
 
                 // Else handle it manually
-                found.obj.Destroy();
+                found.obj?.Destroy();
                 return false;
             }
         }
@@ -424,7 +431,7 @@ namespace Spirefrost.Patches
             {
                 foreach (var (_, _, obj, _) in bombardInformation)
                 {
-                    obj.Destroy();
+                    obj?.Destroy();
                 }
                 bombardInformation.Clear();
                 BombardArrowSystem.CleanUp();

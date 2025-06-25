@@ -242,6 +242,7 @@ namespace Spirefrost
             Events.OnEntityDrag += BombardArrowSystem.OnDrag;
             Events.OnDeckpackOpen += BombardArrowSystem.CleanUp;
             Events.OnInspect += BombardArrowSystem.OnInspect;
+            Events.OnSceneChanged += BombardArrowSystem.OnSceneChange;
 
             managedObjects = new GameObject(Title+".ManagedObjects");
             UnityEngine.Object.DontDestroyOnLoad(managedObjects);
@@ -282,6 +283,7 @@ namespace Spirefrost
             Events.OnEntityDrag -= BombardArrowSystem.OnDrag;
             Events.OnDeckpackOpen -= BombardArrowSystem.CleanUp;
             Events.OnInspect -= BombardArrowSystem.OnInspect;
+            Events.OnSceneChanged -= BombardArrowSystem.OnSceneChange;
 
             managedObjects.Destroy();
             managedObjects = null;
