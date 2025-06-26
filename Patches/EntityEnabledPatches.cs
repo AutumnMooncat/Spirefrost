@@ -11,24 +11,33 @@ namespace Spirefrost.Patches
     [HarmonyPatch]
     internal class EntityEnabledPatches
     {
+        static bool wasDisabled;
+        static Entity check;
+
         [HarmonyPatch(typeof(Sequences), nameof(Sequences.CardMove))]
         internal class CardMovePatch
         {
             internal static IEnumerator Postfix(IEnumerator __result, Entity entity)
             {
                 yield return __result;
-                entity.enabled = true;
+                if (wasDisabled && entity == check)
+                {
+                    entity.enabled = true;
+                }
+                check = null;
+                wasDisabled = false;
             }
         }
 
-        /*[HarmonyPatch(typeof(CardPocket), nameof(CardPocket.CardAdded))]
+        [HarmonyPatch(typeof(CardPocket), nameof(CardPocket.CardAdded))]
         internal class CardPocketPatch
         {
             internal static void Postfix(Entity entity)
             {
-                entity.enabled = true;
+                wasDisabled = true;
+                check = entity;
             }
-        }*/
+        }
 
         [HarmonyPatch(typeof(ActionRevealAll), nameof(ActionRevealAll.Process))]
         internal class RevealTriggersEnablePatch
