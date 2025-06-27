@@ -27,7 +27,7 @@ namespace Spirefrost.StatusEffects
 
         public override bool RunEntityDestroyedEvent(Entity entity, DeathType deathType)
         {
-            return active && affected.Contains(entity) && entity != target;
+            return active && entity != target && (affected.Contains(entity) || affected.Count == 0);
         }
 
         private IEnumerator Reset()
