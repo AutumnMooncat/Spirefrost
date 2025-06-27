@@ -19,6 +19,8 @@ namespace Spirefrost.Builders.StatusEffects
                     data.applyToFlags = StatusEffectApplyX.ApplyToFlags.Applier;
                     ScriptableCurrentStatus script = ScriptableObject.CreateInstance<ScriptableCurrentStatus>();
                     data.scriptableAmount = script;
+                    data.targetConstraints = new TargetConstraint[0];
+                    data.applyConstraints = new TargetConstraint[0];
                 });
         }
     }
