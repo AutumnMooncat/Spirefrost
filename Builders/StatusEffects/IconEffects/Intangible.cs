@@ -2,6 +2,7 @@
 using Spirefrost.Builders.Icons;
 using Spirefrost.Patches;
 using Spirefrost.StatusEffects;
+using UnityEngine;
 using WildfrostHopeMod.VFX;
 
 namespace Spirefrost.Builders.StatusEffects.IconEffects
@@ -28,6 +29,7 @@ namespace Spirefrost.Builders.StatusEffects.IconEffects
                             t.not = true;
                         })
                     };
+                    data.WithSwappable(TryGet<StatusEffectData>("Block"), null, new Vector2Int(3, 3));
                 })
                 .Subscribe_WithStatusIcon(IntangibleIcon.ID);
         }

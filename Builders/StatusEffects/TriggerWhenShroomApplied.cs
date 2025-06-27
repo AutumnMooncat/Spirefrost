@@ -18,6 +18,7 @@ namespace Spirefrost.Builders.StatusEffects
                     data.textOrder = 1;
                     data.targetStatus = TryGet<StatusEffectData>("Shroom");
                     data.triggerType = StatusEffectTriggerWhenStatusApplied.TriggerType.Normal;
+                    data.WithSwappable(TryGet<StatusEffectData>("MultiHit"));
                 });
         }
     }
