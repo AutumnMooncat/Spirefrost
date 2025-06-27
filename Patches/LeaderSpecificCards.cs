@@ -91,12 +91,13 @@ namespace Spirefrost.Patches
                 extraStarters.AddRange(
                     PoolToIDs(PoolListType.WatcherStarterItems).Select(s => MainModFile.instance.TryGet<CardData>(s)).ToArray());
             }
-
             
             //Debug.Log($"LeaderSpecificCards - {References.LeaderData.name} has {extraStarters.Count} additional cards");
             foreach (CardData item in extraStarters)
             {
-                References.PlayerData.inventory.deck.Add(item.Clone());
+                var copy = item.Clone();
+                References.PlayerData.inventory.deck.Add(copy);
+                CardDiscoverSystem.instance.DiscoverCard(copy);
             }
         }
     }
