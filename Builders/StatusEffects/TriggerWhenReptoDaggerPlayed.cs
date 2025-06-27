@@ -30,6 +30,7 @@ namespace Spirefrost.Builders.StatusEffects
                     {
                         MakeConstraint<TargetConstraintIsSpecificCard>(t => t.allowedCards = new CardData[] { TryGet<CardData>(ReptoDagger.ID) })
                     };
+                    data.WithSwappable(TryGet<StatusEffectData>("Trigger When Ally In Row Attacks"));
                 });
         }
     }
