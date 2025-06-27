@@ -23,7 +23,7 @@ namespace Spirefrost.Builders.Cards.Leaders
                 .SetStats(7, 4, 5)
                 .WithValue(25)
                 .WithCardType("Leader")
-                .WithEyes(FullID, (0.085f, 0.66f, 0.3f, 0.3f, -10f))
+                .WithEyes(FullID, (-1.675f, 1.075f, 0.75f, 0.75f, -30f))
                 .SubscribeToAfterAllBuildEvent(data =>
                 {
                     CardScriptRunnable watcherScript = ScriptableObject.CreateInstance<CardScriptRunnable>();
