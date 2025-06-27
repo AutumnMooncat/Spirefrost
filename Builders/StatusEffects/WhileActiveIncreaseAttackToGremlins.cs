@@ -32,6 +32,7 @@ namespace Spirefrost.Builders.StatusEffects
                             TryGet<CardData>(GremlinVisage.ID),
                         })
                     };
+                    data.WithSwappable(TryGet<StatusEffectData>("While Active Increase Attack To Allies"));
                 });
         }
     }
