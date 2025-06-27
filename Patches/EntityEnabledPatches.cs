@@ -20,7 +20,7 @@ namespace Spirefrost.Patches
             internal static IEnumerator Postfix(IEnumerator __result, Entity entity)
             {
                 yield return __result;
-                if (wasDisabled && entity == check)
+                if (wasDisabled && entity == check && entity.IsAliveAndExists())
                 {
                     entity.enabled = true;
                 }
