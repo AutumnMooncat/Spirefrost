@@ -29,7 +29,7 @@ namespace Spirefrost.Patches
             }
         }
 
-        [HarmonyPatch(typeof(StatusEffectWhileActiveX), nameof(StatusEffectWhileActiveX.RunEntityDestroyedEvent))]
+        /*[HarmonyPatch(typeof(StatusEffectWhileActiveX), nameof(StatusEffectWhileActiveX.RunEntityDestroyedEvent))]
         internal static class RunEntityDestroyedEventPatch
         {
             static void Prefix(StatusEffectWhileActiveX __instance, Entity entity)
@@ -39,6 +39,6 @@ namespace Spirefrost.Patches
                     ActionQueue.Add(new ActionRefreshWhileActiveEffect(__instance));
                 }
             }
-        }
+        }*/
     }
 }
