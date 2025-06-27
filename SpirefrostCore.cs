@@ -235,6 +235,7 @@ namespace Spirefrost
             Events.PostBattle += CleanUpBattleEnd;
             Events.OnBackToMainMenu += CleanUpTemp;
             Events.OnEntityChosen += PickupCheck;
+            Events.OnEntityEnterBackpack += PickupCheck;
             Events.OnEntityHover += BombardArrowSystem.OnHoverEntity;
             Events.OnEntityUnHover += BombardArrowSystem.OnUnHoverEntity;
             Events.OnSlotHover += BombardArrowSystem.OnHoverSlot;
@@ -276,6 +277,7 @@ namespace Spirefrost
             Events.PostBattle -= CleanUpBattleEnd;
             Events.OnBackToMainMenu -= CleanUpTemp;
             Events.OnEntityChosen -= PickupCheck;
+            Events.OnEntityEnterBackpack -= PickupCheck;
             Events.OnEntityHover -= BombardArrowSystem.OnHoverEntity;
             Events.OnEntityUnHover -= BombardArrowSystem.OnUnHoverEntity;
             Events.OnSlotHover -= BombardArrowSystem.OnHoverSlot;
