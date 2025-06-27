@@ -14,6 +14,7 @@ namespace Spirefrost.StatusEffects
         {
             base.Init();
             OnCardMove += BoardCheck;
+            OnEntityDestroyed += DestroyCheck;
             Events.OnEntityTrigger += EntityTrigger2;
         }
 
@@ -21,6 +22,16 @@ namespace Spirefrost.StatusEffects
         {
             base.OnDestroy();
             Events.OnEntityTrigger -= EntityTrigger2;
+            RunDisableEvent(target);
+        }
+
+        private IEnumerator DestroyCheck(Entity entity, DeathType deathType)
+        {
+            if (entity == target)
+            {
+                RunDisableEvent(target);
+            }
+            yield break;
         }
 
         public IEnumerator BoardCheck(Entity entity)
