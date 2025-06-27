@@ -150,13 +150,16 @@ namespace Spirefrost.Patches
                 if (system == null && SceneManager.Loaded.ContainsKey("Campaign"))
                 {
                     Scene s = SceneManager.Loaded["Campaign"];
-                    GameObject[] gameObjects = s.GetRootGameObjects();
-                    foreach (var item in gameObjects)
+                    if (s != null && s.IsValid() && s.isLoaded)
                     {
-                        if (item.name == "Systems")
+                        GameObject[] gameObjects = s.GetRootGameObjects();
+                        foreach (var item in gameObjects)
                         {
-                            system = item;
-                            break;
+                            if (item.name == "Systems")
+                            {
+                                system = item;
+                                break;
+                            }
                         }
                     }
                 }
