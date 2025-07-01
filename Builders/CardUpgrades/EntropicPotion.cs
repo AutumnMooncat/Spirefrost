@@ -16,6 +16,16 @@ namespace Spirefrost.Builders.CardUpgrades
 
         internal static int Amount => 3;
 
+        private static readonly List<string> bannedCharms = new List<string>()
+        {
+            "CardUpgradeCrush", // Bricks items
+            "CardUpgradeShredder", // Can brick
+            "CardUpgradeMime", // Can brick units with trigger but no counter
+            "CardUpgradeAttackRemoveEffects", // Can brick units with trigger but no counter
+            "CardUpgradeMuncher", // Lol
+            EntropicPotion.FullID, // Dont loop
+        };
+
         internal static object GetBuilder()
         {
             return new CardUpgradeDataBuilder(MainModFile.instance)
@@ -33,7 +43,7 @@ namespace Spirefrost.Builders.CardUpgrades
                         List<CardUpgradeData> validUpgrades = new List<CardUpgradeData>();
                         foreach (CardUpgradeData upgrade in AddressableLoader.GetGroup<CardUpgradeData>("CardUpgradeData"))
                         {
-                            if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !(upgrade.name.Equals(FullID)) && upgrade.CanAssign(card))
+                            if (upgrade.type == CardUpgradeData.Type.Charm && upgrade.tier >= 0 && !bannedCharms.Contains(upgrade.name) && upgrade.CanAssign(card))
                             {
                                 validUpgrades.Add(upgrade);
                             }
