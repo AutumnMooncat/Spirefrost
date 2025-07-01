@@ -234,7 +234,7 @@ namespace Spirefrost
             Events.OnEntityCreated += FixImage;
             Events.PostBattle += CleanUpBattleEnd;
             Events.OnBackToMainMenu += CleanUpTemp;
-            Events.OnEntityChosen += PickupCheck;
+            //Events.OnEntityChosen += PickupCheck;
             Events.OnEntityEnterBackpack += PickupCheck;
             Events.OnEntityHover += BombardArrowSystem.OnHoverEntity;
             Events.OnEntityUnHover += BombardArrowSystem.OnUnHoverEntity;
@@ -276,7 +276,7 @@ namespace Spirefrost
             Events.OnEntityCreated -= FixImage;
             Events.PostBattle -= CleanUpBattleEnd;
             Events.OnBackToMainMenu -= CleanUpTemp;
-            Events.OnEntityChosen -= PickupCheck;
+            //Events.OnEntityChosen -= PickupCheck;
             Events.OnEntityEnterBackpack -= PickupCheck;
             Events.OnEntityHover -= BombardArrowSystem.OnHoverEntity;
             Events.OnEntityUnHover -= BombardArrowSystem.OnUnHoverEntity;
